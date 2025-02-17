@@ -254,6 +254,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     let hasEmptyInput = ''
     let fileIsUploading = false
     const requiredVars = inputsForms.filter(({ required }) => required)
+    console.log("requiredVars, ", requiredVars)
     if (requiredVars.length) {
       requiredVars.forEach(({ variable, label, type }) => {
         if (hasEmptyInput)
