@@ -9,7 +9,7 @@ import './styles/globals.css'
 import './styles/markdown.scss'
 
 export const metadata = {
-  title: 'Dify',
+  title: '中旅国际智能体平台',
 }
 
 export const viewport: Viewport = {
