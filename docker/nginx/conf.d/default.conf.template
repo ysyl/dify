@@ -14,6 +14,10 @@ server {
       include proxy.conf;
     }
 
+    location /agent {
+      return 302 https://ds.ctgii.com/chat/zobaZArJfe93li92;
+    }
+
     location /v1 {
       proxy_pass http://api:5001;
       include proxy.conf;
