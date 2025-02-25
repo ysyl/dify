@@ -285,8 +285,10 @@ export const useEmbeddedChatbot = () => {
     setNewConversationId('')
     handleConversationIdInfoChange(conversationId)
 
-    if (conversationId === '' && !checkInputsRequired(true))
+    if (conversationId === '' && !checkInputsRequired(true)) {
+      console.log("setShowConfigPanelBeforeChat")
       setShowConfigPanelBeforeChat(true)
+    }
     else
       setShowConfigPanelBeforeChat(false)
   }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired])
