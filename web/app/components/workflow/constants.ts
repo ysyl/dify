@@ -503,6 +503,10 @@ export const FILE_STRUCT: Var[] = [
     type: VarType.string,
   },
   {
+    variable: 'related_id',
+    type: VarType.string,
+  },
+  {
     variable: 'url',
     type: VarType.string,
   },
