@@ -17,6 +17,11 @@ server {
     location /agent {
       return 302 https://ds.ctgii.com/chat/zobaZArJfe93li92;
     }
+    # 配置静态文件访问
+    location /upload_pics/ {
+        alias /var/www/images_store/23d42193-e769-4628-9f5d-bf5428994d3d/;  # 指定实际文件路径
+        try_files $uri $uri/ =404;  # 如果文件不存在，返回 404
+    }
 
     location /v1 {
       proxy_pass http://api:5001;
