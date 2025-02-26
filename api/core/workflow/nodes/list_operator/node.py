@@ -179,6 +179,8 @@ def _get_file_extract_string_func(*, key: str) -> Callable[[File], str]:
             return lambda x: x.transfer_method
         case "url":
             return lambda x: x.remote_url or ""
+        case "related_id":
+            return lambda x: x.related_id or ""
         case _:
             raise InvalidKeyError(f"Invalid key: {key}")
 
