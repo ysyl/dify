@@ -62,6 +62,8 @@ class FileService:
             current_tenant_id = user.tenant_id
 
         file_key = "upload_files/" + (current_tenant_id or "") + "/" + file_uuid + "." + extension
+        # 新增此行
+        source_url = '/app/api/storage/' + file_key if not source_url else source_url
 
         # save file to storage
         storage.save(file_key, content)
