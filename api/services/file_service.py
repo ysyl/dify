@@ -191,6 +191,17 @@ class FileService:
         return generator, upload_file
 
     @staticmethod
+    def get_file_generator_by_file_id_without_verify(file_id: str):
+        upload_file = db.session.query(UploadFile).filter(UploadFile.id == file_id).first()
+
+        if not upload_file:
+            raise NotFound("File not found or signature is invalid")
+
+        generator = storage.load(upload_file.key, stream=True)
+
+        return generator, upload_file
+
+    @staticmethod
     def get_public_image_preview(file_id: str):
         upload_file = db.session.query(UploadFile).filter(UploadFile.id == file_id).first()
 
