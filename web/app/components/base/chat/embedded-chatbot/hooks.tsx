@@ -88,7 +88,7 @@ export const useEmbeddedChatbot = () => {
       })
     }
   }, [appId, conversationIdInfo, setConversationIdInfo])
-  const [showConfigPanelBeforeChat, setShowConfigPanelBeforeChat] = useState(true)
+  const [showConfigPanelBeforeChat, setShowConfigPanelBeforeChat] = useState(false)
 
   const [newConversationId, setNewConversationId] = useState('')
   const chatShouldReloadKey = useMemo(() => {
@@ -275,6 +275,7 @@ export const useEmbeddedChatbot = () => {
   }, [inputsForms, notify, t])
   const handleStartChat = useCallback(() => {
     if (checkInputsRequired()) {
+      console.log("1 setShowConfigPanelBeforeChat false")
       setShowConfigPanelBeforeChat(false)
       setShowNewConversationItemInList(true)
     }
@@ -286,11 +287,13 @@ export const useEmbeddedChatbot = () => {
     handleConversationIdInfoChange(conversationId)
 
     if (conversationId === '' && !checkInputsRequired(true)) {
-      console.log("setShowConfigPanelBeforeChat")
+      console.log("2 setShowConfigPanelBeforeChat true")
       setShowConfigPanelBeforeChat(true)
     }
-    else
+    else {
+      console.log("3 setShowConfigPanelBeforeChat false")
       setShowConfigPanelBeforeChat(false)
+    }
   }, [handleConversationIdInfoChange, setShowConfigPanelBeforeChat, checkInputsRequired])
   const handleNewConversation = useCallback(() => {
     currentChatInstanceRef.current.handleStop()
@@ -301,6 +304,7 @@ export const useEmbeddedChatbot = () => {
     }
     else if (currentConversationId) {
       handleConversationIdInfoChange('')
+      console.log("4 setShowConfigPanelBeforeChat false")
       setShowConfigPanelBeforeChat(true)
       setShowNewConversationItemInList(true)
       handleNewConversationInputsChange({})
