@@ -16,6 +16,13 @@ type MailAndPasswordAuthProps = {
   allowRegistration: boolean
 }
 
+function base64Encode(str) {
+    // 处理 Unicode 字符（如中文）
+    const utf8Bytes = unescape(encodeURIComponent(str));
+    // 执行 Base64 编码
+    return btoa(utf8Bytes);
+}
+
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/
 
 export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegistration }: MailAndPasswordAuthProps) {
@@ -56,7 +63,7 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
       setIsLoading(true)
       const loginData: Record<string, any> = {
         email,
-        password,
+        password: base64Encode(password),
         language: locale,
         remember_me: true,
       }
