@@ -136,8 +136,7 @@ class BaseApiKeyResource(Resource):
 
 class AppApiKeyListResource(BaseApiKeyListResource):
     def after_request(self, resp):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        set_origin_control(resp)
         return resp
 
     resource_type = "app"
@@ -148,8 +147,7 @@ class AppApiKeyListResource(BaseApiKeyListResource):
 
 class AppApiKeyResource(BaseApiKeyResource):
     def after_request(self, resp):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        set_origin_control(resp)
         return resp
 
     resource_type = "app"
@@ -159,8 +157,7 @@ class AppApiKeyResource(BaseApiKeyResource):
 
 class DatasetApiKeyListResource(BaseApiKeyListResource):
     def after_request(self, resp):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        set_origin_control(resp)
         return resp
 
     resource_type = "dataset"
@@ -171,14 +168,26 @@ class DatasetApiKeyListResource(BaseApiKeyListResource):
 
 class DatasetApiKeyResource(BaseApiKeyResource):
     def after_request(self, resp):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        set_origin_control(resp)
         return resp
 
     resource_type = "dataset"
     resource_model = Dataset
     resource_id_field = "dataset_id"
 
+def set_origin_control(resp):
+    # 获取请求中的 Origin 头
+    origin = request.headers.get("Origin", "")
+
+    # 正则验证是否匹配 *.ctgii.com
+    if re.match(r"^https?://([a-z0-9-]+\.)*ctgii\.com$", origin, re.IGNORECASE):
+        resp.headers["Access-Control-Allow-Origin"] = origin
+        resp.headers["Access-Control-Allow-Credentials"] = "true"
+        resp.headers.add("Vary", "Origin")  # 避免缓存问题
+    else:
+        # 可选：拒绝非匹配域名的跨域请求
+        resp.headers.pop("Access-Control-Allow-Origin", None)
+        resp.headers.pop("Access-Control-Allow-Credentials", None)
 
 api.add_resource(AppApiKeyListResource, "/apps/<uuid:resource_id>/api-keys")
 api.add_resource(AppApiKeyResource, "/apps/<uuid:resource_id>/api-keys/<uuid:api_key_id>")
