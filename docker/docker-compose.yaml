@@ -417,7 +417,6 @@ services:
     build:
       context: ../api
       dockerfile: Dockerfile
-    image: dify-api:1.0.0
     restart: always
     environment:
       # Use the shared environment variables.
@@ -447,7 +446,6 @@ services:
     build:
       context: ../api
       dockerfile: Dockerfile
-    image: dify-api:1.0.0
     restart: always
     environment:
       # Use the shared environment variables.
@@ -474,7 +472,6 @@ services:
     build:
       context: ../web
       dockerfile: Dockerfile
-    image: dify-web:1.0.0
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
