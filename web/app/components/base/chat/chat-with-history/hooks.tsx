@@ -314,7 +314,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     }
     else if (currentConversationId) {
       handleConversationIdInfoChange('')
-      setShowConfigPanelBeforeChat(true)
+      setShowConfigPanelBeforeChat(false)
       setShowNewConversationItemInList(true)
       handleNewConversationInputsChange({})
     }
