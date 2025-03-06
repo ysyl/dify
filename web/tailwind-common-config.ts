@@ -91,6 +91,7 @@ const config = {
       },
       backgroundImage: {
         'chatbot-bg': 'var(--color-chatbot-bg)',
+        'chatbot-ctg-bg': 'url("https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/logo_transparent.png")',
         'chat-bubble-bg': 'var(--color-chat-bubble-bg)',
         'chat-input-mask': 'var(--color-chat-input-mask)',
         'workflow-process-bg': 'var(--color-workflow-process-bg)',
