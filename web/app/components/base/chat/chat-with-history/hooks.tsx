@@ -122,7 +122,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
       })
     }
   }, [appId, conversationIdInfo, setConversationIdInfo])
-  const [showConfigPanelBeforeChat, setShowConfigPanelBeforeChat] = useState(true)
+  const [showConfigPanelBeforeChat, setShowConfigPanelBeforeChat] = useState(false)
 
   const [newConversationId, setNewConversationId] = useState('')
   const chatShouldReloadKey = useMemo(() => {
@@ -254,7 +254,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     let hasEmptyInput = ''
     let fileIsUploading = false
     const requiredVars = inputsForms.filter(({ required }) => required)
-    console.log("requiredVars, ", requiredVars)
+    console.log('requiredVars, ', requiredVars)
     if (requiredVars.length) {
       requiredVars.forEach(({ variable, label, type }) => {
         if (hasEmptyInput)
