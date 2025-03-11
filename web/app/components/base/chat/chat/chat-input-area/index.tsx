@@ -38,6 +38,7 @@ type ChatInputAreaProps = {
   onSend?: OnSend
   inputs?: Record<string, any>
   inputsForm?: InputForm[]
+  autofocus?: boolean
   theme?: Theme | null
   isResponding?: boolean
 }
@@ -53,6 +54,7 @@ const ChatInputArea = ({
   inputsForm = [],
   theme,
   isResponding,
+  autofocus = true
 }: ChatInputAreaProps) => {
   const { t } = useTranslation()
   const { notify } = useToastContext()
@@ -176,7 +178,7 @@ const ChatInputArea = ({
                   'p-1 w-full leading-6 body-lg-regular text-text-tertiary bg-transparent outline-none',
                 )}
                 placeholder={t('common.chat.inputPlaceholder') || ''}
-                autoFocus
+                autoFocus={autofocus}
                 autoSize={{ minRows: 1 }}
                 onResize={handleTextareaResize}
                 value={query}

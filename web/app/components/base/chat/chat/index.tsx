@@ -285,6 +285,7 @@ const Chat: FC<ChatProps> = ({
                   onFeatureBarClick={onFeatureBarClick}
                   visionConfig={config?.file_upload}
                   speechToTextConfig={config?.speech_to_text}
+                  autofocus={chatList.length <= 1}
                   onSend={onSend}
                   inputs={inputs}
                   inputsForm={inputsForm}
