@@ -70,6 +70,10 @@ const Sidebar: FC<SidebarProps> = ({ setShowSidebar }) => {
     handleChangeConversation(conversationId)
     setShowSidebar && setShowSidebar(false)
   }
+  const aroundHandleNewConversation = () => {
+    handleNewConversation()
+    setShowSidebar && setShowSidebar(false)
+  }
 
   return (
     <div className='shrink-0 h-full flex flex-col w-[240px] border-r border-r-gray-100'>
@@ -95,7 +99,7 @@ const Sidebar: FC<SidebarProps> = ({ setShowSidebar }) => {
           variant='secondary-accent'
           className='justify-start w-full'
           size="large"
-          onClick={handleNewConversation}
+          onClick={aroundHandleNewConversation}
         >
           <Edit05 className='mr-2 w-4 h-4' />
           {t('share.chat.newChat')}
