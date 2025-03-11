@@ -94,6 +94,7 @@ const Sidebar: FC<SidebarProps> = ({ setShowSidebar }) => {
         <Button
           variant='secondary-accent'
           className='justify-start w-full'
+          size="large"
           onClick={handleNewConversation}
         >
           <Edit05 className='mr-2 w-4 h-4' />
