@@ -20,12 +20,12 @@ const HeaderInMobile: FC<HeaderInMobileProps> = ({ showSidebar, setShowSidebar }
 
   return (
     <>
-      <div className='shrink-0 flex items-center px-3 h-[44px] border-b-[0.5px] border-b-gray-200'>
+      <div className='shrink-0 flex items-center px-3 h-[64px] border-b-[0.5px] border-b-gray-200'>
         <div
           className='shrink-0 flex items-center justify-center w-8 h-8 rounded-lg'
           onClick={() => setShowSidebar(true)}
         >
-          <Menu01 className='w-4 h-4 text-gray-700' />
+          <Menu01 className='w-6 h-6 text-gray-700' />
         </div>
         <div className='grow flex justify-center items-center px-3'>
           <AppIcon
@@ -44,7 +44,7 @@ const HeaderInMobile: FC<HeaderInMobileProps> = ({ showSidebar, setShowSidebar }
           className='shrink-0 flex items-center justify-center w-8 h-8 rounded-lg'
           onClick={handleNewConversation}
         >
-          <Edit05 className='w-4 h-4 text-gray-700' />
+          <Edit05 className='w-6 h-6 text-gray-700' />
         </div>
       </div>
       {
