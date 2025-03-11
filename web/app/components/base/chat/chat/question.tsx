@@ -47,7 +47,7 @@ const Question: FC<QuestionProps> = ({
         </div>
         <div className='mt-1 h-[18px]' />
       </div>
-      <div className='shrink-0 w-10 h-10'>
+      {/* <div className='shrink-0 w-10 h-10'>
         {
           questionIcon || (
             <div className='w-full h-full rounded-full border-[0.5px] border-black/5'>
@@ -55,7 +55,7 @@ const Question: FC<QuestionProps> = ({
             </div>
           )
         }
-      </div>
+      </div> */}
     </div>
   )
 }
