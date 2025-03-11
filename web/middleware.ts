@@ -5,9 +5,16 @@ const NECESSARY_DOMAIN = '*.sentry.io http://localhost:* http://127.0.0.1:* http
 
 export function middleware(request: NextRequest) {
   const isWhiteListEnabled = !!process.env.NEXT_PUBLIC_CSP_WHITELIST && process.env.NODE_ENV === 'production'
-  if (!isWhiteListEnabled)
-    return NextResponse.next()
-
+  if (!isWhiteListEnabled) {
+    const path = request.nextUrl.pathname;
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set('x-pathname', path);
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders
+      }
+    })
+  }
   const whiteList = `${process.env.NEXT_PUBLIC_CSP_WHITELIST} ${NECESSARY_DOMAIN}`
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const csp = `'nonce-${nonce}'`
@@ -40,6 +47,8 @@ export function middleware(request: NextRequest) {
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue,
   )
+  const path = request.nextUrl.pathname;
+  requestHeaders.set('x-pathname', path);
 
   const response = NextResponse.next({
     request: {

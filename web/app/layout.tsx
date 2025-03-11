@@ -7,6 +7,8 @@ import { TanstackQueryIniter } from '@/context/query-client'
 import { ThemeProvider } from 'next-themes'
 import './styles/globals.css'
 import './styles/markdown.scss'
+import cn from '@/utils/classnames'
+import { headers } from 'next/headers'
 
 export const metadata = {
   title: '中旅国际智能体平台',
@@ -23,7 +25,7 @@ export const viewport: Viewport = {
 const LocaleLayout = ({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
 }) => {
   const locale = getLocaleOnServer()
 
@@ -36,7 +38,10 @@ const LocaleLayout = ({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body
-        className="h-full select-auto color-scheme bg-background-body"
+        className={cn("h-full select-auto color-scheme", {
+          'bg-background-body': isChatPath(headers().get('x-pathname') || '')
+        })}
+        date-test={headers().get('x-pathname') || ''}
         data-api-prefix={process.env.NEXT_PUBLIC_API_PREFIX}
         data-pubic-api-prefix={process.env.NEXT_PUBLIC_PUBLIC_API_PREFIX}
         data-marketplace-api-prefix={process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX}
@@ -71,5 +76,10 @@ const LocaleLayout = ({
     </html>
   )
 }
-
+const isChatPath = (pathname: string): boolean => {
+  // 解析路径的第一个有效段
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const firstSegment = pathSegments[0] || '';
+  return ['chat', 'chatbot'].includes(firstSegment.toLowerCase());
+};
 export default LocaleLayout
