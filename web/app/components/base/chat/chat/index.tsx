@@ -34,6 +34,7 @@ import AgentLogModal from '@/app/components/base/agent-log-modal'
 import PromptLogModal from '@/app/components/base/prompt-log-modal'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
+import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 
 export type ChatProps = {
   appData?: AppData
@@ -122,6 +123,8 @@ const Chat: FC<ChatProps> = ({
   const chatFooterRef = useRef<HTMLDivElement>(null)
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
+  const media = useBreakpoints()
+  const isMobile = media === MediaType.mobile
 
   const handleScrollToBottom = useCallback(() => {
     if (chatList.length > 1 && chatContainerRef.current && !userScrolledRef.current)
@@ -285,7 +288,8 @@ const Chat: FC<ChatProps> = ({
                   onFeatureBarClick={onFeatureBarClick}
                   visionConfig={config?.file_upload}
                   speechToTextConfig={config?.speech_to_text}
-                  autofocus={chatList.length <= 1}
+                  // 移动端只有聊天记录超过1条才自动聚焦
+                  autofocus={!isMobile || chatList.length <= 1}
                   onSend={onSend}
                   inputs={inputs}
                   inputsForm={inputsForm}
