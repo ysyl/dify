@@ -254,7 +254,7 @@ const Chat: FC<ChatProps> = ({
           </div>
         </div>
         <div
-          className={`absolute bottom-0 bg-chat-input-mask ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
+          className={`fixed bottom-0 bg-chat-input-mask ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
           ref={chatFooterRef}
         >
           <div
@@ -289,7 +289,7 @@ const Chat: FC<ChatProps> = ({
                   visionConfig={config?.file_upload}
                   speechToTextConfig={config?.speech_to_text}
                   // 移动端只有聊天记录超过1条才自动聚焦
-                  autofocus={false}
+                  autofocus={!isMobile || chatList.length <= 1}
                   onSend={onSend}
                   inputs={inputs}
                   inputsForm={inputsForm}

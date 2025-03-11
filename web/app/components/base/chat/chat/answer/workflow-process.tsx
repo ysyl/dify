@@ -83,7 +83,6 @@ const WorkflowProcessItem = ({
           )
         }
         <div className={cn('system-xs-medium text-text-secondary', !collapse && 'grow')}>
-          {t('workflow.common.workflowProcess')}
         </div>
         {!readonly && <RiArrowRightSLine className={`'ml-1 w-4 h-4 text-text-tertiary' ${collapse ? '' : 'rotate-90'}`} />}
       </div>
