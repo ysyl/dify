@@ -289,7 +289,7 @@ const Chat: FC<ChatProps> = ({
                   visionConfig={config?.file_upload}
                   speechToTextConfig={config?.speech_to_text}
                   // 移动端只有聊天记录超过1条才自动聚焦
-                  autofocus={!isMobile || chatList.length <= 1}
+                  autofocus={false}
                   onSend={onSend}
                   inputs={inputs}
                   inputsForm={inputsForm}
