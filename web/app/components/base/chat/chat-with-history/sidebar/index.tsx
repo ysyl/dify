@@ -1,4 +1,7 @@
 import {
+  Dispatch,
+  FC,
+  SetStateAction,
   useCallback,
   useState,
 } from 'react'
@@ -12,7 +15,11 @@ import type { ConversationItem } from '@/models/share'
 import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
 
-const Sidebar = () => {
+type SidebarProps = {
+  setShowSidebar?: Dispatch<SetStateAction<boolean>>
+}
+
+const Sidebar: FC<SidebarProps> = ({ setShowSidebar }) => {
   const { t } = useTranslation()
   const {
     appData,
@@ -58,6 +65,11 @@ const Sidebar = () => {
     if (showRename)
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
+  // 切换对话时关闭侧边栏
+  const aroundHandleChangeConversation = (conversationId: string) => {
+    handleChangeConversation(conversationId)
+    setShowSidebar && setShowSidebar(false)
+  }
 
   return (
     <div className='shrink-0 h-full flex flex-col w-[240px] border-r border-r-gray-100'>
@@ -96,7 +108,7 @@ const Sidebar = () => {
                 isPin
                 title={t('share.chat.pinnedTitle') || ''}
                 list={pinnedConversationList}
-                onChangeConversation={handleChangeConversation}
+                onChangeConversation={aroundHandleChangeConversation}
                 onOperate={handleOperate}
                 currentConversationId={currentConversationId}
               />
@@ -108,7 +120,7 @@ const Sidebar = () => {
             <List
               title={(pinnedConversationList.length && t('share.chat.unpinnedTitle')) || ''}
               list={conversationList}
-              onChangeConversation={handleChangeConversation}
+              onChangeConversation={aroundHandleChangeConversation}
               onOperate={handleOperate}
               currentConversationId={currentConversationId}
             />

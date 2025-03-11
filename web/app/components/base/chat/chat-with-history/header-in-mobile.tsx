@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useChatWithHistoryContext } from './context'
 import Sidebar from './sidebar'
 import AppIcon from '@/app/components/base/app-icon'
@@ -7,12 +7,16 @@ import {
   Menu01,
 } from '@/app/components/base/icons/src/vender/line/general'
 
-const HeaderInMobile = () => {
+type HeaderInMobileProps = {
+  showSidebar: boolean,
+  setShowSidebar: Dispatch<SetStateAction<boolean>>
+}
+
+const HeaderInMobile: FC<HeaderInMobileProps> = ({ showSidebar, setShowSidebar }) => {
   const {
     appData,
     handleNewConversation,
   } = useChatWithHistoryContext()
-  const [showSidebar, setShowSidebar] = useState(false)
 
   return (
     <>
@@ -50,7 +54,7 @@ const HeaderInMobile = () => {
             onClick={() => setShowSidebar(false)}
           >
             <div className='inline-block h-full bg-white' onClick={e => e.stopPropagation()}>
-              <Sidebar />
+              <Sidebar setShowSidebar={setShowSidebar} />
             </div>
           </div>
         )

@@ -41,6 +41,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const chatReady = (!showConfigPanelBeforeChat || !!appPrevChatTree.length)
   const customConfig = appData?.custom_config
   const site = appData?.site
+  const [showSidebar, setShowSidebar] = useState(false)
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
@@ -73,7 +74,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       }
       {
         isMobile && (
-          <HeaderInMobile />
+          <HeaderInMobile showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
         )
       }
       <div className={`grow overflow-hidden ${showConfigPanelBeforeChat && !appPrevChatTree.length && 'flex items-center justify-center'}`}>
