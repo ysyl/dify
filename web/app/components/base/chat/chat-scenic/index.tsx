@@ -246,7 +246,7 @@ const Chat: FC<ChatProps> = ({
                   // 如果Answer中涉及自定义组件，则按需渲染自定义组件
                   if (item.content === '<spt-widget />')
                     return (
-                      <div className='border border-green-50 rounded-[20.8px] p-[16px]' style={{
+                      <div className='border border-green-50 rounded-[20.8px] p-[16px] mb-[30px]' style={{
                         backgroundColor: 'rgb(235,235,236,0.4)'
                       }}>
                         <div className='flex justify-between w-full'>
