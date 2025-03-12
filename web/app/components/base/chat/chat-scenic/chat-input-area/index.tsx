@@ -27,6 +27,7 @@ import { useToastContext } from '@/app/components/base/toast'
 import FeatureBar from '@/app/components/base/features/new-feature-panel/feature-bar'
 import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
+import { RiRefreshLine } from '@remixicon/react'
 
 type ChatInputAreaProps = {
   showFeatureBar?: boolean
@@ -40,7 +41,8 @@ type ChatInputAreaProps = {
   inputsForm?: InputForm[]
   autofocus?: boolean
   theme?: Theme | null
-  isResponding?: boolean
+  isResponding?: boolean,
+  onCreateNewChat?: () => void
 }
 const ChatInputArea = ({
   showFeatureBar,
@@ -49,6 +51,7 @@ const ChatInputArea = ({
   onFeatureBarClick,
   visionConfig,
   speechToTextConfig = { enabled: true },
+  onCreateNewChat,
   onSend,
   inputs = {},
   inputsForm = [],
@@ -165,6 +168,11 @@ const ChatInputArea = ({
             ref={wrapperRef}
             className='flex items-center justify-between'
           >
+            <div className='flex cursor-pointer hover:rounded-full hover:bg-black/5 w-10 h-10 rounded-full border items-center justify-center bg-white' onClick={() => {
+              onCreateNewChat?.()
+            }}>
+              <RiRefreshLine className="h-30 w-60 text-sm text-white font-extrabold" color="black" size="20" />
+            </div>
             <div className='flex items-center relative grow w-full'>
               <div
                 ref={textValueRef}

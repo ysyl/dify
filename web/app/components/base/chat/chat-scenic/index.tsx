@@ -72,6 +72,7 @@ export type ChatProps = {
   showFileUpload?: boolean
   onFeatureBarClick?: (state: boolean) => void
   noSpacing?: boolean
+  onCreateNewChat?: () => void
 }
 
 const Chat: FC<ChatProps> = ({
@@ -108,6 +109,7 @@ const Chat: FC<ChatProps> = ({
   showFileUpload,
   onFeatureBarClick,
   noSpacing,
+  onCreateNewChat
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -196,7 +198,6 @@ const Chat: FC<ChatProps> = ({
   const hasTryToAsk = config?.suggested_questions_after_answer?.enabled && !!suggestedQuestions?.length && onSend
 
   const getShortcutListItem = (title: string, subTitle: string) => (
-    <li>
       <div className='w-40 h-16 p-3 bg-white rounded-xl'>
         <div className='w-full flex justify-between items-center'>
           <h1 className='text-base font-bold'>{title}</h1>
@@ -204,7 +205,7 @@ const Chat: FC<ChatProps> = ({
         </div>
         <h2 className='text-[10px] text-[#A7B3C2] mt-0.5'>{subTitle}</h2>
       </div>
-    </li>)
+    )
 
   const getPreconfigQueryItem = (title: string) => (
     <div className='flex w-full h-10 rounded-3xl bg-white p-0.5 px-4 items-center justify-between' onClick={() => onSend?.(title)}>
@@ -362,6 +363,7 @@ const Chat: FC<ChatProps> = ({
                   inputsForm={inputsForm}
                   theme={themeBuilder?.theme}
                   isResponding={isResponding}
+                  onCreateNewChat={onCreateNewChat}
                 />
               )
             }

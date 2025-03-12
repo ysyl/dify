@@ -36,6 +36,7 @@ const ChatWrapper = () => {
     appMeta,
     handleFeedback,
     currentChatInstanceRef,
+    handleNewConversation,
     themeBuilder,
   } = useEmbeddedChatbotContext()
   const appConfig = useMemo(() => {
@@ -161,6 +162,7 @@ const ChatWrapper = () => {
       answerIcon={answerIcon}
       hideProcessDetail
       themeBuilder={themeBuilder}
+      onCreateNewChat={handleNewConversation}
       switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
     />
   )
