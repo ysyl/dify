@@ -247,7 +247,7 @@ const Chat: FC<ChatProps> = ({
                   if (item.content === '<spt-widget />')
                     return (
                       <div className='border border-green-50 rounded-[20.8px] p-[16px]' style={{
-                        backgroundColor: 'rgba(244, 245, 250, 0.4)'
+                        backgroundColor: 'rgb(235,235,236,0.4)'
                       }}>
                         <div className='flex justify-between w-full'>
                           <div>
