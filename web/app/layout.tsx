@@ -39,7 +39,7 @@ const LocaleLayout = ({
       </head>
       <body
         className={cn("h-full select-auto color-scheme", {
-          'bg-background-body': isChatPath(headers().get('x-pathname') || '')
+          'bg-background-body': isChatPath(headers().get('x-pathname') || '', ['chat', 'chatbot', 'chatbot-scenic']),
         })}
         date-test={headers().get('x-pathname') || ''}
         data-api-prefix={process.env.NEXT_PUBLIC_API_PREFIX}
@@ -76,10 +76,10 @@ const LocaleLayout = ({
     </html>
   )
 }
-const isChatPath = (pathname: string): boolean => {
+const isChatPath = (pathname: string, keyPaths: string[]): boolean => {
   // 解析路径的第一个有效段
   const pathSegments = pathname.split('/').filter(Boolean);
   const firstSegment = pathSegments[0] || '';
-  return ['chat', 'chatbot'].includes(firstSegment.toLowerCase());
+  return keyPaths.includes(firstSegment.toLowerCase());
 };
 export default LocaleLayout

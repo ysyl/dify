@@ -27,7 +27,7 @@ const Header: FC<IHeaderProps> = ({
   return (
     <div
       className={`
-        shrink-0 flex items-center justify-between h-14 px-4 bg-[#E9EAEC]
+        shrink-0 flex items-center justify-between h-14 px-4 bg-background-body
       `}
     >
       <div className="flex items-center space-x-2">
