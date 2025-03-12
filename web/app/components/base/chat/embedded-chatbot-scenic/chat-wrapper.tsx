@@ -146,9 +146,9 @@ const ChatWrapper = () => {
       config={appConfig}
       chatList={chatList}
       isResponding={isResponding}
-      chatContainerInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-4')}
+      chatContainerInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-[12px]')}
       chatFooterClassName='pb-4'
-      chatFooterInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-4')}
+      chatFooterInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-0')}
       onSend={doSend}
       inputs={currentConversationId ? currentConversationItem?.inputs as any : newConversationInputs}
       inputsForm={inputsForms}
