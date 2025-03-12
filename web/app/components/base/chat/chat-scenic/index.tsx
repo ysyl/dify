@@ -207,8 +207,8 @@ const Chat: FC<ChatProps> = ({
     </li>)
 
   const getPreconfigQueryItem = (title: string) => (
-    <div className='flex w-full h-10 rounded-3xl bg-white p-0.5 px-4 items-center justify-between'>
-      <span className='leading-10 text-[#7B8295]' onClick={() => onSend?.(title)}>
+    <div className='flex w-full h-10 rounded-3xl bg-white p-0.5 px-4 items-center justify-between' onClick={() => onSend?.(title)}>
+      <span className='leading-10 text-[#7B8295]'>
         {title}
       </span>
       <ARROW_ICON />
