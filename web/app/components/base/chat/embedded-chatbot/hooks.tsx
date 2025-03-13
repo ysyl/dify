@@ -275,7 +275,6 @@ export const useEmbeddedChatbot = () => {
   }, [inputsForms, notify, t])
   const handleStartChat = useCallback((callback?: any) => {
     if (checkInputsRequired()) {
-      console.log("1 setShowConfigPanelBeforeChat false")
       setShowConfigPanelBeforeChat(false)
       setShowNewConversationItemInList(true)
       callback?.()

@@ -280,7 +280,7 @@ const Chat: FC<ChatProps> = ({
                           <h1 className='text-base text-[#7C879B]'>你可以试着问我：</h1>
                           <ul className='mt-4 flex gap-2 flex-col'>
                             {
-                              item.suggestedQuestions?.map(question => (<li>
+                              item.suggestedQuestions?.map(question => (<li key={question}>
                                 {getPreconfigQueryItem(question)}
                               </li>))
                             }

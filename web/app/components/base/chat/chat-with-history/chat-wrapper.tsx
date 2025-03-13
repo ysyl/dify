@@ -20,6 +20,7 @@ import {
 import AppIcon from '@/app/components/base/app-icon'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
+import { Markdown } from '../../markdown'
 
 const ChatWrapper = () => {
   const {
@@ -105,7 +106,7 @@ const ChatWrapper = () => {
   useEffect(() => {
     if (currentChatInstanceRef.current)
       currentChatInstanceRef.current.handleStop = handleStop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const doSend: OnSend = useCallback((message, files, isRegenerate = false, parentAnswer: ChatItem | null = null) => {
@@ -173,7 +174,7 @@ const ChatWrapper = () => {
     if (!collapsed && inputsForms.length > 0)
       return null
     return (
-      <div className={cn('h-[50vh] py-12 flex flex-col items-center justify-center gap-3')}>
+      <div className={cn('h-[50vh] py-12 px-4 flex flex-col items-center justify-center gap-3')}>
         <AppIcon
           size='xl'
           iconType={appData?.site.icon_type}
@@ -181,7 +182,8 @@ const ChatWrapper = () => {
           background={appData?.site.icon_background}
           imageUrl={appData?.site.icon_url}
         />
-        <div className='text-text-tertiary body-2xl-regular'>{welcomeMessage.content}</div>
+        {/* <div className='text-text-tertiary body-2xl-regular'>{welcomeMessage.content}</div> */}
+        <Markdown content={welcomeMessage.content} />
       </div>
     )
   }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length])
