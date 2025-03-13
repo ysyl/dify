@@ -204,7 +204,7 @@ const ChatWrapper = () => {
       config={appConfig}
       chatList={messageList}
       isResponding={isResponding}
-      chatContainerInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-4')}
+      chatContainerInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-2')}
       chatFooterClassName={cn('pb-[calc(env(safe-area-inset-bottom)+1.5rem)]', !isMobile && 'rounded-b-2xl')}
       chatFooterInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-2')}
       onSend={doSend}
