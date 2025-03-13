@@ -80,11 +80,11 @@ const Sidebar = ({ isPanel }: Props) => {
   // 切换对话时关闭侧边栏
   const aroundHandleChangeConversation = (conversationId: string) => {
     handleChangeConversation(conversationId)
-    setShowSidebar && setShowSidebar(false)
+    isMobile && handleSidebarCollapse(true)
   }
   const aroundHandleNewConversation = () => {
     handleNewConversation()
-    setShowSidebar && setShowSidebar(false)
+    isMobile && handleSidebarCollapse(true)
   }
 
   return (
@@ -117,7 +117,7 @@ const Sidebar = ({ isPanel }: Props) => {
         )}
       </div>
       <div className='shrink-0 px-3 py-4'>
-        <Button variant='secondary-accent' className='w-full justify-center' onClick={handleNewConversation} size='large'>
+        <Button variant='secondary-accent' className='w-full justify-center' onClick={aroundHandleNewConversation} size='large'>
           <RiEditBoxLine className='w-4 h-4 mr-1' />
           {t('share.chat.newChat')}
         </Button>
@@ -130,7 +130,7 @@ const Sidebar = ({ isPanel }: Props) => {
               isPin
               title={t('share.chat.pinnedTitle') || ''}
               list={pinnedConversationList}
-              onChangeConversation={handleChangeConversation}
+              onChangeConversation={aroundHandleChangeConversation}
               onOperate={handleOperate}
               currentConversationId={currentConversationId}
             />
@@ -140,7 +140,7 @@ const Sidebar = ({ isPanel }: Props) => {
           <List
             title={(pinnedConversationList.length && t('share.chat.unpinnedTitle')) || ''}
             list={conversationList}
-            onChangeConversation={handleChangeConversation}
+            onChangeConversation={aroundHandleChangeConversation}
             onOperate={handleOperate}
             currentConversationId={currentConversationId}
           />

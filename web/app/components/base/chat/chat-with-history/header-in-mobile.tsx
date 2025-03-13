@@ -27,6 +27,8 @@ const HeaderInMobile = () => {
     handleDeleteConversation,
     handleRenameConversation,
     conversationRenaming,
+    sidebarCollapseState,
+    handleSidebarCollapse,
   } = useChatWithHistoryContext()
   const { t } = useTranslation()
   const isPin = pinnedConversationList.some(item => item.id === currentConversationId)
@@ -59,13 +61,12 @@ const HeaderInMobile = () => {
     if (showRename)
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
-  const [showSidebar, setShowSidebar] = useState(false)
   const [showChatSettings, setShowChatSettings] = useState(false)
 
   return (
     <>
       <div className='shrink-0 flex items-center px-2 py-3 gap-1 bg-mask-top2bottom-gray-50-to-transparent'>
-        <ActionButton size='l' className='shrink-0' onClick={() => setShowSidebar(true)}>
+        <ActionButton size='l' className='shrink-0' onClick={() => handleSidebarCollapse(false)}>
           <RiMenuLine className='w-[18px] h-[18px]' />
         </ActionButton>
         <div className='grow flex justify-center items-center'>
@@ -101,9 +102,9 @@ const HeaderInMobile = () => {
           handleViewChatSettings={() => setShowChatSettings(true)}
         />
       </div>
-      {showSidebar && (
+      {!sidebarCollapseState && (
         <div className='fixed inset-0 z-50 flex p-1 bg-background-overlay'
-          onClick={() => setShowSidebar(false)}
+          onClick={() => handleSidebarCollapse(true)}
         >
           <div className='flex h-full w-[calc(100vw_-_40px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
             <Sidebar />
