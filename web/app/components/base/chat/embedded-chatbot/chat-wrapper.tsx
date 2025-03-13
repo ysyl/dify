@@ -22,6 +22,8 @@ import AppIcon from '@/app/components/base/app-icon'
 import LogoAvatar from '@/app/components/base/logo/logo-embedded-chat-avatar'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
+import getSptWidgetComponent from '@/app/components/widget/scenic_hello'
+import { Markdown } from '../../markdown'
 
 const ChatWrapper = () => {
   const {
@@ -173,6 +175,15 @@ const ChatWrapper = () => {
       return null
     if (!collapsed && inputsForms.length > 0)
       return null
+
+    if (welcomeMessage.content === '<spt-widget />')
+      return (
+        <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
+          {
+            getSptWidgetComponent(welcomeMessage, doSend)
+          }
+        </div>
+      )
     return (
       <div className={cn('h-[50vh] py-12 flex flex-col items-center justify-center gap-3')}>
         <AppIcon
@@ -182,7 +193,8 @@ const ChatWrapper = () => {
           background={appData?.site.icon_background}
           imageUrl={appData?.site.icon_url}
         />
-        <div className='text-text-tertiary body-2xl-regular'>{welcomeMessage.content}</div>
+        {/* <div className='text-text-tertiary body-2xl-regular'>{welcomeMessage.content}</div> */}
+        <Markdown content={welcomeMessage.content} />
       </div>
     )
   }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length])
