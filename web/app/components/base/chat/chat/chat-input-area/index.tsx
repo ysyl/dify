@@ -157,7 +157,7 @@ const ChatInputArea = ({
     <>
       <div
         className={cn(
-          'relative pb-[9px] bg-components-panel-bg-blur border border-components-chat-input-border rounded-xl shadow-md z-10',
+          'relative pb-[9px] bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[80px]',
           isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
           disabled && 'opacity-50 pointer-events-none border-components-panel-border shadow-none',
         )}

@@ -6,7 +6,7 @@ export class Theme {
   public chatColorThemeInverted: boolean
 
   public primaryColor = '#1C64F2'
-  public backgroundHeaderColorStyle = 'backgroundImage: linear-gradient(to right, #2563eb, #0ea5e9)'
+  public backgroundHeaderColorStyle = ''
   public headerBorderBottomStyle = ''
   public colorFontOnHeaderStyle = 'color: white'
   public colorPathOnHeader = 'text-text-primary-on-surface'

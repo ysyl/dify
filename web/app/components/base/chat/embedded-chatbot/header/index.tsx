@@ -85,7 +85,7 @@ const Header: FC<IHeaderProps> = ({
           className='system-md-semibold truncate'
           style={CssTransform(theme?.colorFontOnHeaderStyle ?? '')}
         >
-          {title}
+          {/* {title} */}
         </div>
       </div>
       <div className='flex items-center gap-1'>
@@ -93,8 +93,8 @@ const Header: FC<IHeaderProps> = ({
           <Tooltip
             popupContent={t('share.chat.resetChat')}
           >
-            <ActionButton size='l' onClick={onCreateNewChat}>
-              <RiResetLeftLine className={cn('w-[18px] h-[18px]', theme?.colorPathOnHeader)} />
+            <ActionButton size='l' onClick={onCreateNewChat} className='w-9 h-9 rounded-full bg-white border'>
+              <RiResetLeftLine className={cn('w-[18px] h-[18px]', theme?.colorPathOnHeader)} color='black' />
             </ActionButton>
           </Tooltip>
         )}

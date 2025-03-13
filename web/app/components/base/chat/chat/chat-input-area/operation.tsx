@@ -54,7 +54,7 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
           }
         </div>
         <Button
-          className='ml-3 px-0 w-8'
+          className='ml-3 px-0 w-8 rounded-full'
           variant='primary'
           onClick={onSend}
           style={

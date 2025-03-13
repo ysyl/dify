@@ -198,14 +198,14 @@ const Chat: FC<ChatProps> = ({
   const hasTryToAsk = config?.suggested_questions_after_answer?.enabled && !!suggestedQuestions?.length && onSend
 
   const getShortcutListItem = (title: string, subTitle: string) => (
-      <div className='w-40 h-16 p-3 bg-white rounded-xl'>
-        <div className='w-full flex justify-between items-center'>
-          <h1 className='text-base font-bold'>{title}</h1>
-          <ARROW_ICON />
-        </div>
-        <h2 className='text-[10px] text-[#A7B3C2] mt-0.5'>{subTitle}</h2>
+    <div className='w-40 h-16 p-3 bg-white rounded-xl'>
+      <div className='w-full flex justify-between items-center'>
+        <h1 className='text-base font-bold'>{title}</h1>
+        <ARROW_ICON />
       </div>
-    )
+      <h2 className='text-[10px] text-[#A7B3C2] mt-0.5'>{subTitle}</h2>
+    </div>
+  )
 
   const getPreconfigQueryItem = (title: string) => (
     <div className='flex w-full h-10 rounded-3xl bg-white p-0.5 px-4 items-center justify-between' onClick={() => onSend?.(title)}>
@@ -214,6 +214,49 @@ const Chat: FC<ChatProps> = ({
       </span>
       <ARROW_ICON />
     </div>)
+
+  const getSptWidgetComponent = (item: ChatItem) => (
+    <div className='border border-green-50 rounded-[20.8px] p-[16px] mb-[30px]' style={{
+      backgroundColor: 'rgb(235,235,236,0.4)'
+    }}>
+      <div className='flex justify-between w-full'>
+        <div>
+          <h1 className='text-[25px] mt-1'>Hi,下午好</h1>
+          <h1 className='text-[25px]'>我是星仔</h1>
+        </div>
+        <img className='mr-7' width={81} src='https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png' />
+      </div>
+      <section className='text-[17px] text-[#7C879B] mt-6'>
+        我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？
+      </section>
+      <section className='mt-4'>
+        <ul className='flex w-full flex-wrap justify-between gap-3'>
+          <li key={1}>
+            {getShortcutListItem('门票购买', '景点快捷购票')}
+          </li>
+          <li key={2}>
+            {getShortcutListItem('酒店预定', '景区酒店快捷预定')}
+          </li>
+          <li key={3}>
+            {getShortcutListItem('行程规划', '智能生成景区游玩攻略')}
+          </li>
+          <li key={4}>
+            {getShortcutListItem('公共服务', '景区交通、厕所查询服务')}
+          </li>
+        </ul>
+      </section>
+      <section className='mt-9'>
+        <h1 className='text-base text-[#7C879B]'>你可以试着问我：</h1>
+        <ul className='mt-4 flex gap-2 flex-col'>
+          {
+            item.suggestedQuestions?.map(question => (<li key={question}>
+              {getPreconfigQueryItem(question)}
+            </li>))
+          }
+        </ul>
+      </section>
+    </div>
+  )
 
   return (
     <ChatContextProvider
@@ -246,48 +289,7 @@ const Chat: FC<ChatProps> = ({
                   const isLast = item.id === chatList[chatList.length - 1]?.id
                   // 如果Answer中涉及自定义组件，则按需渲染自定义组件
                   if (item.content === '<spt-widget />')
-                    return (
-                      <div className='border border-green-50 rounded-[20.8px] p-[16px] mb-[30px]' style={{
-                        backgroundColor: 'rgb(235,235,236,0.4)'
-                      }}>
-                        <div className='flex justify-between w-full'>
-                          <div>
-                            <h1 className='text-[25px] mt-1'>Hi,下午好</h1>
-                            <h1 className='text-[25px]'>我是星仔</h1>
-                          </div>
-                          <img className='mr-7' width={81} src='https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png' />
-                        </div>
-                        <section className='text-[17px] text-[#7C879B] mt-6'>
-                          我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？
-                        </section>
-                        <section className='mt-4'>
-                          <ul className='flex w-full flex-wrap justify-between gap-3'>
-                            <li>
-                              {getShortcutListItem('门票购买', '景点快捷购票')}
-                            </li>
-                            <li>
-                              {getShortcutListItem('酒店预定', '景区酒店快捷预定')}
-                            </li>
-                            <li>
-                              {getShortcutListItem('行程规划', '智能生成景区游玩攻略')}
-                            </li>
-                            <li>
-                              {getShortcutListItem('公共服务', '景区交通、厕所查询服务')}
-                            </li>
-                          </ul>
-                        </section>
-                        <section className='mt-9'>
-                          <h1 className='text-base text-[#7C879B]'>你可以试着问我：</h1>
-                          <ul className='mt-4 flex gap-2 flex-col'>
-                            {
-                              item.suggestedQuestions?.map(question => (<li key={question}>
-                                {getPreconfigQueryItem(question)}
-                              </li>))
-                            }
-                          </ul>
-                        </section>
-                      </div>
-                    )
+                    return getSptWidgetComponent(item)
                   else return (
                     <Answer
                       appData={appData}
