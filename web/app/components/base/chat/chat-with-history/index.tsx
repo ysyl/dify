@@ -82,7 +82,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       {isMobile && (
         <HeaderInMobile />
       )}
-      <div className={cn('relative grow p-2')}>
+      <div className={cn('relative grow p-2 overflow-y-auto')}>
         {isSidebarCollapsed && (
           <div
             className={cn(
