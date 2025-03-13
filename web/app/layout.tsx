@@ -39,7 +39,8 @@ const LocaleLayout = ({
       </head>
       <body
         className={cn("h-full select-auto color-scheme", {
-          'bg-background-default-burn': isChatPath(headers().get('x-pathname') || '', ['chat', 'chatbot', 'chatbot-scenic']),
+          'bg-background-default-burn': isChatPath(headers().get('x-pathname') || '', ['chat', 'chatbot']),
+          'bg-background-body': isChatPath(headers().get('x-pathname') || '', ['chatbot-scenic']),
         })}
         date-test={headers().get('x-pathname') || ''}
         data-api-prefix={process.env.NEXT_PUBLIC_API_PREFIX}
