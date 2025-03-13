@@ -55,6 +55,7 @@ const Operation: FC<Props> = ({
       >
         <ActionButton
           className={cn((isItemHovering || open) ? 'opacity-100' : 'opacity-0')}
+          size='l'
           state={
             isActive
               ? ActionButtonState.Active
