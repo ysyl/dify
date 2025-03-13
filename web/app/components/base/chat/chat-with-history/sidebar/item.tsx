@@ -7,6 +7,7 @@ import { useHover } from 'ahooks'
 import type { ConversationItem } from '@/models/share'
 import Operation from '@/app/components/base/chat/chat-with-history/sidebar/operation'
 import cn from '@/utils/classnames'
+import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 
 type ItemProps = {
   isPin?: boolean
@@ -25,6 +26,8 @@ const Item: FC<ItemProps> = ({
   const ref = useRef(null)
   const isHovering = useHover(ref)
   const isSelected = currentConversationId === item.id
+  const media = useBreakpoints()
+  const isMobile = media === MediaType.mobile
 
   return (
     <div
@@ -34,7 +37,6 @@ const Item: FC<ItemProps> = ({
         'group flex p-1 pl-3 rounded-lg cursor-pointer text-components-menu-item-text system-sm-large hover:bg-state-base-hover',
         isSelected && 'bg-state-accent-active hover:bg-state-accent-active text-text-accent',
       )}
-      onTouchEnd={() => onChangeConversation(item.id)}
       onClick={() => onChangeConversation(item.id)}
     >
       <div className='grow p-1 pl-0 truncate' title={item.name}>{item.name}</div>

@@ -54,7 +54,7 @@ const Operation: FC<Props> = ({
         onClick={() => setOpen(v => !v)}
       >
         <ActionButton
-          className={cn((isItemHovering || open) ? 'opacity-100' : 'opacity-0')}
+          // className={cn((isItemHovering || open) ? 'opacity-100' : 'opacity-0')}
           size='l'
           state={
             isActive
