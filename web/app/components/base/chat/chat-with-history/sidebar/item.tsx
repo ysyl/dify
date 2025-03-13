@@ -26,8 +26,6 @@ const Item: FC<ItemProps> = ({
   const ref = useRef(null)
   const isHovering = useHover(ref)
   const isSelected = currentConversationId === item.id
-  const media = useBreakpoints()
-  const isMobile = media === MediaType.mobile
 
   return (
     <div
