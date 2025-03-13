@@ -89,7 +89,7 @@ const Sidebar = ({ isPanel }: Props) => {
 
   return (
     <div className={cn(
-      'grow flex flex-col',
+      'grow flex flex-col w-full',
       isPanel && 'rounded-xl bg-components-panel-bg border-[0.5px] border-components-panel-border-subtle shadow-lg',
     )}>
       <div className={cn(
