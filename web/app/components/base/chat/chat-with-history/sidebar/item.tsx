@@ -34,6 +34,7 @@ const Item: FC<ItemProps> = ({
         'group flex p-1 pl-3 rounded-lg cursor-pointer text-components-menu-item-text system-sm-large hover:bg-state-base-hover',
         isSelected && 'bg-state-accent-active hover:bg-state-accent-active text-text-accent',
       )}
+      onTouchEnd={() => onChangeConversation(item.id)}
       onClick={() => onChangeConversation(item.id)}
     >
       <div className='grow p-1 pl-0 truncate' title={item.name}>{item.name}</div>
