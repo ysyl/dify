@@ -31,7 +31,7 @@ const Item: FC<ItemProps> = ({
       ref={ref}
       key={item.id}
       className={cn(
-        'group flex p-1 pl-3 rounded-lg cursor-pointer text-components-menu-item-text system-sm-medium hover:bg-state-base-hover',
+        'group flex p-1 pl-3 rounded-lg cursor-pointer text-components-menu-item-text system-sm-large hover:bg-state-base-hover',
         isSelected && 'bg-state-accent-active hover:bg-state-accent-active text-text-accent',
       )}
       onClick={() => onChangeConversation(item.id)}
