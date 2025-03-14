@@ -57,6 +57,7 @@ const ChatWrapper = () => {
       opening_statement: currentConversationId ? currentConversationItem?.introduction : (config as any).opening_statement,
     } as ChatConfig
   }, [appParams, currentConversationItem?.introduction, currentConversationId])
+
   const {
     chatList,
     setTargetMessageId,

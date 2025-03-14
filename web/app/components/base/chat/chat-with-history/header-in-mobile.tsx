@@ -106,7 +106,7 @@ const HeaderInMobile = () => {
         <div className='fixed inset-0 z-50 flex p-1 bg-background-overlay'
           onClick={() => handleSidebarCollapse(true)}
         >
-          <div className='flex h-full w-[calc(100vw_-_40px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
+          <div className='flex h-full w-[calc(100vw_-_120px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
             <Sidebar />
           </div>
         </div>

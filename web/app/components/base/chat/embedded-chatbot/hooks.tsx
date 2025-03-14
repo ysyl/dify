@@ -110,6 +110,7 @@ export const useEmbeddedChatbot = () => {
       : [],
     [appChatListData, currentConversationId],
   )
+  console.log("appPrevChatList, ", appPrevChatList)
 
   const [showNewConversationItemInList, setShowNewConversationItemInList] = useState(false)
 
