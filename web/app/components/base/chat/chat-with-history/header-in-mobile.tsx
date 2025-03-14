@@ -8,6 +8,7 @@ import Operation from './header/operation'
 import Sidebar from './sidebar'
 import MobileOperationDropdown from './header/mobile-operation-dropdown'
 import AppIcon from '@/app/components/base/app-icon'
+import cn from '@/utils/classnames'
 import ActionButton from '@/app/components/base/action-button'
 import { Message3Fill } from '@/app/components/base/icons/src/public/other'
 import InputsFormContent from '@/app/components/base/chat/chat-with-history/inputs-form/content'
@@ -102,15 +103,13 @@ const HeaderInMobile = () => {
           handleViewChatSettings={() => setShowChatSettings(true)}
         />
       </div>
-      {!sidebarCollapseState && (
-        <div className='fixed inset-0 z-50 flex p-1 bg-background-overlay'
-          onClick={() => handleSidebarCollapse(true)}
-        >
-          <div className='flex h-full w-[calc(100vw_-_120px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
-            <Sidebar />
-          </div>
+      <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
+        onClick={() => handleSidebarCollapse(true)}
+      >
+        <div className='flex h-full w-[calc(100vw_-_120px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
+          <Sidebar />
         </div>
-      )}
+      </div>
       {showChatSettings && (
         <div className='fixed inset-0 z-50 flex justify-end p-1 bg-background-overlay'
           onClick={() => setShowChatSettings(false)}
