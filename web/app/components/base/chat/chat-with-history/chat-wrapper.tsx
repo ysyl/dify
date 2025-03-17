@@ -21,6 +21,7 @@ import AppIcon from '@/app/components/base/app-icon'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
 import { Markdown } from '../../markdown'
+import getSptWidgetComponent from '@/app/components/widget/scenic_hello'
 
 const ChatWrapper = () => {
   const {
@@ -173,6 +174,14 @@ const ChatWrapper = () => {
       return null
     if (!collapsed && inputsForms.length > 0)
       return null
+    if (welcomeMessage.content === '<spt-widget />')
+      return (
+        <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
+          {
+            getSptWidgetComponent(welcomeMessage, doSend)
+          }
+        </div>
+      )
     return (
       <div className={cn('h-[50vh] py-12 px-4 flex flex-col items-center justify-center gap-3')}>
         <AppIcon
