@@ -2,7 +2,7 @@ import { ChatItem } from "../base/chat/types"
 
 const getSptWidgetComponent = (item: ChatItem, onSend?: (msg: string) => void) => {
     return (
-        <div key="SptWidgetComponent" className='border border-green-50 rounded-[20.8px] p-[16px] mb-[30px] mt-[13px]' style={{
+        <div key="SptWidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
             backgroundColor: 'rgb(235,235,236,0.4)'
         }}>
             <div className='flex justify-between w-full'>
@@ -16,7 +16,7 @@ const getSptWidgetComponent = (item: ChatItem, onSend?: (msg: string) => void) =
                 我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？
             </section>
             <section className='mt-4'>
-                <ul className='flex w-full flex-wrap justify-between gap-2'>
+                <ul className='flex w-full flex-wrap justify-between gap-1'>
                     <li key={1} className="flex-1">
                         {getShortcutListItem('门票购买', '景点快捷购票')}
                     </li>
