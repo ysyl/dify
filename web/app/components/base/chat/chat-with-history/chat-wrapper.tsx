@@ -216,8 +216,8 @@ const ChatWrapper = () => {
         chatList={messageList}
         isResponding={isResponding}
         chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[720px] ${isMobile && 'px-2'}`}
-        chatFooterClassName='pb-4'
-        chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-2'}`}
+        chatFooterClassName='pb-2'
+        chatFooterInnerClassName={`mx-auto w-full max-w-[720px] px-2`}
         onSend={doSend}
         inputs={currentConversationId ? currentConversationItem?.inputs as any : newConversationInputs}
         inputsForm={inputsForms}
