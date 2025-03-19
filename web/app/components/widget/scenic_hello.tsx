@@ -1,41 +1,55 @@
 import { ChatItem } from "../base/chat/types"
+import getScenicHelloConfig, { ScenicWidgetType } from "./scenic_hello_config"
 
-const getSptWidgetComponent = (item: ChatItem, onSend?: (msg: string) => void) => {
+type HelloWidgetProps = {
+    widgetTag: string
+    onSend?: (msg: string) => void
+    chatText: string
+    suggestedQuestions?: string[]
+}
+
+const HelloWidget = ({
+    widgetTag,
+    onSend,
+    chatText,
+    suggestedQuestions
+}: HelloWidgetProps) => {
+    const {
+        introduce,
+        name,
+        avatar,
+        shortcutItems,
+    } = getScenicHelloConfig(widgetTag)
     return (
         <div key="SptWidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
             backgroundColor: 'rgb(235,235,236,0.4)'
         }}>
             <div className='flex justify-between w-full'>
                 <div>
-                    <h1 className='text-[25px] mt-1'>Hi,下午好</h1>
-                    <h1 className='text-[25px]'>我是星仔</h1>
+                    <h1 className='text-[25px] mt-1'>Hi,你好</h1>
+                    <h1 className='text-[25px]'>我是{name}</h1>
                 </div>
-                <img className='mr-7' width={81} src='https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png' />
+                <img className='mr-7' width={81} src={avatar} />
             </div>
             <section className='text-[17px] text-[#7C879B] mt-6'>
-                我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？
+                {introduce}
             </section>
             <section className='mt-4'>
                 <ul className='flex w-full flex-wrap justify-between gap-1'>
-                    <li key={1} className="flex-1">
-                        {getShortcutListItem('门票购买', '景点快捷购票')}
-                    </li>
-                    <li key={2} className="flex-1">
-                        {getShortcutListItem('酒店预定', '景区酒店快捷预定')}
-                    </li>
-                    <li key={3} className="flex-1">
-                        {getShortcutListItem('行程规划', '智能生成景区游玩攻略')}
-                    </li>
-                    <li key={4} className="flex-1">
-                        {getShortcutListItem('公共服务', '景区交通、厕所查询服务')}
-                    </li>
+                    {
+                        shortcutItems.map(item => (
+                            <li key={item.title} className="flex-1">
+                                {getShortcutListItem(item.title, item.desc)}
+                            </li>
+                        ))
+                    }
                 </ul>
             </section>
             <section className='mt-9'>
                 <h1 className='text-base text-[#7C879B]'>你可以试着问我：</h1>
                 <ul className='mt-4 flex gap-2 flex-col'>
                     {
-                        item.suggestedQuestions?.map(question => (<li key={question}>
+                        suggestedQuestions?.map(question => (<li key={question}>
                             {getPreconfigQueryItem(question, onSend)}
                         </li>))
                     }
@@ -69,4 +83,4 @@ const ARROW_ICON = () => (
     </svg>
 )
 
-export default getSptWidgetComponent
+export default HelloWidget

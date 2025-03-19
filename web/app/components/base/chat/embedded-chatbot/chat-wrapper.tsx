@@ -22,8 +22,10 @@ import AppIcon from '@/app/components/base/app-icon'
 import LogoAvatar from '@/app/components/base/logo/logo-embedded-chat-avatar'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
-import getSptWidgetComponent from '@/app/components/widget/scenic_hello'
+import HelloWidget from '@/app/components/widget/scenic_hello'
 import { Markdown } from '../../markdown'
+import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
+import getScenicHelloConfig from '@/app/components/widget/scenic_hello_config'
 
 const ChatWrapper = () => {
   const {
@@ -181,7 +183,12 @@ const ChatWrapper = () => {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           {
-            getSptWidgetComponent(welcomeMessage, doSend)
+            HelloWidget({
+              scenicKey: 'spt',
+              onSend: doSend,
+              suggestedQuestions: welcomeMessage.suggestedQuestions,
+              chatText: welcomeMessage.content
+            })
           }
         </div>
       )
