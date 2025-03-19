@@ -35,8 +35,10 @@ import PromptLogModal from '@/app/components/base/prompt-log-modal'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
-import HelloWidget from '@/app/components/widget/scenic_hello'
-import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/scenic_hello_config'
+import HelloWidget from '@/app/components/widget/hello/scenic-hello'
+import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
+import { isProductSelector } from '@/app/components/widget/product-selector/product-config'
+import ProductSelector from '@/app/components/widget/product-selector/product-selector'
 
 export type ChatProps = {
   appData?: AppData
@@ -232,6 +234,12 @@ const Chat: FC<ChatProps> = ({
                       onSend,
                       suggestedQuestions: item.suggestedQuestions,
                       chatText: item.content
+                    })
+                  } else if (isProductSelector(item.content)) {
+                    return ProductSelector({
+                      key: index,
+                      widgetTag: item.content,
+                      onSend,
                     })
                   }
                   const isLast = item.id === chatList[chatList.length - 1]?.id

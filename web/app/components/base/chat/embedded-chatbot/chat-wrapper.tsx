@@ -22,10 +22,10 @@ import AppIcon from '@/app/components/base/app-icon'
 import LogoAvatar from '@/app/components/base/logo/logo-embedded-chat-avatar'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
-import HelloWidget from '@/app/components/widget/scenic_hello'
+import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { Markdown } from '../../markdown'
 import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
-import getScenicHelloConfig from '@/app/components/widget/scenic_hello_config'
+import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 
 const ChatWrapper = () => {
   const {
@@ -179,12 +179,12 @@ const ChatWrapper = () => {
     if (!collapsed && inputsForms.length > 0)
       return null
 
-    if (welcomeMessage.content === '<spt-widget />')
+    if (isScenicHelloWidget(welcomeMessage.content))
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           {
             HelloWidget({
-              scenicKey: 'spt',
+              widgetTag: welcomeMessage.content,
               onSend: doSend,
               suggestedQuestions: welcomeMessage.suggestedQuestions,
               chatText: welcomeMessage.content

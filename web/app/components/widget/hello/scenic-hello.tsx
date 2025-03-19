@@ -1,5 +1,5 @@
-import { ChatItem } from "../base/chat/types"
-import getScenicHelloConfig, { ScenicWidgetType } from "./scenic_hello_config"
+import { ChatItem } from "../../base/chat/types"
+import getScenicHelloConfig, { ScenicWidgetType } from "./scenic-hello-config"
 
 type HelloWidgetProps = {
     widgetTag: string
@@ -21,7 +21,7 @@ const HelloWidget = ({
         shortcutItems,
     } = getScenicHelloConfig(widgetTag)
     return (
-        <div key="SptWidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
+        <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
             backgroundColor: 'rgb(235,235,236,0.4)'
         }}>
             <div className='flex justify-between w-full'>

@@ -21,8 +21,8 @@ import AppIcon from '@/app/components/base/app-icon'
 import AnswerIcon from '@/app/components/base/answer-icon'
 import cn from '@/utils/classnames'
 import { Markdown } from '../../markdown'
-import HelloWidget from '@/app/components/widget/scenic_hello'
-import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/scenic_hello_config'
+import HelloWidget from '@/app/components/widget/hello/scenic-hello'
+import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
 
 const ChatWrapper = () => {
