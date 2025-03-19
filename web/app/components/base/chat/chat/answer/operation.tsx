@@ -95,15 +95,16 @@ const Operation: FC<OperationProps> = ({
     return width
   }, [isOpeningStatement, showPromptLog, config?.text_to_speech?.enabled, config?.supportAnnotation, config?.annotation_reply?.enabled, config?.supportFeedback, localFeedback?.rating, onFeedback])
 
-  const positionRight = useMemo(() => operationWidth < maxSize, [operationWidth, maxSize])
+  // const positionRight = useMemo(() => operationWidth < maxSize, [operationWidth, maxSize])
+  const positionRight = false
 
   return (
     <>
       <div
         className={cn(
           'absolute flex justify-end gap-1',
-          hasWorkflowProcess && '-bottom-4 right-2',
-          !positionRight && '-bottom-4 right-2',
+          hasWorkflowProcess && '-bottom-8 right-2',
+          !positionRight && '-bottom-8 right-2',
           !hasWorkflowProcess && positionRight && '!top-[9px]',
         )}
         style={(!hasWorkflowProcess && positionRight) ? { left: contentWidth + 8 } : {}}
@@ -114,7 +115,7 @@ const Operation: FC<OperationProps> = ({
           </div>
         )}
         {!isOpeningStatement && (
-          <div className='hidden group-hover:flex ml-1 items-center gap-0.5 p-0.5 rounded-[10px] border-[0.5px] border-components-actionbar-border bg-components-actionbar-bg shadow-md backdrop-blur-sm'>
+          <div className='flex ml-1 items-center gap-0.5 p-0.5 rounded-[10px] border-[0.5px] border-components-actionbar-border bg-components-actionbar-bg shadow-md backdrop-blur-sm'>
             {(config?.text_to_speech?.enabled) && (
               <NewAudioButton
                 id={id}
@@ -138,30 +139,14 @@ const Operation: FC<OperationProps> = ({
                 <RiEditLine className='w-4 h-4' />
               </ActionButton>
             )}
-          </div>
-        )}
-        {!isOpeningStatement && config?.supportFeedback && onFeedback && (
-          <div className='hidden group-hover:flex ml-1 items-center gap-0.5 p-0.5 rounded-[10px] border-[0.5px] border-components-actionbar-border bg-components-actionbar-bg shadow-md backdrop-blur-sm'>
-            {!localFeedback?.rating && (
               <>
-                <ActionButton onClick={() => handleFeedback('like')}>
+                <ActionButton state={localFeedback?.rating === 'like' ? ActionButtonState.Active : ActionButtonState.Default} onClick={() => handleFeedback('like')}>
                   <RiThumbUpLine className='w-4 h-4' />
                 </ActionButton>
-                <ActionButton onClick={() => handleFeedback('dislike')}>
+                <ActionButton state={localFeedback?.rating === 'dislike' ? ActionButtonState.Destructive : ActionButtonState.Default} onClick={() => handleFeedback('dislike')}>
                   <RiThumbDownLine className='w-4 h-4' />
                 </ActionButton>
               </>
-            )}
-            {localFeedback?.rating === 'like' && (
-              <ActionButton state={ActionButtonState.Active} onClick={() => handleFeedback(null)}>
-                <RiThumbUpLine className='w-4 h-4' />
-              </ActionButton>
-            )}
-            {localFeedback?.rating === 'dislike' && (
-              <ActionButton state={ActionButtonState.Destructive} onClick={() => handleFeedback(null)}>
-                <RiThumbDownLine className='w-4 h-4' />
-              </ActionButton>
-            )}
           </div>
         )}
       </div>

@@ -30,7 +30,6 @@ const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
         }
         return obj
     }, {})
-    const values = useState(initValues)
 
     return (
         <div key={key} className='border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden' style={{
