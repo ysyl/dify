@@ -21,15 +21,26 @@ type FieldType = keyof ProductSelectorConfigType
 
 const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
     const selectorConfigObj = getProductSelector(widgetTag)
-    const initValues: Record<FieldType, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
+    const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
         const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
         if (config?.type === 'Option') {
-            obj[cur as keyof ProductSelectorConfigType] = { value: '' }
+            obj[cur as FieldType] = { value: '' }
         } else if (config?.type === 'OptionWithCnt') {
-            obj[cur as keyof ProductSelectorConfigType] = { value: '' }
+            obj[cur as FieldType] = { label: '', value: 0 }
         }
         return obj
     }, {})
+    const [values, setValues] = useState(initValues)
+
+    const handleClickOption = (key: string, value: string) => {
+        console.log(key, value)
+        setValues(pre => ({
+            ...pre,
+            [key]: {
+                value: value
+            }
+        }))
+    }
 
     return (
         <div key={key} className='border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden' style={{
@@ -48,17 +59,23 @@ const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
                             </h1>
                             {
                                 config.type === 'Option' ?
-                                    <ul className={cn("grid gap-1", `grid-cols-${Math.min(config.value.length, 4)}`)}>
+                                    <ul className={cn("grid gap-1 mb-5", `grid-cols-${Math.min(config.value.length, 4)}`)}>
                                         {
-                                            config.value.map(option => (
-                                                <li key={option.value}>
-                                                    <div className={cn(`rounded-[20px] px-1 text-sm text-white leading-8 text-center`
-                                                        // values[option.name] === option.value
-                                                    )}>
-                                                        {option.name}
-                                                    </div>
-                                                </li>
-                                            ))
+                                            config.value.map(option => {
+                                                return (
+                                                    <li key={option.value}>
+                                                        {
+                                                            <div className={cn(`rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]`,
+                                                                values[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black'
+                                                            )} style={{
+                                                                boxShadow: '0px 4px 10px 0px #0000001F'
+                                                            }} onClick={() => handleClickOption(config.key, option.value)}>
+                                                                {option.name}
+                                                            </div>
+                                                        }
+                                                    </li>
+                                                )
+                                            })
                                         }
                                     </ul>
                                     : ''
