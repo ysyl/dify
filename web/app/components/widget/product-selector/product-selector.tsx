@@ -2,6 +2,7 @@ import { useState } from "react"
 import getProductSelector, { ProductSelectorConfigType } from "./product-config"
 import cn from '@/utils/classnames'
 import { OptionType } from "dayjs"
+import { values } from "lodash-es"
 
 type ProductSelectorProps = {
     widgetTag: string
@@ -9,9 +10,11 @@ type ProductSelectorProps = {
 }
 
 type SelectorValueType = {
-    value: string,
+    name: string
+    value: string
 }
 type SelectorValueWithCntType = {
+    name: string
     value: Record<string, number>
 }
 
@@ -22,9 +25,10 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
     const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
         const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
         if (config?.type === 'Option') {
-            obj[cur as FieldType] = { value: config.value[0].value }
+            obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: config.value[0].value }
         } else if (config?.type === 'OptionWithCnt') {
             obj[cur as FieldType] = {
+                name: selectorConfigObj[cur as FieldType]?.name,
                 value: config.value.reduce((obj: Record<string, number>, key) => {
                     obj[key.name] = 0
                     return obj
@@ -33,16 +37,40 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
         }
         return obj
     }, {})
-    const [values, setValues] = useState(initValues)
+    const [formValues, setFormValues] = useState(initValues)
 
     const handleClickOption = (key: string, value: string) => {
         console.log(key, value)
-        setValues(pre => ({
+        setFormValues(pre => ({
             ...pre,
             [key]: {
+                ...pre[key],
                 value: value
             }
         }))
+    }
+
+    const handleClickCntBtn = (type: 'minus' | 'plus', formKey: string, subKey: string) => {
+        const value = formValues[formKey].value
+        if (typeof value === 'string') return;
+        value[subKey] += type === 'minus' ? -1 : 1
+        if (value[subKey] < 0) value[subKey] = 0
+        setFormValues(JSON.parse(JSON.stringify(formValues)))
+    }
+
+    const handleSubmit = () => {
+        // 从formValue转换到文字
+        const transformPrompt = Object.values(formValues).map(perValue => {
+            if (typeof perValue.value === 'string')
+                return `${perValue.name}: ${perValue.value}`
+            const cntValues = perValue.value
+            const cntText = Object.entries(cntValues).map(entry => {
+                return `${entry[0]}: ${entry[1]}`
+            }).join(",")
+            return `${perValue.name}: ${cntText}`
+        }).join('\n')
+        console.log(transformPrompt)
+        onSend?.(transformPrompt)
     }
 
     return (
@@ -69,7 +97,7 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
                                                 <li key={option.value}>
                                                     {
                                                         <div className={cn(`rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]`,
-                                                            values[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black'
+                                                            formValues[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black'
                                                         )} style={{
                                                             boxShadow: '0px 4px 10px 0px #0000001F'
                                                         }} onClick={() => handleClickOption(config.key, option.value)}>
@@ -90,16 +118,20 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
                                     <ul>
                                         {
                                             config.value.map(option => {
-                                                const curValue  = values[config.key].value as Record<string, number>
+                                                const curValue = formValues[config.key].value as Record<string, number>
                                                 return (<li key={option.name}>
                                                     <div className="flex justify-between w-full leading-10">
                                                         <div>{option.name}</div>
                                                         <div className="flex justify-around items-center w-20">
-                                                            <MinusIcon />
+                                                            <div onClick={() => handleClickCntBtn('minus', config.key, option.name)}>
+                                                                <MinusIcon />
+                                                            </div>
                                                             {
                                                                 curValue[option.name]
                                                             }
-                                                            <PlusIcon />
+                                                            <div onClick={() => handleClickCntBtn('plus', config.key, option.name)}>
+                                                                <PlusIcon />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </li>)
@@ -113,7 +145,7 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
                 }
             </div>
             <div className="flex justify-center">
-                <button className="btn rounded-[20px] leading-[35px] text-xl text-white bg-[#32ADE6] cursor-pointer px-5 py-1">确认选择</button>
+                <button className="btn rounded-[20px] leading-[35px] text-xl text-white bg-[#32ADE6] cursor-pointer px-5 py-1" onClick={handleSubmit}>确认选择</button>
             </div>
         </div>
     )
