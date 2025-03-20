@@ -23,7 +23,7 @@ const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
     const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
         const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
         if (config?.type === 'Option') {
-            obj[cur as FieldType] = { value: '' }
+            obj[cur as FieldType] = { value: config.value[0].value }
         } else if (config?.type === 'OptionWithCnt') {
             obj[cur as FieldType] = {
                 value: config.value.reduce((obj: Record<string, number>, key) => {
