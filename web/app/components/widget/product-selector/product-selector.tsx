@@ -85,7 +85,7 @@ const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
                             }
                             {
                                 config.type === 'OptionWithCnt' &&
-                                <div className="rounded-[20px] bg-white py-3 px-4" style={{
+                                <div className="rounded-[20px] bg-white py-3 px-4 mt-[10px]" style={{
                                     boxShadow: '0px 4px 10px 0px #0000001F'
                                 }}>
                                     <ul>
