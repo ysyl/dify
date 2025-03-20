@@ -65,6 +65,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
 }
 
 export function isScenicHelloWidget(widgetName: string) {
+    if (!widgetName) return false
     const index = Object.values(ScenicWidgetType).findIndex(name => widgetName.startsWith(`<${name}`))
     return index >= 0
 }
