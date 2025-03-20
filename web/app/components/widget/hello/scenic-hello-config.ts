@@ -49,7 +49,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
                 desc: '智能规划新疆旅游行程'
             },
             {
-                title: '酒店预定',
+                title: '住宿预订',
                 desc: '景区酒店快速预定'
             },
             {

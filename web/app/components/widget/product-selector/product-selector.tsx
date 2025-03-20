@@ -69,7 +69,6 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
             }).join(",")
             return `${perValue.name}: ${cntText}`
         }).join('\n')
-        console.log(transformPrompt)
         onSend?.(transformPrompt)
     }
 
