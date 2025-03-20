@@ -138,6 +138,10 @@ const EmbeddedChatbotWrapper = () => {
     appId,
     handleFeedback,
     currentChatInstanceRef,
+    clearChatList,
+    setClearChatList,
+    isResponding,
+    setIsResponding,
   } = useEmbeddedChatbot()
 
   return <EmbeddedChatbotContext.Provider value={{
@@ -167,6 +171,10 @@ const EmbeddedChatbotWrapper = () => {
     handleFeedback,
     currentChatInstanceRef,
     themeBuilder,
+    clearChatList,
+    setClearChatList,
+    isResponding,
+    setIsResponding,
   }}>
     <Chatbot />
   </EmbeddedChatbotContext.Provider>

@@ -19,8 +19,9 @@ import {
 } from '@/service/share'
 import AppIcon from '@/app/components/base/app-icon'
 import AnswerIcon from '@/app/components/base/answer-icon'
+import SuggestedQuestions from '@/app/components/base/chat/chat/answer/suggested-questions'
+import { Markdown } from '@/app/components/base/markdown'
 import cn from '@/utils/classnames'
-import { Markdown } from '../../markdown'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
@@ -43,6 +44,10 @@ const ChatWrapper = () => {
     currentChatInstanceRef,
     appData,
     themeBuilder,
+    sidebarCollapseState,
+    clearChatList,
+    setClearChatList,
+    setIsResponding,
   } = useChatWithHistoryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -62,7 +67,7 @@ const ChatWrapper = () => {
     setTargetMessageId,
     handleSend,
     handleStop,
-    isResponding,
+    isResponding: respondingState,
     suggestedQuestions,
   } = useChat(
     appConfig,
@@ -72,6 +77,8 @@ const ChatWrapper = () => {
     },
     appPrevChatTree,
     taskId => stopChatMessageResponding('', taskId, isInstalledApp, appId),
+    clearChatList,
+    setClearChatList,
   )
   const inputsFormValue = currentConversationId ? currentConversationItem?.inputs : newConversationInputsRef?.current
   const inputDisabled = useMemo(() => {
@@ -111,6 +118,10 @@ const ChatWrapper = () => {
       currentChatInstanceRef.current.handleStop = handleStop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    setIsResponding(respondingState)
+  }, [respondingState, setIsResponding])
 
   const doSend: OnSend = useCallback((message, files, isRegenerate = false, parentAnswer: ChatItem | null = null) => {
     const data: any = {
@@ -170,6 +181,8 @@ const ChatWrapper = () => {
 
   const welcome = useMemo(() => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
+    if (respondingState)
+      return null
     if (currentConversationId)
       return null
     if (!welcomeMessage)
@@ -190,7 +203,7 @@ const ChatWrapper = () => {
         </div>
       )
     return (
-      <div className={cn('h-[50vh] py-12 px-4 flex flex-col items-center justify-center gap-3')}>
+      <div className={cn('h-[50vh] py-12 flex flex-col items-center justify-center gap-3')}>
         <AppIcon
           size='xl'
           iconType={appData?.site.icon_type}
@@ -199,7 +212,9 @@ const ChatWrapper = () => {
           imageUrl={appData?.site.icon_url}
         />
         {/* <div className='text-text-tertiary body-2xl-regular'>{welcomeMessage.content}</div> */}
-        <Markdown content={welcomeMessage.content} />
+        <div className='px-4 max-w-[768px]'>
+          <Markdown className='!text-text-tertiary !body-2xl-regular' content={welcomeMessage.content} />
+        </div>
       </div>
     )
   }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length])
@@ -221,10 +236,10 @@ const ChatWrapper = () => {
         appData={appData}
         config={appConfig}
         chatList={messageList}
-        isResponding={isResponding}
-        chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[720px] ${isMobile && 'px-2'}`}
-        chatFooterClassName='pb-2'
-        chatFooterInnerClassName={`mx-auto w-full max-w-[720px] px-2`}
+        isResponding={respondingState}
+        chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[720px] ${isMobile && 'px-4'}`}
+        chatFooterClassName='pb-4'
+        chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}
         inputs={currentConversationId ? currentConversationItem?.inputs as any : newConversationInputs}
         inputsForm={inputsForms}
@@ -245,6 +260,7 @@ const ChatWrapper = () => {
         switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
         inputDisabled={inputDisabled}
         isMobile={isMobile}
+        sidebarCollapseState={sidebarCollapseState}
       />
     </div>
   )

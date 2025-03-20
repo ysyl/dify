@@ -23,12 +23,16 @@ FROM base AS packages
 # if you located in China, you can use aliyun mirror to speed up
 # RUN sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
+RUN touch /etc/apt/sources.list \
+	&& sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list \    
+	&& sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list \
+	&& apt-get update \
+    	&& apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
 
 # Install Python dependencies
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --sync --no-cache --no-root
+RUN poetry source add --priority=primary mirrors https://pypi.tuna.tsinghua.edu.cn/simple/
+RUN poetry lock && poetry sync --no-cache --no-root
 
 # production stage
 FROM base AS production
@@ -56,8 +60,6 @@ RUN \
         curl nodejs libgmp-dev libmpfr-dev libmpc-dev \
         # For Security
         expat libldap-2.5-0 perl libsqlite3-0 zlib1g \
-        # install a chinese font to support the use of tools like matplotlib
-        fonts-noto-cjk \
         # install a package to improve the accuracy of guessing mime type and file extension
         media-types \
         # install libmagic to support the use of python-magic guess MIMETYPE
