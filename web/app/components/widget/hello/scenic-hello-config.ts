@@ -45,8 +45,8 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         introduce: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
         shortcutItems: [
             {
-                title: '门票购买',
-                desc: '景点快捷购票'
+                title: '行程规划',
+                desc: '智能规划新疆旅游行程'
             },
             {
                 title: '酒店预定',
