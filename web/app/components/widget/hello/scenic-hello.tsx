@@ -39,7 +39,7 @@ const HelloWidget = ({
                     {
                         shortcutItems.map(item => (
                             <li key={item.title} className="flex-1">
-                                {getShortcutListItem(item.title, item.desc)}
+                                {getShortcutListItem(item.title, item.desc, onSend)}
                             </li>
                         ))
                     }
@@ -58,8 +58,8 @@ const HelloWidget = ({
         </div>
     )
 }
-const getShortcutListItem = (title: string, subTitle: string) => (
-    <div className='w-40 h-16 p-3 bg-white rounded-xl'>
+const getShortcutListItem = (title: string, subTitle: string, onSend?: (msg: string) => void) => (
+    <div className='w-40 h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)}>
         <div className='w-full flex justify-between items-center'>
             <h1 className='text-base font-bold'>{title}</h1>
             <ARROW_ICON />
