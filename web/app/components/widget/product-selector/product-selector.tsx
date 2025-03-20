@@ -4,7 +4,6 @@ import cn from '@/utils/classnames'
 import { OptionType } from "dayjs"
 
 type ProductSelectorProps = {
-    key: string | number
     widgetTag: string
     onSend?: (msg: string) => void
 }
@@ -18,7 +17,7 @@ type SelectorValueWithCntType = {
 
 type FieldType = keyof ProductSelectorConfigType
 
-const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
+const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
     const selectorConfigObj = getProductSelector(widgetTag)
     const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
         const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
@@ -47,7 +46,7 @@ const ProductSelector = ({ key, widgetTag, onSend }: ProductSelectorProps) => {
     }
 
     return (
-        <div key={key} className='border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden pb-5' style={{
+        <div className='border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden pb-5' style={{
             backgroundColor: 'rgb(235,235,236,0.4)'
         }}>
             <div className="flex justify-start text-xl text-white font-bold bg-[#32ADE6] h-[45px] leading-[45px] items-center pl-3">

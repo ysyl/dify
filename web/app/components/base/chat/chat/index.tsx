@@ -236,11 +236,11 @@ const Chat: FC<ChatProps> = ({
                       chatText: item.content
                     })
                   } else if (isProductSelector(item.content)) {
-                    return ProductSelector({
-                      key: index,
-                      widgetTag: item.content,
-                      onSend,
-                    })
+                    return <ProductSelector
+                      key={index}
+                      widgetTag={item.content}
+                      onSend={onSend}
+                    />
                   }
                   const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (
