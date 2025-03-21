@@ -84,16 +84,18 @@ const HelloWidget = ({
           </ul>
         </section>
       }
-      <section className='mt-9'>
-        <h1 className='text-base text-[#7C879B]'>{guide}</h1>
-        <ul className='mt-4 flex gap-2 flex-col'>
-          {
-            suggestedQuestions?.map(question => (<li key={question}>
-              {getPreconfigQueryItem(question, onSend)}
-            </li>))
-          }
-        </ul>
-      </section>
+      {
+        guide && <section className='mt-9'>
+          <h1 className='text-base text-[#7C879B]'>{guide}</h1>
+          <ul className='mt-4 flex gap-2 flex-col'>
+            {
+              suggestedQuestions?.map(question => (<li key={question}>
+                {getPreconfigQueryItem(question, onSend)}
+              </li>))
+            }
+          </ul>
+        </section>
+      }
     </div>
   )
 }
