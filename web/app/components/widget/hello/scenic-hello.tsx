@@ -6,6 +6,7 @@ type HelloWidgetProps = {
   widgetTag: string
   onSend?: (msg: string) => void
   suggestedQuestions?: string[]
+  handleScrollToBottom?: () => void
 }
 
 const ARROW_ICON = () => (
@@ -44,6 +45,7 @@ const HelloWidget = ({
   widgetTag,
   onSend,
   suggestedQuestions,
+  handleScrollToBottom,
 }: HelloWidgetProps) => {
   const {
     introduction: introduce,
@@ -59,6 +61,7 @@ const HelloWidget = ({
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
     onSend?.(msg)
+    handleScrollToBottom?.()
   }
 
   return (

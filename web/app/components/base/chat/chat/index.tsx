@@ -240,6 +240,7 @@ const Chat: FC<ChatProps> = ({
                       widgetTag={item.content}
                       onSend={onSend}
                       suggestedQuestions={item.suggestedQuestions}
+                      handleScrollToBottom={handleScrollToBottom}
                     />
                   }
                   else if (isProductSelector(item.content)) {
