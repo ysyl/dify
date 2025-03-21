@@ -46,7 +46,7 @@ const HelloWidget = ({
     avatar,
     shortcutItems,
     guide,
-    repererLeChoix,
+    repererLeChoix = false,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
 

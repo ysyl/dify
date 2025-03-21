@@ -236,7 +236,7 @@ const Chat: FC<ChatProps> = ({
                 if (item.isAnswer) {
                   if (isScenicHelloWidget(item.content)) {
                     return <HelloWidget
-                      key={index}
+                      key="hello-widget"
                       widgetTag={item.content}
                       onSend={onSend}
                       suggestedQuestions={item.suggestedQuestions}
