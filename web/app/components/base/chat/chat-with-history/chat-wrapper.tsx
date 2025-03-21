@@ -19,12 +19,10 @@ import {
 } from '@/service/share'
 import AppIcon from '@/app/components/base/app-icon'
 import AnswerIcon from '@/app/components/base/answer-icon'
-import SuggestedQuestions from '@/app/components/base/chat/chat/answer/suggested-questions'
 import { Markdown } from '@/app/components/base/markdown'
 import cn from '@/utils/classnames'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
-import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
-import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
+import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 
 const ChatWrapper = () => {
   const {
@@ -189,7 +187,7 @@ const ChatWrapper = () => {
       return null
     if (!collapsed && inputsForms.length > 0)
       return null
-    if (isScenicHelloWidget(welcomeMessage.content))
+    if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           {
@@ -197,11 +195,11 @@ const ChatWrapper = () => {
               widgetTag: welcomeMessage.content,
               onSend: doSend,
               suggestedQuestions: welcomeMessage.suggestedQuestions,
-              chatText: welcomeMessage.content
             })
           }
         </div>
       )
+    }
     return (
       <div className={cn('h-[50vh] py-12 flex flex-col items-center justify-center gap-3')}>
         <AppIcon

@@ -25,8 +25,7 @@ import SuggestedQuestions from '@/app/components/base/chat/chat/answer/suggested
 import { Markdown } from '@/app/components/base/markdown'
 import cn from '@/utils/classnames'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
-import item from '@/app/components/workflow/block-selector/tool/tool-list-tree-view/item'
-import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
+import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 
 const ChatWrapper = () => {
   const {
@@ -189,7 +188,7 @@ const ChatWrapper = () => {
       return null
     if (!collapsed && inputsForms.length > 0)
       return null
-    if (isScenicHelloWidget(welcomeMessage.content))
+    if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           {
@@ -197,11 +196,11 @@ const ChatWrapper = () => {
               widgetTag: welcomeMessage.content,
               onSend: doSend,
               suggestedQuestions: welcomeMessage.suggestedQuestions,
-              chatText: welcomeMessage.content
             })
           }
         </div>
       )
+    }
     if (welcomeMessage.suggestedQuestions && welcomeMessage.suggestedQuestions?.length > 0) {
       return (
         <div className='h-[50vh] py-12 px-4 flex items-center justify-center'>

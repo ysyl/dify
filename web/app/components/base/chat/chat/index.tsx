@@ -34,9 +34,8 @@ import AgentLogModal from '@/app/components/base/agent-log-modal'
 import PromptLogModal from '@/app/components/base/prompt-log-modal'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
-import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
-import getScenicHelloConfig, { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
+import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import { isProductSelector } from '@/app/components/widget/product-selector/product-config'
 import ProductSelector from '@/app/components/widget/product-selector/product-selector'
 
@@ -240,9 +239,9 @@ const Chat: FC<ChatProps> = ({
                       widgetTag: item.content,
                       onSend,
                       suggestedQuestions: item.suggestedQuestions,
-                      chatText: item.content
                     })
-                  } else if (isProductSelector(item.content)) {
+                  }
+                  else if (isProductSelector(item.content)) {
                     return <ProductSelector
                       key={index}
                       widgetTag={item.content}

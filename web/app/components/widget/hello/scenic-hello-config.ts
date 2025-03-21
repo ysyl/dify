@@ -1,82 +1,107 @@
-import { parseHtmlTag } from "../../tools/widget-tool"
+import { parseHtmlTag } from '../../tools/widget-tool'
 
 type ScenicHelloType = {
-    introduce: string
-    name: string
-    avatar: string
-    shortcutItems: {
-        title: string
-        desc: string
-    }[]
+  introduce: string
+  name: string
+  avatar: string
+  shortcutItems: {
+    title: string
+    desc: string
+  }[],
+  guide?: string
 }
 
 export enum ScenicWidgetType {
-    SPT = 'spt-widget',
-    XJ = 'xj-widget'
+  SPT = 'spt-widget',
+  XJ = 'xj-widget',
+  CTGII = 'ctgii-widget',
 }
 
 const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
-    [ScenicWidgetType.SPT]: {
-        avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
-        name: '星仔',
-        introduce: '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
-        shortcutItems: [
-            {
-                title: '门票购买',
-                desc: '景点快捷购票'
-            },
-            {
-                title: '酒店预定',
-                desc: '景区酒店快速预定'
-            },
-            {
-                title: '行程规划',
-                desc: '智能生成景区游玩攻略'
-            },
-            {
-                title: '公共服务',
-                desc: '景区交通、厕所查询服务'
-            },
-        ]
-    },
-    [ScenicWidgetType.XJ]: {
-        avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/xj_agent_avatar.png',
-        name: '馕星小助理',
-        introduce: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
-        shortcutItems: [
-            {
-                title: '行程规划',
-                desc: '智能规划新疆旅游行程'
-            },
-            {
-                title: '住宿预订',
-                desc: '景区酒店快速预定'
-            },
-            {
-                title: '旅行定制',
-                desc: '推荐新疆本地旅行定制师'
-            },
-            {
-                title: 'AI游记',
-                desc: '上传美拍自动生成游记'
-            },
-        ]
-    },
+  [ScenicWidgetType.SPT]: {
+    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
+    name: '星仔',
+    introduce: '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
+    shortcutItems: [
+      {
+        title: '门票购买',
+        desc: '景点快捷购票',
+      },
+      {
+        title: '酒店预定',
+        desc: '景区酒店快速预定',
+      },
+      {
+        title: '行程规划',
+        desc: '智能生成景区游玩攻略',
+      },
+      {
+        title: '公共服务',
+        desc: '景区交通、厕所查询服务',
+      },
+    ],
+    guide: '你可以试着问我：',
+  },
+  [ScenicWidgetType.XJ]: {
+    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/xj_agent_avatar.png',
+    name: '馕星小助理',
+    introduce: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
+    shortcutItems: [
+      {
+        title: '行程规划',
+        desc: '智能规划新疆旅游行程',
+      },
+      {
+        title: '住宿预订',
+        desc: '景区酒店快速预定',
+      },
+      {
+        title: '旅行定制',
+        desc: '推荐新疆本地旅行定制师',
+      },
+      {
+        title: 'AI游记',
+        desc: '上传美拍自动生成游记',
+      },
+    ],
+    guide: '你可以试着问我：',
+  },
+  [ScenicWidgetType.CTGII]: {
+    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
+    name: '中旅国际AI管理助手',
+    introduce: '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    shortcutItems: [
+      {
+        title: '财务助手',
+        desc: '',
+      },
+      {
+        title: '采购助手',
+        desc: '',
+      },
+    ],
+    guide: '请选择AI助手并向我提问',
+  },
 }
 
 export function isScenicHelloWidget(widgetName: string) {
-    if (!widgetName) return false
-    const index = Object.values(ScenicWidgetType).findIndex(name => widgetName.startsWith(`<${name}`))
-    return index >= 0
+  if (!widgetName) return false
+  const index = Object.values(ScenicWidgetType).findIndex(name => widgetName.startsWith(`<${name}`))
+  return index >= 0
 }
 
 export function getScenicHelloConfig(widgetTagStr: string) {
-    const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
-    if (index >= 0) {
-        const tagItem = parseHtmlTag(widgetTagStr)
-        return SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
+  const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+  if (index >= 0) {
+    const tagItem = parseHtmlTag(widgetTagStr)
+    const config = SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
+    const mergeConfig = {
+      ...config,
+      ...tagItem?.attributes,
     }
-    throw new Error("illegal parametres")
+    return mergeConfig
+  }
+  throw new Error('illegal parametres')
 }
 
 export default getScenicHelloConfig
