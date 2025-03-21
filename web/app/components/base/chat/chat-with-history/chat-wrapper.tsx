@@ -191,6 +191,7 @@ const ChatWrapper = () => {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           <HelloWidget
+            key="hello-widget"
             widgetTag={welcomeMessage.content}
             onSend={doSend}
             suggestedQuestions={welcomeMessage.suggestedQuestions}
