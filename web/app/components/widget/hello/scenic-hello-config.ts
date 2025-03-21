@@ -18,6 +18,7 @@ export enum ScenicWidgetType {
   SPT = 'spt-widget',
   XJ = 'xj-widget',
   CTGII = 'ctgii-widget',
+  CTGII_ASSISTANT = 'ctgii-assistant',
 }
 
 const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
@@ -71,15 +72,33 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   },
   [ScenicWidgetType.CTGII]: {
     'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
-    'name': '中旅国际AI管理助手',
+    'name': 'DeepSeek',
     'nameFontSize': '18px',
-    'introduction': '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    'introduction': '我可以为你答疑解惑、精读文档、写各种创意内容，请把任务交给我吧',
     'reperer-le-choix': true,
     'shortcut-items': [
       {
         title: '员工助手',
         desc: '',
         agent_url: 'https://ds.ctgii.com/chat/mpp7LbCTjuUE7oz7',
+      },
+    ],
+    'guide': '',
+  },
+  [ScenicWidgetType.CTGII_ASSISTANT]: {
+    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
+    'name': '中旅国际AI管理助手',
+    'nameFontSize': '18px',
+    'introduction': '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    'reperer-le-choix': true,
+    'shortcut-items': [
+      {
+        title: '财务助手',
+        desc: '',
+      },
+      {
+        title: '采购助手',
+        desc: '',
       },
     ],
     'guide': '请选择AI助手并向我提问',
