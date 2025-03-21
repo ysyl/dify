@@ -56,8 +56,9 @@ const HelloWidget = ({
   }
 
   return (
-    <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px] max-w-[720px]' style={{
+    <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
+      maxWidth: 'calc(720px - 4rem)',
     }}>
       <div className='flex justify-between w-full'>
         <div>
