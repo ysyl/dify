@@ -1,16 +1,16 @@
 import { parseHtmlTag } from '../../tools/widget-tool'
 
 type ScenicHelloType = {
-  introduction: string
-  name: string
-  nameFontSize?: string,
-  avatar: string
-  shortcutItems: {
+  'introduction': string
+  'name': string
+  'nameFontSize'?: string,
+  'avatar': string
+  'shortcut-items': {
     title: string
     desc: string
   }[],
-  guide?: string,
-  repererLeChoix?: boolean
+  'guide'?: string,
+  'reperer-le-choix'?: boolean
 }
 
 export enum ScenicWidgetType {
@@ -21,10 +21,10 @@ export enum ScenicWidgetType {
 
 const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.SPT]: {
-    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
-    name: '星仔',
-    introduction: '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
-    shortcutItems: [
+    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
+    'name': '星仔',
+    'introduction': '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
+    'shortcut-items': [
       {
         title: '门票购买',
         desc: '景点快捷购票',
@@ -42,13 +42,13 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         desc: '景区交通、厕所查询服务',
       },
     ],
-    guide: '你可以试着问我：',
+    'guide': '你可以试着问我：',
   },
   [ScenicWidgetType.XJ]: {
-    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/xj_agent_avatar.png',
-    name: '馕星小助理',
-    introduction: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
-    shortcutItems: [
+    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/xj_agent_avatar.png',
+    'name': '馕星小助理',
+    'introduction': '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
+    'shortcut-items': [
       {
         title: '行程规划',
         desc: '智能规划新疆旅游行程',
@@ -66,15 +66,15 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         desc: '上传美拍自动生成游记',
       },
     ],
-    guide: '你可以试着问我：',
+    'guide': '你可以试着问我：',
   },
   [ScenicWidgetType.CTGII]: {
-    avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
-    name: '中旅国际AI管理助手',
-    nameFontSize: '18px',
-    introduction: '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
-    repererLeChoix: true,
-    shortcutItems: [
+    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
+    'name': '中旅国际AI管理助手',
+    'nameFontSize': '18px',
+    'introduction': '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    'reperer-le-choix': true,
+    'shortcut-items': [
       {
         title: '财务助手',
         desc: '',
@@ -84,7 +84,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         desc: '',
       },
     ],
-    guide: '请选择AI助手并向我提问',
+    'guide': '请选择AI助手并向我提问',
   },
 }
 
@@ -99,10 +99,16 @@ export function getScenicHelloConfig(widgetTagStr: string) {
   if (index >= 0) {
     const tagItem = parseHtmlTag(widgetTagStr)
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
-    const mergeConfig = {
+    console.log(tagItem)
+    const mergeConfig: Record<string, any> = {
       ...config,
       ...tagItem?.attributes,
     }
+
+    Object.keys(tagItem?.attributes || {}).forEach((key) => {
+      if (tagItem?.attributes[key] === '[]')
+        mergeConfig[key] = []
+    })
     return mergeConfig
   }
   throw new Error('illegal parametres')

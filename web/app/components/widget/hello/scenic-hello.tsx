@@ -45,9 +45,9 @@ const HelloWidget = ({
     name,
     nameFontSize = '25px',
     avatar,
-    shortcutItems,
+    'shortcut-items': shortcutItems,
     guide,
-    repererLeChoix = false,
+    'reperer-le-choix': repererLeChoix = false,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
 
@@ -71,17 +71,19 @@ const HelloWidget = ({
       <section className='text-[17px] text-[#7C879B] mt-6'>
         {introduce}
       </section>
-      <section className='mt-4'>
-        <ul className={cn(`grid grid-cols-2 md:grid-cols-${Math.min(shortcutItems.length, 4)} w-full flex-wrap justify-between gap-1`)}>
-          {
-            shortcutItems.map(item => (
-              <li key={item.title} className="">
-                {getShortcutListItem(item.title, item.desc, repererLeChoix, selectedShortcut, handleSend)}
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+      {
+        shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
+          <ul className={cn(`grid grid-cols-2 md:grid-cols-${Math.min(shortcutItems.length, 4)} w-full flex-wrap justify-between gap-1`)}>
+            {
+              shortcutItems.map((item: any) => (
+                <li key={item.title} className="">
+                  {getShortcutListItem(item.title, item.desc, repererLeChoix, selectedShortcut, handleSend)}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      }
       <section className='mt-9'>
         <h1 className='text-base text-[#7C879B]'>{guide}</h1>
         <ul className='mt-4 flex gap-2 flex-col'>
