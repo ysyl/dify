@@ -19,7 +19,7 @@ const ARROW_ICON = () => (
 const getShortcutListItem = (title: string, subTitle: string, agentUrl: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
   <div className='h-16 p-3 bg-white rounded-xl' onClick={() => {
     if (agentUrl)
-      window.location.replace(agentUrl)
+      window.location.href = agentUrl
     else
       onSend?.(title)
   }} style={{
