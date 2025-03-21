@@ -14,7 +14,7 @@ const ARROW_ICON = () => (
 )
 
 const getShortcutListItem = (title: string, subTitle: string, onSend?: (msg: string) => void) => (
-  <div className='w-40 h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)}>
+  <div className='h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)}>
     <div className='w-full flex justify-between items-center'>
       <h1 className='text-base font-bold'>{title}</h1>
       <ARROW_ICON />
@@ -44,7 +44,7 @@ const HelloWidget = ({
     guide,
   } = getScenicHelloConfig(widgetTag)
   return (
-    <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
+    <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px] max-w-[50rem]' style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
     }}>
       <div className='flex justify-between w-full'>
