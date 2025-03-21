@@ -82,7 +82,7 @@ const HelloWidget = ({
             {
               shortcutItems.map((item: any) => (
                 <li key={item.title} className="">
-                  {getShortcutListItem(item.title, item.desc, item.agent, repererLeChoix, selectedShortcut, handleSend)}
+                  {getShortcutListItem(item.title, item.desc, item.agent_url, repererLeChoix, selectedShortcut, handleSend)}
                 </li>
               ))
             }
