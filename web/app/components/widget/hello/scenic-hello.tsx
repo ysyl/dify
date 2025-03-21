@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import getScenicHelloConfig from './scenic-hello-config'
+import cn from '@/utils/classnames'
 
 type HelloWidgetProps = {
   widgetTag: string
@@ -71,10 +72,10 @@ const HelloWidget = ({
         {introduce}
       </section>
       <section className='mt-4'>
-        <ul className='flex w-full flex-wrap justify-between gap-1'>
+        <ul className={cn(`grid grid-cols-2 md:grid-cols-${Math.min(shortcutItems.length, 4)} w-full flex-wrap justify-between gap-1`)}>
           {
             shortcutItems.map(item => (
-              <li key={item.title} className="flex-1">
+              <li key={item.title} className="">
                 {getShortcutListItem(item.title, item.desc, repererLeChoix, selectedShortcut, handleSend)}
               </li>
             ))
