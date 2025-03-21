@@ -9,7 +9,8 @@ type ScenicHelloType = {
     title: string
     desc: string
   }[],
-  guide?: string
+  guide?: string,
+  repererLeChoix?: boolean
 }
 
 export enum ScenicWidgetType {
@@ -72,6 +73,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
     name: '中旅国际AI管理助手',
     nameFontSize: '18px',
     introduction: '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    repererLeChoix: true,
     shortcutItems: [
       {
         title: '财务助手',

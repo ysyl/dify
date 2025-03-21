@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import getScenicHelloConfig from './scenic-hello-config'
 
 type HelloWidgetProps = {
@@ -13,8 +14,10 @@ const ARROW_ICON = () => (
   </svg>
 )
 
-const getShortcutListItem = (title: string, subTitle: string, onSend?: (msg: string) => void) => (
-  <div className='h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)}>
+const getShortcutListItem = (title: string, subTitle: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
+  <div className='h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)} style={{
+    border: (repererLeChoix && selectedShortcut === title) ? '2px solid #c0dafa' : '2px solid white',
+  }}>
     <div className='w-full flex justify-between items-center'>
       <h1 className='text-base font-bold'>{title}</h1>
       <ARROW_ICON />
@@ -43,7 +46,15 @@ const HelloWidget = ({
     avatar,
     shortcutItems,
     guide,
+    repererLeChoix,
   } = getScenicHelloConfig(widgetTag)
+  const [selectedShortcut, setSelecedShortcut] = useState('')
+
+  function handleSend(msg: string) {
+    setSelecedShortcut(msg)
+    onSend?.(msg)
+  }
+
   return (
     <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px] max-w-[50rem]' style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
@@ -63,7 +74,7 @@ const HelloWidget = ({
           {
             shortcutItems.map(item => (
               <li key={item.title} className="flex-1">
-                {getShortcutListItem(item.title, item.desc, onSend)}
+                {getShortcutListItem(item.title, item.desc, repererLeChoix, selectedShortcut, handleSend)}
               </li>
             ))
           }
