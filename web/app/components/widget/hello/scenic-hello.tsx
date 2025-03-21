@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import getScenicHelloConfig from './scenic-hello-config'
 
 type HelloWidgetProps = {
@@ -54,7 +53,7 @@ const HelloWidget = ({
           <h1 className='text-[25px] mt-1'>Hi,你好</h1>
           <h1 className={`text-[${nameFontSize}]`}>我是{name}</h1>
         </div>
-        <Image alt='智能体头像' className='mr-7' width={81} src={avatar} />
+        <img alt='智能体头像' className='mr-7' width={81} src={avatar} />
       </div>
       <section className='text-[17px] text-[#7C879B] mt-6'>
         {introduce}
