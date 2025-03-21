@@ -106,8 +106,10 @@ export function getScenicHelloConfig(widgetTagStr: string) {
     }
 
     Object.keys(tagItem?.attributes || {}).forEach((key) => {
-      if (tagItem?.attributes[key] === '[]')
-        mergeConfig[key] = []
+      if (typeof tagItem?.attributes[key] === 'string') {
+        if (tagItem?.attributes[key]?.startsWith('[') && tagItem?.attributes[key]?.endsWith(']'))
+          mergeConfig[key] = JSON.parse(tagItem?.attributes[key])
+      }
     })
     return mergeConfig
   }
