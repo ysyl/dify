@@ -142,9 +142,11 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
                                               <div onClick={() => handleClickCntBtn('minus', config.key, option.name)}>
                                                 <MinusIcon />
                                               </div>
-                                              {
-                                                curValue[option.name]
-                                              }
+                                              <div className='w-3 text-center'>
+                                                {
+                                                  curValue[option.name]
+                                                }
+                                              </div>
                                               <div onClick={() => handleClickCntBtn('plus', config.key, option.name)}>
                                                 <PlusIcon />
                                               </div>
