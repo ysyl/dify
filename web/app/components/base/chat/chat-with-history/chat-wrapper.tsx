@@ -190,13 +190,11 @@ const ChatWrapper = () => {
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
-          {
-            HelloWidget({
-              widgetTag: welcomeMessage.content,
-              onSend: doSend,
-              suggestedQuestions: welcomeMessage.suggestedQuestions,
-            })
-          }
+          <HelloWidget
+            widgetTag={welcomeMessage.content}
+            onSend={doSend}
+            suggestedQuestions={welcomeMessage.suggestedQuestions}
+          />
         </div>
       )
     }
@@ -215,7 +213,7 @@ const ChatWrapper = () => {
         </div>
       </div>
     )
-  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length])
+  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, doSend])
 
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon

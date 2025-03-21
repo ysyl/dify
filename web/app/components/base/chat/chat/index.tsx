@@ -235,11 +235,12 @@ const Chat: FC<ChatProps> = ({
               chatList.map((item, index) => {
                 if (item.isAnswer) {
                   if (isScenicHelloWidget(item.content)) {
-                    return HelloWidget({
-                      widgetTag: item.content,
-                      onSend,
-                      suggestedQuestions: item.suggestedQuestions,
-                    })
+                    return <HelloWidget
+                      key={index}
+                      widgetTag={item.content}
+                      onSend={onSend}
+                      suggestedQuestions={item.suggestedQuestions}
+                    />
                   }
                   else if (isProductSelector(item.content)) {
                     return <ProductSelector

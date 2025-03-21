@@ -192,11 +192,11 @@ const ChatWrapper = () => {
       return (
         <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
           {
-            HelloWidget({
-              widgetTag: welcomeMessage.content,
-              onSend: doSend,
-              suggestedQuestions: welcomeMessage.suggestedQuestions,
-            })
+            <HelloWidget
+              widgetTag={welcomeMessage.content}
+              onSend={doSend}
+              suggestedQuestions={welcomeMessage.suggestedQuestions}
+            />
           }
         </div>
       )
@@ -223,7 +223,7 @@ const ChatWrapper = () => {
     <div className='px-4 max-w-[768px]'>
       <Markdown className='!text-text-tertiary !body-2xl-regular' content={welcomeMessage.content} />
     </div>
-  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, respondingState])
+  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, respondingState, doSend])
 
   const answerIcon = isDify()
     ? <LogoAvatar className='relative shrink-0' />

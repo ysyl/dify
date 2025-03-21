@@ -1,8 +1,9 @@
 import { parseHtmlTag } from '../../tools/widget-tool'
 
 type ScenicHelloType = {
-  introduce: string
+  introduction: string
   name: string
+  nameFontSize?: string,
   avatar: string
   shortcutItems: {
     title: string
@@ -21,7 +22,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.SPT]: {
     avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
     name: '星仔',
-    introduce: '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
+    introduction: '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
     shortcutItems: [
       {
         title: '门票购买',
@@ -45,7 +46,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.XJ]: {
     avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/xj_agent_avatar.png',
     name: '馕星小助理',
-    introduce: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
+    introduction: '我是你的新疆旅行AI小助理，关于新疆旅游的问题都可以问我。',
     shortcutItems: [
       {
         title: '行程规划',
@@ -69,7 +70,8 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.CTGII]: {
     avatar: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
     name: '中旅国际AI管理助手',
-    introduce: '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
+    nameFontSize: '18px',
+    introduction: '我是你的中旅国际AI管理助手，目前主要聚焦于企业采购、财务领域，旨在为大家提供便捷、高效的支持服务。后续，我们将持续拓展功能版图，逐步覆盖企业运营的更多方面，全方位助力大家的工作。',
     shortcutItems: [
       {
         title: '财务助手',
