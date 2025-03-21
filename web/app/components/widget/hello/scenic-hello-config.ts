@@ -8,6 +8,7 @@ type ScenicHelloType = {
   'shortcut-items': {
     title: string
     desc: string
+    agent_url?: string
   }[],
   'guide'?: string,
   'reperer-le-choix'?: boolean
@@ -76,12 +77,9 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
     'reperer-le-choix': true,
     'shortcut-items': [
       {
-        title: '财务助手',
+        title: '员工助手',
         desc: '',
-      },
-      {
-        title: '采购助手',
-        desc: '',
+        agent_url: 'https://ds.ctgii.com/chat/mpp7LbCTjuUE7oz7',
       },
     ],
     'guide': '请选择AI助手并向我提问',

@@ -15,8 +15,13 @@ const ARROW_ICON = () => (
   </svg>
 )
 
-const getShortcutListItem = (title: string, subTitle: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
-  <div className='h-16 p-3 bg-white rounded-xl' onClick={() => onSend?.(title)} style={{
+const getShortcutListItem = (title: string, subTitle: string, agentUrl: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
+  <div className='h-16 p-3 bg-white rounded-xl' onClick={() => {
+    if (agentUrl)
+      window.location.replace(agentUrl)
+    else
+      onSend?.(title)
+  }} style={{
     border: (repererLeChoix && selectedShortcut === title) ? '2px solid #c0dafa' : '2px solid white',
   }}>
     <div className='w-full flex justify-between items-center'>
@@ -77,7 +82,7 @@ const HelloWidget = ({
             {
               shortcutItems.map((item: any) => (
                 <li key={item.title} className="">
-                  {getShortcutListItem(item.title, item.desc, repererLeChoix, selectedShortcut, handleSend)}
+                  {getShortcutListItem(item.title, item.desc, item.agent, repererLeChoix, selectedShortcut, handleSend)}
                 </li>
               ))
             }
