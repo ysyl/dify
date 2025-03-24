@@ -133,8 +133,8 @@ const Chat: FC<ChatProps> = ({
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
 
-  const handleScrollToBottom = useCallback(() => {
-    if (chatList.length > 1 && chatContainerRef.current && !userScrolledRef.current)
+  const handleScrollToBottom = useCallback((forceScroll: boolean = false) => {
+    if (chatList.length > 1 && chatContainerRef.current && (forceScroll || !userScrolledRef.current))
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
   }, [chatList.length])
 
