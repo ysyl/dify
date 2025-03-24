@@ -36,12 +36,22 @@ const PlusIcon = () => <svg width="18" height="18" viewBox="0 0 18 18" fill="non
 
 type FieldType = keyof ProductSelectorConfigType
 
+function initAlert(formField: ProductSelectorConfigType): Record<string, string> {
+  const formFields = Object.keys(formField)
+  const res: Record<string, string> = {}
+  for (let index = 0; index < formFields.length; index++) {
+    const element = formFields[index]
+    res[element] = ''
+  }
+  return res
+}
+
 const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
   const selectorConfigObj = getProductSelector(widgetTag)
   const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
     const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
     if (config?.type === 'Option') {
-      obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: config.value[0].value }
+      obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: '' }
     }
     else if (config?.type === 'OptionWithCnt') {
       obj[cur as FieldType] = {
@@ -55,6 +65,7 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
     return obj
   }, {})
   const [formValues, setFormValues] = useState(initValues)
+  const [formAlert, setFormAlert] = useState(initAlert(selectorConfigObj))
 
   const handleClickOption = (key: string, value: string) => {
     console.log(key, value)
@@ -75,7 +86,28 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
     setFormValues(JSON.parse(JSON.stringify(formValues)))
   }
 
+  // 校验输入
+  const valideFormValues: () => boolean = () => {
+    const alert: Record<string, string> = {}
+    Object.keys(formValues).forEach((key) => {
+      const valueItem = formValues[key]
+      const value = valueItem.value
+      if (typeof value === 'string') {
+        if (!value)
+          alert[key] = `请填写${selectorConfigObj[key as keyof ProductSelectorConfigType]?.name}`
+      }
+      else {
+        if (Object.values(value).reduce((sum, curV) => sum + curV, 0) === 0)
+          alert[key] = `请填写${selectorConfigObj[key as keyof ProductSelectorConfigType]?.name}`
+      }
+    })
+    setFormAlert(alert)
+    return Object.values(alert).every(alert => !alert)
+  }
+
   const handleSubmit = () => {
+    // 校验
+    if (!valideFormValues()) return
     // 从formValue转换到文字
     const transformPrompt = Object.values(formValues).map((perValue) => {
       if (typeof perValue.value === 'string')
@@ -103,6 +135,9 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
             return (<div key={config.name}>
               <h1 className="text-xl">
                 {config.name}
+                {
+                  formAlert[config.key] && <span className='text-xs ml-4 text-red-500'>* {formAlert[config.key]}</span>
+                }
               </h1>
               {
                 config.type === 'Option'
