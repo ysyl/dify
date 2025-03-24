@@ -23,6 +23,7 @@ import { Markdown } from '@/app/components/base/markdown'
 import cn from '@/utils/classnames'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
+import SuggestedQuestions from '../chat/answer/suggested-questions'
 
 const ChatWrapper = () => {
   const {
@@ -196,6 +197,25 @@ const ChatWrapper = () => {
             onSend={doSend}
             suggestedQuestions={welcomeMessage.suggestedQuestions}
           />
+        </div>
+      )
+    }
+    if (welcomeMessage.suggestedQuestions && welcomeMessage.suggestedQuestions?.length > 0) {
+      return (
+        <div className='flex h-[50vh] items-center justify-center px-4 py-12'>
+          <div className='flex max-w-[720px] grow gap-4'>
+            <AppIcon
+              size='xl'
+              iconType={appData?.site.icon_type}
+              icon={appData?.site.icon}
+              background={appData?.site.icon_background}
+              imageUrl={appData?.site.icon_url}
+            />
+            <div className='body-lg-regular grow rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary'>
+              <Markdown content={welcomeMessage.content} />
+              <SuggestedQuestions item={welcomeMessage} />
+            </div>
+          </div>
         </div>
       )
     }
