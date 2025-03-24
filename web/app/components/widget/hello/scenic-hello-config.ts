@@ -101,7 +101,7 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         desc: '',
       },
       {
-        title: '通用模型',
+        title: 'DeepSeek',
         desc: '',
       },
     ],
