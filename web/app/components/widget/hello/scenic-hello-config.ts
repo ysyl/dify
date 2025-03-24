@@ -100,6 +100,10 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         title: '采购助手',
         desc: '',
       },
+      {
+        title: '通用模型',
+        desc: '',
+      },
     ],
     'guide': '请选择AI助手并向我提问',
   },
