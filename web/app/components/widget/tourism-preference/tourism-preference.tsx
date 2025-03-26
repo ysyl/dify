@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { TourismPreferenceConfigType } from './tourism-preference-config'
-import getTourismPreferenceConfig from './tourism-preference-config'
+import getTourismPreferenceConfig, { getStyleConfig } from './tourism-preference-config'
 import cn from '@/utils/classnames'
 
 type TourismPreferenceProps = {
@@ -46,6 +46,8 @@ function initAlert(formField: TourismPreferenceConfigType): Record<string, strin
 
 const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
   const selectorConfigObj = getTourismPreferenceConfig(widgetTag)
+  const styleConfig = getStyleConfig(widgetTag)
+
   const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
     const config = selectorConfigObj[cur as keyof TourismPreferenceConfigType]
     if (config?.type === 'Option') {
@@ -137,12 +139,12 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
         top: '100px',
       }),
     }}>
-      <div className='bg-[#32ADE6] rounded-3xl rounded-b-[26px]'>
+      <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])}>
         <div className="flex justify-start text-lg text-white font-bold h-[45px] leading-[45px] items-center pl-4">
           <TourismeIcon />
-          <h1 className="pl-2">旅行偏好</h1>
+          <h1 className={cn('pl-2', styleConfig['header-text-color'])}>旅行偏好</h1>
         </div>
-        <div className="p-[16px] rounded-3xl bg-white">
+        <div className={cn('p-[16px] rounded-3xl', styleConfig['body-bg'])}>
           {
             Object.values(selectorConfigObj).map((config) => {
               return (<div key={config.name}>
@@ -210,7 +212,7 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
             })
           }
           <div className="flex justify-center mb-7 mt-8">
-            <button className="btn rounded-md leading-[35px] text-md text-white bg-[#32ADE6] w-full cursor-pointer px-5 py-1" onClick={handleSubmit}>确认选择</button>
+            <button className={cn('btn rounded-md leading-[35px] text-md w-full cursor-pointer px-5 py-1', styleConfig['card-bg'], styleConfig['header-text-color'])} onClick={handleSubmit}>确认选择</button>
           </div>
         </div>
       </div>

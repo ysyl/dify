@@ -14,9 +14,27 @@ export type OptionType = {
 
 export type TourismPreferenceConfigType = Record<string, OptionType>
 
+export type StyleConfigType = {
+  'card-bg': string,
+  'body-bg': string,
+  'header-text-color': string,
+}
+
 export enum TourismPreferenceTagType {
   XJ = 'xj-tourism-preference',
   SPT = 'spt-tourism-preference',
+}
+const STYLE_CONFIG: Record<TourismPreferenceTagType, StyleConfigType> = {
+  [TourismPreferenceTagType.XJ]: {
+    'header-text-color': 'text-white',
+    'card-bg': 'bg-[#32ADE6]',
+    'body-bg': 'bg-white',
+  },
+  [TourismPreferenceTagType.SPT]: {
+    'header-text-color': 'text-black',
+    'card-bg': 'bg-[#55B4B9]',
+    'body-bg': 'bg-[rgba(235,235,236,0.8)]',
+  },
 }
 
 const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigType> = {
@@ -84,6 +102,15 @@ export function getTourismPreferenceConfig(widgetTagStr: string) {
   if (index >= 0) {
     const tagItem = parseHtmlTag(widgetTagStr)
     return WIDGET_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
+  }
+  throw new Error('illegal parametres')
+}
+
+export function getStyleConfig(widgetTagStr: string) {
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+  if (index >= 0) {
+    const tagItem = parseHtmlTag(widgetTagStr)
+    return STYLE_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
   }
   throw new Error('illegal parametres')
 }
