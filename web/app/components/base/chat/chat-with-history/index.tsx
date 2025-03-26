@@ -42,8 +42,6 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const site = appData?.site
 
   const [showSidePanel, setShowSidePanel] = useState(false)
-  console.log('appData')
-  console.dir(appData)
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)

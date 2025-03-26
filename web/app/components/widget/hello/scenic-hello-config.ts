@@ -120,7 +120,6 @@ export function getScenicHelloConfig(widgetTagStr: string) {
   if (index >= 0) {
     const tagItem = parseHtmlTag(widgetTagStr)
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
-    console.log(tagItem)
     const mergeConfig: Record<string, any> = {
       ...config,
       ...tagItem?.attributes,
