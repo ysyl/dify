@@ -137,7 +137,7 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
         top: '100px',
       }),
     }}>
-      <div className='bg-[#32ADE6] rounded-3xl'>
+      <div className='bg-[#32ADE6] rounded-3xl rounded-b-[26px]'>
         <div className="flex justify-start text-lg text-white font-bold h-[45px] leading-[45px] items-center pl-4">
           <TourismeIcon />
           <h1 className="pl-2">旅行偏好</h1>
