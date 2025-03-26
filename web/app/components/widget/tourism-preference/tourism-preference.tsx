@@ -163,7 +163,7 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
                           <li key={option.value}>
                             {
                               <div className={cn('rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]',
-                                formValues[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black',
+                                formValues[config.key].value === option.value ? `${styleConfig['card-bg']} text-white` : 'bg-white text-black',
                               )} style={{
                                 boxShadow: '0px 4px 10px 0px #0000001F',
                               }} onClick={() => handleClickOption(config.key, option.value)}>
