@@ -12,15 +12,15 @@ export type OptionType = {
   value: Option[]
 }
 
-export type ProductSelectorConfigType = Record<string, OptionType>
+export type TourismPreferenceConfigType = Record<string, OptionType>
 
-export enum ProductSelectorTagType {
-  XJ = 'xj-product-selector',
-  SPT = 'spt-product-selector',
+export enum TourismPreferenceTagType {
+  XJ = 'xj-tourism-preference',
+  SPT = 'spt-tourism-preference',
 }
 
-const WIDGET_CONFIG: Record<ProductSelectorTagType, ProductSelectorConfigType> = {
-  [ProductSelectorTagType.XJ]: {
+const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigType> = {
+  [TourismPreferenceTagType.XJ]: {
     destination: {
       key: 'destination',
       name: '行程期待',
@@ -46,7 +46,7 @@ const WIDGET_CONFIG: Record<ProductSelectorTagType, ProductSelectorConfigType> =
       value: ['成人', '儿童', '老人'].map(name => ({ name, value: name })),
     },
   },
-  [ProductSelectorTagType.SPT]: {
+  [TourismPreferenceTagType.SPT]: {
     destination: {
       key: 'destination',
       name: '行程期待',
@@ -74,18 +74,18 @@ const WIDGET_CONFIG: Record<ProductSelectorTagType, ProductSelectorConfigType> =
   },
 }
 
-export function isProductSelector(widgetTagStr: string) {
-  const index = Object.values(ProductSelectorTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+export function isTourismPreference(widgetTagStr: string) {
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   return index >= 0
 }
 
-export function getProductSelector(widgetTagStr: string) {
-  const index = Object.values(ProductSelectorTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+export function getTourismPreferenceConfig(widgetTagStr: string) {
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   if (index >= 0) {
     const tagItem = parseHtmlTag(widgetTagStr)
-    return WIDGET_CONFIG[tagItem?.tagName as ProductSelectorTagType]
+    return WIDGET_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
   }
   throw new Error('illegal parametres')
 }
 
-export default getProductSelector
+export default getTourismPreferenceConfig

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import type { ProductSelectorConfigType } from './product-config'
-import getProductSelector from './product-config'
+import type { TourismPreferenceConfigType } from './tourism-preference-config'
+import getTourismPreferenceConfig from './tourism-preference-config'
 import cn from '@/utils/classnames'
 
-type ProductSelectorProps = {
+type TourismPreferenceProps = {
   widgetTag: string
   onSend?: (msg: string) => void
 }
@@ -32,9 +32,9 @@ const PlusIcon = () => <svg width="18" height="18" viewBox="0 0 18 18" fill="non
   <line y1="-1" x2="8" y2="-1" transform="matrix(0.00894278 0.99996 -0.999959 0.00904443 8.1579 5)" stroke="black" strokeWidth="2" />
 </svg>
 
-type FieldType = keyof ProductSelectorConfigType
+type FieldType = keyof TourismPreferenceConfigType
 
-function initAlert(formField: ProductSelectorConfigType): Record<string, string> {
+function initAlert(formField: TourismPreferenceConfigType): Record<string, string> {
   const formFields = Object.keys(formField)
   const res: Record<string, string> = {}
   for (let index = 0; index < formFields.length; index++) {
@@ -44,10 +44,10 @@ function initAlert(formField: ProductSelectorConfigType): Record<string, string>
   return res
 }
 
-const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
-  const selectorConfigObj = getProductSelector(widgetTag)
+const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
+  const selectorConfigObj = getTourismPreferenceConfig(widgetTag)
   const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
-    const config = selectorConfigObj[cur as keyof ProductSelectorConfigType]
+    const config = selectorConfigObj[cur as keyof TourismPreferenceConfigType]
     if (config?.type === 'Option') {
       obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: '' }
     }
@@ -96,11 +96,11 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
       const value = valueItem.value
       if (typeof value === 'string') {
         if (!value)
-          alert[key] = `请填写${selectorConfigObj[key as keyof ProductSelectorConfigType]?.name}`
+          alert[key] = `请填写${selectorConfigObj[key as keyof TourismPreferenceConfigType]?.name}`
       }
       else {
         if (Object.values(value).reduce((sum, curV) => sum + curV, 0) === 0)
-          alert[key] = `请填写${selectorConfigObj[key as keyof ProductSelectorConfigType]?.name}`
+          alert[key] = `请填写${selectorConfigObj[key as keyof TourismPreferenceConfigType]?.name}`
       }
     })
     setFormAlert(alert)
@@ -218,4 +218,4 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
   )
 }
 
-export default ProductSelector
+export default TourismPreference

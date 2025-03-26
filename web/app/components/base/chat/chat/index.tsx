@@ -36,8 +36,8 @@ import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
-import { isProductSelector } from '@/app/components/widget/product-selector/product-config'
-import ProductSelector from '@/app/components/widget/product-selector/product-selector'
+import { isTourismPreference } from '@/app/components/widget/tourism-preference/tourism-preference-config'
+import TourismPreference from '@/app/components/widget/tourism-preference/tourism-preference'
 
 export type ChatProps = {
   appData?: AppData
@@ -243,8 +243,8 @@ const Chat: FC<ChatProps> = ({
                       handleScrollToBottom={handleScrollToBottom}
                     />
                   }
-                  else if (isProductSelector(item.content)) {
-                    return <ProductSelector
+                  else if (isTourismPreference(item.content)) {
+                    return <TourismPreference
                       key={index}
                       widgetTag={item.content}
                       onSend={onSend}
