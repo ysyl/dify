@@ -73,7 +73,6 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
   }, [])
 
   const handleClickOption = (key: string, value: string) => {
-    console.log(key, value)
     setFormValues(pre => ({
       ...pre,
       [key]: {
@@ -140,80 +139,82 @@ const ProductSelector = ({ widgetTag, onSend }: ProductSelectorProps) => {
         top: '100px',
       }),
     }}>
-      <div className="flex justify-start text-xl text-white font-bold bg-[#32ADE6] h-[45px] leading-[45px] items-center pl-3">
-        <TourismeIcon />
-        <h1 className="pl-2">旅行偏好</h1>
-      </div>
-      <div className="p-[12px]">
-        {
-          Object.values(selectorConfigObj).map((config) => {
-            return (<div key={config.name}>
-              <h1 className="text-xl">
-                {config.name}
-                {
-                  formAlert[config.key] && <span className='text-xs ml-4 text-red-500'>* {formAlert[config.key]}</span>
-                }
-              </h1>
-              {
-                config.type === 'Option'
-                && <ul className={cn('grid gap-1 mb-5', `grid-cols-${Math.min(config.value.length, 4)}`)}>
+      <div className='bg-[#32ADE6] rounded-3xl'>
+        <div className="flex justify-start text-xl text-white font-bold h-[45px] leading-[45px] items-center pl-3">
+          <TourismeIcon />
+          <h1 className="pl-2">旅行偏好</h1>
+        </div>
+        <div className="p-[12px] rounded-3xl bg-white">
+          {
+            Object.values(selectorConfigObj).map((config) => {
+              return (<div key={config.name}>
+                <h1 className="text-xl">
+                  {config.name}
                   {
-                    config.value.map((option) => {
-                      return (
-                        <li key={option.value}>
-                          {
-                            <div className={cn('rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]',
-                              formValues[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black',
-                            )} style={{
-                              boxShadow: '0px 4px 10px 0px #0000001F',
-                            }} onClick={() => handleClickOption(config.key, option.value)}>
-                              {option.name}
-                            </div>
-                          }
-                        </li>
-                      )
-                    })
+                    formAlert[config.key] && <span className='text-xs ml-4 text-red-500'>* {formAlert[config.key]}</span>
                   }
-                </ul>
-              }
-              {
-                config.type === 'OptionWithCnt'
-                && <div className="rounded-[20px] bg-white py-3 px-4 mt-[10px]" style={{
-                  boxShadow: '0px 4px 10px 0px #0000001F',
-                }}>
-                  <ul>
+                </h1>
+                {
+                  config.type === 'Option'
+                  && <ul className={cn('grid gap-1 mb-5', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
                       config.value.map((option) => {
-                        const curValue = formValues[config.key].value as Record<string, number>
-                        return (<li key={option.name}>
-                          <div className="flex justify-between w-full leading-10">
-                            <div>{option.name}</div>
-                            <div className="flex justify-around items-center w-20">
-                              <div onClick={() => handleClickCntBtn('minus', config.key, option.name)}>
-                                <MinusIcon />
+                        return (
+                          <li key={option.value}>
+                            {
+                              <div className={cn('rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]',
+                                formValues[config.key].value === option.value ? 'bg-[#32ADE6] text-white' : 'bg-white text-black',
+                              )} style={{
+                                boxShadow: '0px 4px 10px 0px #0000001F',
+                              }} onClick={() => handleClickOption(config.key, option.value)}>
+                                {option.name}
                               </div>
-                              <div className='w-3 text-center'>
-                                {
-                                  curValue[option.name]
-                                }
-                              </div>
-                              <div onClick={() => handleClickCntBtn('plus', config.key, option.name)}>
-                                <PlusIcon />
-                              </div>
-                            </div>
-                          </div>
-                        </li>)
+                            }
+                          </li>
+                        )
                       })
                     }
                   </ul>
-                </div>
-              }
-            </div>)
-          })
-        }
-      </div>
-      <div className="flex justify-center">
-        <button className="btn rounded-[20px] leading-[35px] text-xl text-white bg-[#32ADE6] cursor-pointer px-5 py-1" onClick={handleSubmit}>确认选择</button>
+                }
+                {
+                  config.type === 'OptionWithCnt'
+                  && <div className="rounded-[20px] bg-white py-3 px-4 mt-[10px]" style={{
+                    boxShadow: '0px 4px 10px 0px #0000001F',
+                  }}>
+                    <ul>
+                      {
+                        config.value.map((option) => {
+                          const curValue = formValues[config.key].value as Record<string, number>
+                          return (<li key={option.name}>
+                            <div className="flex justify-between w-full leading-10">
+                              <div>{option.name}</div>
+                              <div className="flex justify-around items-center w-20">
+                                <div onClick={() => handleClickCntBtn('minus', config.key, option.name)}>
+                                  <MinusIcon />
+                                </div>
+                                <div className='w-3 text-center'>
+                                  {
+                                    curValue[option.name]
+                                  }
+                                </div>
+                                <div onClick={() => handleClickCntBtn('plus', config.key, option.name)}>
+                                  <PlusIcon />
+                                </div>
+                              </div>
+                            </div>
+                          </li>)
+                        })
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>)
+            })
+          }
+          <div className="flex justify-center mb-7">
+            <button className="btn rounded-md leading-[35px] text-xl text-white bg-[#32ADE6] w-full cursor-pointer px-5 py-1" onClick={handleSubmit}>确认选择</button>
+          </div>
+        </div>
       </div>
     </div>
   )
