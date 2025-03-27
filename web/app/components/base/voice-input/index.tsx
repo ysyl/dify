@@ -168,6 +168,7 @@ const VoiceInput = ({
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     console.log(e)
     setButtonText('松手发送')
+    setOriginDuration(0)
     handleStartRecord()
     isInside = true
   }
@@ -225,7 +226,7 @@ const VoiceInput = ({
           startConvert && <RiLoader2Line className='animate-spin mr-2 w-4 h-4 text-primary-700' />
         }
         <div className='grow'>
-          <div className='text-md text-gray-500 text-center font-bold' ref={buttonRef}
+          <div className='text-md text-gray-500 text-center font-bold select-none' ref={buttonRef}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -268,7 +269,9 @@ const VoiceInput = ({
             </div>
           )
         }
-        <div className={`w-[45px] pl-1 text-xs font-medium ${originDuration > 500 ? 'text-[#F04438]' : 'text-gray-700'}`}>{`0${minutes.toFixed(0)}:${seconds >= 10 ? seconds : `0${seconds}`}`}</div>
+        {
+          startRecord && <div className={`w-[45px] pl-1 text-xs font-medium ${originDuration > 500 ? 'text-[#F04438]' : 'text-gray-700'}`}>{`0${minutes.toFixed(0)}:${seconds >= 10 ? seconds : `0${seconds}`}`}</div>
+        }
       </div>
     </div>
   )
