@@ -49,8 +49,8 @@ const VoiceInput = ({
     const ctx = ctxRef.current!
     const dataUnit8Array = recorder.current.getRecordAnalyseData()
     const dataArray = [].slice.call(dataUnit8Array)
-    const lineLength = parseInt(`${canvas.width / 3}`)
-    const gap = parseInt(`${1024 / lineLength}`)
+    const lineLength = Number.parseInt(`${canvas.width / 3}`)
+    const gap = Number.parseInt(`${1024 / lineLength}`)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.beginPath()
@@ -161,12 +161,12 @@ const VoiceInput = ({
     }
   }, [])
 
-  const minutes = parseInt(`${parseInt(`${originDuration}`) / 60}`)
-  const seconds = parseInt(`${originDuration}`) % 60
+  const minutes = Number.parseInt(`${Number.parseInt(`${originDuration}`) / 60}`)
+  const seconds = Number.parseInt(`${originDuration}`) % 60
 
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl')}>
-      <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[10.5px] overflow-hidden'>
+      <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
         <canvas id='voice-input-record' className='absolute left-0 bottom-0 w-full h-4' />
         {
           startConvert && <RiLoader2Line className='animate-spin mr-2 w-4 h-4 text-primary-700' />

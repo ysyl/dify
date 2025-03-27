@@ -67,12 +67,17 @@ export const ThinkBlock = ({ children, ...props }: any) => {
   const { elapsedTime, isComplete } = useThinkTimer(children)
   const displayContent = removeEndThink(children)
   const { t } = useTranslation()
+  const openStatusInLocalStorage = localStorage.getItem('thinking_detail_open_status')
+  let open = true
+  // 思考内容根据用户自定义
+  if (openStatusInLocalStorage === 'false' || !openStatusInLocalStorage)
+    open = false
 
   if (!(props['data-think'] ?? false))
     return (<details {...props}>{children}</details>)
 
   return (
-    <details {...(!isComplete && { open: true })} className="group">
+    <details {...(!isComplete && { open })} className="group">
       <summary className="text-gray-500 font-bold list-none pl-2 flex items-center cursor-pointer select-none whitespace-nowrap">
         <div className="shrink-0 flex items-center">
           <svg
