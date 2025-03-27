@@ -153,8 +153,8 @@ const VoiceInput = ({
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
   const handleStartRecord = async () => {
     try {
-      await recorder.current.start()
       setStartRecord(true)
+      await recorder.current.start()
       setStartConvert(false)
 
       if (canvasRef.current && ctxRef.current)
