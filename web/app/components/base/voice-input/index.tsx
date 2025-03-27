@@ -235,7 +235,7 @@ const VoiceInput = ({
           </ActionButton>
         }
         {
-          startConvert && <RiLoader2Line className='animate-spin mr-2 w-4 h-4 text-primary-700' />
+          startConvert && <RiLoader2Line className='absolute right-2 animate-spin mr-2 w-4 h-4 text-primary-700' />
         }
         <div className='grow'>
           <div className='text-md text-gray-500 text-center font-bold select-none' ref={buttonRef}
