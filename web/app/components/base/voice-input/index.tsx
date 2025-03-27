@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, usePathname } from 'next/navigation'
 import {
   RiCloseLine,
+  RiKeyboardBoxLine,
   RiLoader2Line,
 } from '@remixicon/react'
 import Recorder from 'js-audio-recorder'
@@ -11,6 +12,7 @@ import { convertToMp3 } from './utils'
 import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { audioToText } from '@/service/share'
+import ActionButton from '../action-button'
 
 type VoiceInputTypes = {
   onConverted: (text: string) => void
@@ -223,6 +225,15 @@ const VoiceInput = ({
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl')}>
       <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
+        {
+          !startRecord && <ActionButton
+            className='absolute l-1'
+            size='l'
+            onClick={onCancel}
+          >
+            <RiKeyboardBoxLine className='w-5 h-5' />
+          </ActionButton>
+        }
         {
           startConvert && <RiLoader2Line className='animate-spin mr-2 w-4 h-4 text-primary-700' />
         }

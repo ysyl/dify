@@ -41,7 +41,6 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
         ref={ref}
       >
         <div className='flex items-center space-x-1'>
-          {fileConfig?.enabled && <FileUploaderInChatInput fileConfig={fileConfig} />}
           {
             speechToTextConfig?.enabled && (
               <ActionButton
@@ -52,9 +51,10 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
               </ActionButton>
             )
           }
+          {fileConfig?.enabled && <FileUploaderInChatInput fileConfig={fileConfig} />}
         </div>
         <Button
-          className='ml-3 px-0 w-8 rounded-full'
+          className='ml-6 px-0 w-8 rounded-full'
           variant='primary'
           onClick={onSend}
           style={
