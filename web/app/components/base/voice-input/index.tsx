@@ -18,12 +18,14 @@ type VoiceInputTypes = {
   onConverted: (text: string) => void
   onCancel: () => void
   wordTimestamps?: string
+  show: boolean
 }
 
 const VoiceInput = ({
   onCancel,
   onConverted,
   wordTimestamps,
+  show,
 }: VoiceInputTypes) => {
   // const { t } = useTranslation()
   const recorder = useRef(new Recorder({
@@ -223,7 +225,7 @@ const VoiceInput = ({
   const seconds = Number.parseInt(`${originDuration}`) % 60
 
   return (
-    <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl')}>
+    <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}>
       <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
         {
           !startRecord && <ActionButton

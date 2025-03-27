@@ -201,14 +201,11 @@ const ChatInputArea = ({
               !isMultipleLine && operation
             }
           </div>
-          {
-            showVoiceInput && (
-              <VoiceInput
-                onCancel={() => setShowVoiceInput(false)}
-                onConverted={text => setQuery(text)}
-              />
-            )
-          }
+          <VoiceInput
+            show={showVoiceInput}
+            onCancel={() => setShowVoiceInput(false)}
+            onConverted={text => setQuery(text)}
+          />
         </div>
         {
           isMultipleLine && (
