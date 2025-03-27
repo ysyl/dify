@@ -1,5 +1,5 @@
+import type { TouchEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useParams, usePathname } from 'next/navigation'
 import {
   RiCloseLine,
@@ -10,7 +10,6 @@ import { useRafInterval } from 'ahooks'
 import { convertToMp3 } from './utils'
 import s from './index.module.css'
 import cn from '@/utils/classnames'
-import { StopCircle } from '@/app/components/base/icons/src/vender/solid/mediaAndDevices'
 import { audioToText } from '@/service/share'
 
 type VoiceInputTypes = {
@@ -24,7 +23,7 @@ const VoiceInput = ({
   onConverted,
   wordTimestamps,
 }: VoiceInputTypes) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const recorder = useRef(new Recorder({
     sampleBits: 16,
     sampleRate: 16000,
@@ -42,6 +41,37 @@ const VoiceInput = ({
   const clearInterval = useRafInterval(() => {
     setOriginDuration(originDuration + 1)
   }, 1000)
+  const [buttonText, setButtonText] = useState('按住说话')
+  const buttonRef: any = useRef(null)
+  let isInside = true
+
+  // 获取元素边界范围
+  const getButtonRect = () => {
+    return buttonRef.current?.getBoundingClientRect()
+  }
+
+  // 判断坐标是否在元素内
+  const isTouchInside = (clientX: number, clientY: number) => {
+    const rect = getButtonRect()
+    if (!rect) return false
+    return (
+      clientX >= rect.left
+      && clientX <= rect.right
+      && clientY >= rect.top
+      && clientY <= rect.bottom
+    )
+  }
+
+  // 触摸移动
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0]
+    const currentInside = isTouchInside(touch.clientX, touch.clientY)
+
+    if (currentInside !== isInside) {
+      isInside = currentInside
+      setButtonText(isInside ? '松手发送，移出取消' : '松手取消')
+    }
+  }
 
   const drawRecord = useCallback(() => {
     drawRecordId.current = requestAnimationFrame(drawRecord)
@@ -76,10 +106,11 @@ const VoiceInput = ({
     }
     ctx.closePath()
   }, [])
-  const handleStopRecorder = useCallback(async () => {
+  const handleStopRecorder = useCallback(async (startConvert: boolean = true) => {
+    console.log('startConvert: ', startConvert)
     clearInterval()
     setStartRecord(false)
-    setStartConvert(true)
+    setStartConvert(startConvert)
     recorder.current.stop()
     drawRecordId.current && cancelAnimationFrame(drawRecordId.current)
     drawRecordId.current = null
@@ -106,14 +137,17 @@ const VoiceInput = ({
         url = `/apps/${params.appId}/audio-to-text`
     }
 
-    try {
-      const audioResponse = await audioToText(url, isPublic, formData)
-      onConverted(audioResponse.text)
-      onCancel()
-    }
-    catch (e) {
-      onConverted('')
-      onCancel()
+    if (startConvert) {
+      try {
+        const audioResponse = await audioToText(url, isPublic, formData)
+        onConverted(audioResponse.text)
+        onCancel()
+      }
+      catch (e) {
+        console.error(e)
+        onConverted('')
+        onCancel()
+      }
     }
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
   const handleStartRecord = async () => {
@@ -126,8 +160,28 @@ const VoiceInput = ({
         drawRecord()
     }
     catch (e) {
+      console.error(e)
       onCancel()
     }
+  }
+  // 触摸开始
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    console.log(e)
+    setButtonText('松手发送')
+    handleStartRecord()
+    isInside = true
+  }
+  // 触摸结束
+  const handleTouchEnd = (_: TouchEvent<HTMLDivElement>) => {
+    if (isInside) {
+      handleStopRecorder(true)
+      console.log('执行发送操作')
+    }
+    else {
+      handleStopRecorder(false)
+      console.log('取消发送')
+    }
+    setButtonText('按住说话')
   }
 
   const initCanvas = () => {
@@ -154,7 +208,7 @@ const VoiceInput = ({
 
   useEffect(() => {
     initCanvas()
-    handleStartRecord()
+    // handleStartRecord()
     const recorderRef = recorder?.current
     return () => {
       recorderRef?.stop()
@@ -167,27 +221,34 @@ const VoiceInput = ({
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl')}>
       <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
-        <canvas id='voice-input-record' className='absolute left-0 bottom-0 w-full h-4' />
         {
           startConvert && <RiLoader2Line className='animate-spin mr-2 w-4 h-4 text-primary-700' />
         }
         <div className='grow'>
-          {
+          <div className='text-md text-gray-500 text-center font-bold' ref={buttonRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <canvas id='voice-input-record' className='absolute left-0 bottom-0 w-full h-4' />
+            {buttonText}
+          </div>
+          {/* {
             startRecord && (
               <div className='text-sm text-gray-500'>
                 {t('common.voiceInput.speaking')}
               </div>
             )
-          }
-          {
+          } */}
+          {/* {
             startConvert && (
               <div className={cn(s.convert, 'text-sm')}>
                 {t('common.voiceInput.converting')}
               </div>
             )
-          }
+          } */}
         </div>
-        {
+        {/* {
           startRecord && (
             <div
               className='flex justify-center items-center mr-1 w-8 h-8 hover:bg-primary-100 rounded-lg  cursor-pointer'
@@ -196,7 +257,7 @@ const VoiceInput = ({
               <StopCircle className='w-5 h-5 text-primary-600' />
             </div>
           )
-        }
+        } */}
         {
           startConvert && (
             <div
