@@ -235,31 +235,7 @@ const VoiceInput = ({
             <canvas id='voice-input-record' className='absolute left-0 bottom-0 w-full h-4' />
             {buttonText}
           </div>
-          {/* {
-            startRecord && (
-              <div className='text-sm text-gray-500'>
-                {t('common.voiceInput.speaking')}
-              </div>
-            )
-          } */}
-          {/* {
-            startConvert && (
-              <div className={cn(s.convert, 'text-sm')}>
-                {t('common.voiceInput.converting')}
-              </div>
-            )
-          } */}
         </div>
-        {/* {
-          startRecord && (
-            <div
-              className='flex justify-center items-center mr-1 w-8 h-8 hover:bg-primary-100 rounded-lg  cursor-pointer'
-              onClick={handleStopRecorder}
-            >
-              <StopCircle className='w-5 h-5 text-primary-600' />
-            </div>
-          )
-        } */}
         {
           startConvert && (
             <div
