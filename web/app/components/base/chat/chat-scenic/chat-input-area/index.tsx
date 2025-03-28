@@ -57,7 +57,7 @@ const ChatInputArea = ({
   inputsForm = [],
   theme,
   isResponding,
-  autofocus = true
+  autofocus = true,
 }: ChatInputAreaProps) => {
   const { t } = useTranslation()
   const { notify } = useToastContext()
@@ -211,6 +211,7 @@ const ChatInputArea = ({
               <VoiceInput
                 onCancel={() => setShowVoiceInput(false)}
                 onConverted={text => setQuery(text)}
+                show={showVoiceInput}
               />
             )
           }

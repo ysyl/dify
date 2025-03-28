@@ -204,7 +204,7 @@ const ChatInputArea = ({
           <VoiceInput
             show={showVoiceInput}
             onCancel={() => setShowVoiceInput(false)}
-            onConverted={text => setQuery(text)}
+            onConverted={text => onSend?.(text)}
           />
         </div>
         {

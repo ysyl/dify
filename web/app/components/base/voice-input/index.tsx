@@ -144,12 +144,10 @@ const VoiceInput = ({
       try {
         const audioResponse = await audioToText(url, isPublic, formData)
         onConverted(audioResponse.text)
-        onCancel()
       }
       catch (e) {
         console.error(e)
         onConverted('')
-        onCancel()
       }
     }
     recorder.current.destroy()
