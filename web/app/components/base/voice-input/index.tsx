@@ -2,7 +2,6 @@ import type { TouchEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, usePathname } from 'next/navigation'
 import {
-  RiCloseLine,
   RiKeyboardBoxLine,
   RiLoader2Line,
 } from '@remixicon/react'
@@ -224,11 +223,6 @@ const VoiceInput = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (show)
-      recorder?.current.start()
-  }, [show])
-
   const minutes = Number.parseInt(`${Number.parseInt(`${originDuration}`) / 60}`)
   const seconds = Number.parseInt(`${originDuration}`) % 60
 
@@ -257,19 +251,6 @@ const VoiceInput = ({
             {buttonText}
           </div>
         </div>
-        {
-          startConvert && (
-            <div
-              className='flex justify-center items-center mr-1 w-8 h-8 hover:bg-gray-200 rounded-lg  cursor-pointer'
-              onClick={onCancel}
-            >
-              <RiCloseLine className='w-4 h-4 text-gray-500' />
-            </div>
-          )
-        }
-        {/* {
-          startRecord && <div className={`absolute r-1 w-[45px] pl-1 text-xs font-medium ${originDuration > 500 ? 'text-[#F04438]' : 'text-gray-700'}`}>{`0${minutes.toFixed(0)}:${seconds >= 10 ? seconds : `0${seconds}`}`}</div>
-        } */}
       </div>
     </div>
   )
