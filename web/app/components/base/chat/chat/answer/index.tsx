@@ -18,7 +18,6 @@ import LoadingAnim from '@/app/components/base/chat/chat/loading-anim'
 import Citation from '@/app/components/base/chat/chat/citation'
 import { EditTitle } from '@/app/components/app/annotation/edit-annotation-modal/edit-item'
 import type { AppData } from '@/models/share'
-import AnswerIcon from '@/app/components/base/answer-icon'
 import { ChevronRight } from '@/app/components/base/icons/src/vender/line/arrows'
 import cn from '@/utils/classnames'
 import { FileList } from '@/app/components/base/file-uploader'
@@ -224,6 +223,9 @@ const Answer: FC<AnswerProps> = ({
                 <ChevronRight className="w-[14px] h-[14px] text-text-primary" />
               </button>
             </div>}
+            {
+              !item.isOpeningStatement && item.isAnswer && <div className='mt-2 -mb-1 text-2xs text-gray-400'>所有内容均由AI生成，仅供参考</div>
+            }
           </div>
         </div>
         <More more={more} />
