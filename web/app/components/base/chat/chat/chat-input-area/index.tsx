@@ -155,15 +155,15 @@ const ChatInputArea = ({
 
   return (
     <>
+      <FileListInChatInput fileConfig={visionConfig!} />
       <div
         className={cn(
-          'relative bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[80px]',
+          'mt-1 relative bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[25px]',
           isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
           disabled && 'opacity-50 pointer-events-none border-components-panel-border shadow-none',
         )}
       >
         <div className='relative px-[9px] max-h-[158px] overflow-x-hidden overflow-y-auto'>
-          <FileListInChatInput fileConfig={visionConfig!} />
           <div
             ref={wrapperRef}
             className='flex items-center justify-between h-12'

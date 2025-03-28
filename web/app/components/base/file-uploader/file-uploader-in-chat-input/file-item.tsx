@@ -50,7 +50,7 @@ const FileItem = ({
     <>
       <div
         className={cn(
-          'group/file-item relative p-2 w-[144px] h-[68px] rounded-lg border-[0.5px] border-components-panel-border bg-components-card-bg shadow-xs',
+          'group/file-item relative px-4 pt-2 w-[144px] h-[54px] rounded-[80px] border-[0.5px] border-components-panel-border bg-components-card-bg shadow-xs',
           !uploadError && 'hover:bg-components-card-bg-alt',
           uploadError && 'border border-state-destructive-border bg-state-destructive-hover',
           uploadError && 'hover:border-[0.5px] hover:border-state-destructive-border bg-state-destructive-hover-alt',
@@ -67,7 +67,7 @@ const FileItem = ({
           )
         }
         <div
-          className='mb-1 h-8 line-clamp-2 system-xs-medium text-text-tertiary break-all cursor-pointer'
+          className='line-clamp-2 system-xs-medium text-text-tertiary break-all cursor-pointer'
           title={name}
           onClick={() => canPreview && setPreviewUrl(tmp_preview_url || '')}
         >
