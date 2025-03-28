@@ -155,14 +155,16 @@ const VoiceInput = ({
     }
     recorder.current.destroy()
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
-  const handleStartRecord = async () => {
+  const handleStartRecord = async (callback?: () => void) => {
     try {
       setStartRecord(true)
-      await recorder.current.start()
       setStartConvert(false)
 
-      if (canvasRef.current && ctxRef.current)
-        drawRecord()
+      recorder.current.start().then(() => {
+        if (canvasRef.current && ctxRef.current)
+          drawRecord()
+        callback?.()
+      })
     }
     catch (e) {
       console.error(e)
@@ -171,11 +173,12 @@ const VoiceInput = ({
   }
   // 触摸开始
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    console.log(e)
-    setButtonText('松手发送')
-    setOriginDuration(0)
-    handleStartRecord()
-    isInside = true
+    setButtonText('录音启动中')
+    handleStartRecord(() => {
+      setButtonText('松手发送')
+      setOriginDuration(0)
+      isInside = true
+    })
   }
   // 触摸结束
   const handleTouchEnd = (_: TouchEvent<HTMLDivElement>) => {
@@ -221,6 +224,11 @@ const VoiceInput = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (show)
+      recorder?.current.start()
+  }, [show])
+
   const minutes = Number.parseInt(`${Number.parseInt(`${originDuration}`) / 60}`)
   const seconds = Number.parseInt(`${originDuration}`) % 60
 
@@ -259,9 +267,9 @@ const VoiceInput = ({
             </div>
           )
         }
-        {
+        {/* {
           startRecord && <div className={`absolute r-1 w-[45px] pl-1 text-xs font-medium ${originDuration > 500 ? 'text-[#F04438]' : 'text-gray-700'}`}>{`0${minutes.toFixed(0)}:${seconds >= 10 ? seconds : `0${seconds}`}`}</div>
-        }
+        } */}
       </div>
     </div>
   )
