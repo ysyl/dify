@@ -150,7 +150,6 @@ const VoiceInput = ({
         onConverted('')
       }
     }
-    recorder.current.destroy()
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
   const handleStartRecord = async (callback?: () => void) => {
     try {
@@ -218,6 +217,7 @@ const VoiceInput = ({
     const recorderRef = recorder?.current
     return () => {
       recorderRef?.stop()
+      recorder.current.destroy()
     }
   }, [])
 
