@@ -115,6 +115,7 @@ const VoiceInput = ({
     setStartRecord(false)
     setStartConvert(startConvert)
     recorder.current.stop()
+    recorder.current.destroy()
     drawRecordId.current && cancelAnimationFrame(drawRecordId.current)
     drawRecordId.current = null
     const canvas = canvasRef.current!
@@ -148,6 +149,9 @@ const VoiceInput = ({
       catch (e) {
         console.error(e)
         onConverted('')
+      }
+      finally {
+        setStartConvert(false)
       }
     }
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
