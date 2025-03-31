@@ -99,11 +99,11 @@ const VoiceInput = ({
         v = 178
       const y = (v - 128) / 50 * canvas.height
 
-      ctx.moveTo(x, 16)
+      ctx.moveTo(x, canvas.height)
       if (ctx.roundRect)
-        ctx.roundRect(x, 16 - y, 2, y, [1, 1, 0, 0])
+        ctx.roundRect(x, canvas.height - y, 2, y, [1, 1, 0, 0])
       else
-        ctx.rect(x, 16 - y, 2, y)
+        ctx.rect(x, canvas.height - y, 2, y)
       ctx.fill()
       x += 3
     }
@@ -175,7 +175,7 @@ const VoiceInput = ({
   const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     setButtonText('录音启动中')
     handleStartRecord(() => {
-      setButtonText('松手发送')
+      setButtonText('松手发送，移出取消')
       setOriginDuration(0)
       isInside = true
     })
@@ -199,6 +199,7 @@ const VoiceInput = ({
 
     if (canvas) {
       const { width: cssWidth, height: cssHeight } = canvas.getBoundingClientRect()
+      console.log('getBoundingClientRect: ', canvas.getBoundingClientRect())
 
       canvas.width = dpr * cssWidth
       canvas.height = dpr * cssHeight
@@ -216,8 +217,6 @@ const VoiceInput = ({
     handleStopRecorder()
 
   useEffect(() => {
-    initCanvas()
-    // handleStartRecord()
     const recorderRef = recorder?.current
     return () => {
       recorderRef?.stop()
@@ -225,12 +224,18 @@ const VoiceInput = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (show)
+      initCanvas()
+  }, [show])
+
   const minutes = Number.parseInt(`${Number.parseInt(`${originDuration}`) / 60}`)
   const seconds = Number.parseInt(`${originDuration}`) % 60
 
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}>
       <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
+        <canvas id='voice-input-record' className='absolute z-10 left-0 bottom-0 w-full h-[45px]' />
         {
           !startRecord && <ActionButton
             className='absolute l-1'
@@ -243,14 +248,16 @@ const VoiceInput = ({
         {
           startConvert && <RiLoader2Line className='absolute right-2 animate-spin mr-2 w-4 h-4 text-primary-700' />
         }
-        <div className='grow'>
+        <div className='relative z-20 grow'>
           <div className='text-md text-gray-500 text-center font-bold select-none' ref={buttonRef}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <canvas id='voice-input-record' className='absolute left-0 bottom-0 w-full h-4' />
-            {buttonText}
+            <div className='flex justify-center items-center'>
+              {buttonText === '录音启动中' && <RiLoader2Line className='mr-2 h-4 w-4 animate-spin text-primary-700' />}
+              {buttonText}
+            </div>
           </div>
         </div>
       </div>
