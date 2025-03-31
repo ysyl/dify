@@ -239,7 +239,7 @@ const VoiceInput = ({
         <canvas id='voice-input-record' className='absolute z-10 left-0 bottom-0 w-full h-[45px]' />
         {
           !startRecord && <ActionButton
-            className='absolute l-1'
+            className='absolute z-50 l-1'
             size='l'
             onClick={onCancel}
           >
