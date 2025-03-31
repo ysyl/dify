@@ -17,6 +17,12 @@ server {
     location /agent {
       return 302 https://ds.ctgii.com/chat/zobaZArJfe93li92;
     }
+    location /LKqTRlUDfH.txt {
+      return 200 '288317cf26273427ad6c17f0ef1b8afd';
+    }
+    location /m6DxqUlG8i.txt {
+      return 200 'ce7a1226d35fd26e134cc17662eca01e';
+    }
     # 配置静态文件访问
     location /upload_pics/ {
         alias /var/www/images_store/23d42193-e769-4628-9f5d-bf5428994d3d/;  # 指定实际文件路径
