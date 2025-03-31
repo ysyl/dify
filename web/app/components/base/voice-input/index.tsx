@@ -99,11 +99,12 @@ const VoiceInput = ({
         v = 178
       const y = (v - 128) / 50 * canvas.height
 
-      ctx.moveTo(x, canvas.height)
+      const baseVertical = 45
+      ctx.moveTo(x, baseVertical)
       if (ctx.roundRect)
-        ctx.roundRect(x, canvas.height - y, 2, y, [1, 1, 0, 0])
+        ctx.roundRect(x, baseVertical - y, 2, y, [1, 1, 0, 0])
       else
-        ctx.rect(x, canvas.height - y, 2, y)
+        ctx.rect(x, baseVertical - y, 2, y)
       ctx.fill()
       x += 3
     }
