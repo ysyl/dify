@@ -100,7 +100,7 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
         <ActionButton size='l' className='shrink-0' onClick={() => handleSidebarCollapse(false)}>
           <RiMenuLine className='w-[18px] h-[18px]' />
         </ActionButton>
-        <div className='grow flex justify-center items-center'>
+        <div className='flex grow items-center justify-center'>
           {!currentConversationId && (
             <>
               <AppIcon
@@ -111,7 +111,7 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
                 imageUrl={appData?.site.icon_url}
                 background={appData?.site.icon_background}
               />
-              <div className='text-text-secondary system-md-semibold truncate'>
+              <div className='system-md-semibold truncate text-text-secondary'>
                 {appData?.site.title}
               </div>
             </>
@@ -148,16 +148,16 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
         </div>
       </div>
       {showChatSettings && (
-        <div className='fixed inset-0 z-50 flex justify-end p-1 bg-background-overlay'
+        <div className='fixed inset-0 z-50 flex justify-end bg-background-overlay p-1'
           onClick={() => setShowChatSettings(false)}
         >
-          <div className='flex flex-col h-full w-[calc(100vw_-_40px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
-            <div className='flex items-center gap-3 px-4 py-3 rounded-t-2xl border-b border-divider-subtle'>
-              <Message3Fill className='shrink-0 w-6 h-6' />
-              <div className='grow text-text-secondary system-xl-semibold'>{t('share.chat.chatSettingsTitle')}</div>
+          <div className='flex h-full w-[calc(100vw_-_40px)] flex-col rounded-xl bg-components-panel-bg shadow-lg backdrop-blur-sm' onClick={e => e.stopPropagation()}>
+            <div className='flex items-center gap-3 rounded-t-2xl border-b border-divider-subtle px-4 py-3'>
+              <Message3Fill className='h-6 w-6 shrink-0' />
+              <div className='system-xl-semibold grow text-text-secondary'>{t('share.chat.chatSettingsTitle')}</div>
             </div>
             <div className='p-4'>
-              <InputsFormContent showTip />
+              <InputsFormContent />
             </div>
           </div>
         </div>

@@ -130,7 +130,7 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
         </div>
       }
       <div className={cn(
-        'shrink-0 flex items-center gap-3 p-3 pr-2',
+        'flex shrink-0 items-center gap-3 p-3 pr-2',
       )}>
         <div className='shrink-0'>
           <AppIcon
@@ -141,15 +141,15 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
             imageUrl={appData?.site.icon_url}
           />
         </div>
-        <div className={cn('grow text-text-secondary system-md-semibold truncate')}>{appData?.site.title}</div>
+        <div className={cn('system-md-semibold grow truncate text-text-secondary')}>{appData?.site.title}</div>
         {!isMobile && isSidebarCollapsed && (
           <ActionButton size='l' onClick={() => handleSidebarCollapse(false)}>
-            <RiExpandRightLine className='w-[18px] h-[18px]' />
+            <RiExpandRightLine className='h-[18px] w-[18px]' />
           </ActionButton>
         )}
         {!isMobile && !isSidebarCollapsed && (
           <ActionButton size='l' onClick={() => handleSidebarCollapse(true)}>
-            <RiLayoutLeft2Line className='w-[18px] h-[18px]' />
+            <RiLayoutLeft2Line className='h-[18px] w-[18px]' />
           </ActionButton>
         )}
       </div>
@@ -159,7 +159,7 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
           {t('share.chat.newChat')}
         </Button>
       </div>
-      <div className='grow h-0 pt-4 px-3 space-y-2 overflow-y-auto'>
+      <div className='h-0 grow space-y-2 overflow-y-auto px-3 pt-4'>
         {/* pinned list */}
         {!!pinnedConversationList.length && (
           <div className='mb-4'>
@@ -183,17 +183,17 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
           />
         )}
       </div>
-      <div className='shrink-0 p-3 flex items-center justify-between'>
+      <div className='flex shrink-0 items-center justify-between p-3'>
         <MenuDropdown placement='top-start' data={appData?.site} />
         {/* powered by */}
         <div className='shrink-0'>
           {!appData?.custom_config?.remove_webapp_brand && (
             <div className={cn(
-              'shrink-0 px-2 flex items-center gap-1.5',
+              'flex shrink-0 items-center gap-1.5 px-2',
             )}>
-              <div className='text-text-tertiary system-2xs-medium-uppercase'>{t('share.chat.poweredBy')}</div>
+              <div className='system-2xs-medium-uppercase text-text-tertiary'>{t('share.chat.poweredBy')}</div>
               {appData?.custom_config?.replace_webapp_logo && (
-                <img src={appData?.custom_config?.replace_webapp_logo} alt='logo' className='block w-auto h-5' />
+                <img src={appData?.custom_config?.replace_webapp_logo} alt='logo' className='block h-5 w-auto' />
               )}
               {!appData?.custom_config?.replace_webapp_logo && (
                 <LogoSite className='!h-5' />

@@ -1,7 +1,4 @@
-import {
-  forwardRef,
-  memo,
-} from 'react'
+import { memo } from 'react'
 import {
   RiMicLine,
   RiSendPlane2Fill,
@@ -23,17 +20,22 @@ type OperationProps = {
   onSend: () => void
   theme?: Theme | null
 }
-const Operation = forwardRef<HTMLDivElement, OperationProps>(({
-  fileConfig,
-  speechToTextConfig,
-  onShowVoiceInput,
-  onSend,
-  theme,
-}, ref) => {
+const Operation = (
+  {
+    ref,
+    fileConfig,
+    speechToTextConfig,
+    onShowVoiceInput,
+    onSend,
+    theme,
+  }: OperationProps & {
+    ref: React.RefObject<HTMLDivElement>;
+  },
+) => {
   return (
     <div
       className={cn(
-        'shrink-0 flex items-center justify-end',
+        'flex shrink-0 items-center justify-end',
       )}
     >
       <div
@@ -47,7 +49,7 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
                 size='l'
                 onClick={onShowVoiceInput}
               >
-                <RiMicLine className='w-5 h-5' />
+                <RiMicLine className='h-5 w-5' />
               </ActionButton>
             )
           }
@@ -65,12 +67,12 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
               : {}
           }
         >
-          <RiSendPlane2Fill className='w-4 h-4' />
+          <RiSendPlane2Fill className='h-4 w-4' />
         </Button>
       </div>
     </div>
   )
-})
+}
 Operation.displayName = 'Operation'
 
 export default memo(Operation)

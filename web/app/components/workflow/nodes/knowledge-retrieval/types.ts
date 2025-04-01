@@ -10,6 +10,7 @@ import type {
   DataSet,
   MetadataInDoc,
   RerankingModeEnum,
+  WeightedScoreEnum,
 } from '@/models/datasets'
 
 export type MultipleRetrievalConfig = {
@@ -21,6 +22,7 @@ export type MultipleRetrievalConfig = {
   }
   reranking_mode?: RerankingModeEnum
   weights?: {
+    weight_type: WeightedScoreEnum
     vector_setting: {
       vector_weight: number
       embedding_provider_name: string
@@ -78,6 +80,7 @@ export enum MetadataFilteringVariableType {
   string = 'string',
   number = 'number',
   time = 'time',
+  select = 'select',
 }
 
 export type MetadataFilteringCondition = {

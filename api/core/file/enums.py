@@ -50,6 +50,7 @@ class FileAttribute(StrEnum):
     RELATED_ID = "related_id"
     URL = "url"
     EXTENSION = "extension"
+    RELATED_ID = "related_id"
 
 
 class ArrayFileAttribute(StrEnum):

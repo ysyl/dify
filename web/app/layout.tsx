@@ -22,12 +22,12 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-const LocaleLayout = ({
+const LocaleLayout = async ({
   children,
 }: {
   children: React.ReactNode,
 }) => {
-  const locale = getLocaleOnServer()
+  const locale = await getLocaleOnServer()
 
   return (
     <html lang={locale ?? 'en'} className="h-full" suppressHydrationWarning>
@@ -58,6 +58,7 @@ const LocaleLayout = ({
         data-public-top-k-max-value={process.env.NEXT_PUBLIC_TOP_K_MAX_VALUE}
         data-public-indexing-max-segmentation-tokens-length={process.env.NEXT_PUBLIC_INDEXING_MAX_SEGMENTATION_TOKENS_LENGTH}
         data-public-loop-node-max-count={process.env.NEXT_PUBLIC_LOOP_NODE_MAX_COUNT}
+        data-public-max-iterations-num={process.env.NEXT_PUBLIC_MAX_ITERATIONS_NUM}
       >
         <BrowserInitor>
           <SentryInitor>

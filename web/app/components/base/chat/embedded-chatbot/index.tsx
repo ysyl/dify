@@ -56,7 +56,7 @@ const Chatbot = () => {
         {!isMobile && <Loading type='app' />}
         {isMobile && (
           <div className={cn('relative')}>
-            <div className={cn('flex flex-col h-[calc(100vh_-_60px)] border-[0.5px] border-components-panel-border rounded-2xl shadow-xs')}>
+            <div className={cn('flex h-[calc(100vh_-_60px)] flex-col rounded-2xl border-[0.5px] border-components-panel-border shadow-xs')}>
               <Loading type='app' />
             </div>
           </div>
@@ -71,7 +71,7 @@ const Chatbot = () => {
         {!isMobile && <AppUnavailable />}
         {isMobile && (
           <div className={cn('relative')}>
-            <div className={cn('flex flex-col h-[calc(100vh)] border-[0.5px] border-components-panel-border rounded-2xl shadow-xs')}>
+            <div className={cn('flex h-[calc(100vh_-_60px)] flex-col rounded-2xl border-[0.5px] border-components-panel-border shadow-xs')}>
               <AppUnavailable />
             </div>
           </div>
@@ -95,7 +95,7 @@ const Chatbot = () => {
           theme={themeBuilder?.theme}
           onCreateNewChat={handleNewConversation}
         />
-        <div className={cn('grow flex flex-col overflow-y-auto', isMobile && '!h-[calc(100vh_-_3rem)] bg-chatbot-bg rounded-2xl')}>
+        <div className={cn('flex grow flex-col overflow-y-auto', isMobile && '!h-[calc(100vh_-_3rem)] rounded-2xl bg-chatbot-bg')}>
           {appChatListDataLoading && (
             <Loading type='app' />
           )}
@@ -142,6 +142,8 @@ const EmbeddedChatbotWrapper = () => {
     setClearChatList,
     isResponding,
     setIsResponding,
+    currentConversationInputs,
+    setCurrentConversationInputs,
   } = useEmbeddedChatbot()
 
   return <EmbeddedChatbotContext.Provider value={{
@@ -175,6 +177,8 @@ const EmbeddedChatbotWrapper = () => {
     setClearChatList,
     isResponding,
     setIsResponding,
+    currentConversationInputs,
+    setCurrentConversationInputs,
   }}>
     <Chatbot />
   </EmbeddedChatbotContext.Provider>

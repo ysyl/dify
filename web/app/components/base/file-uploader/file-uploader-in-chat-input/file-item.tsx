@@ -53,16 +53,16 @@ const FileItem = ({
           'group/file-item relative px-4 pt-2 truncate w-[144px] h-[54px] rounded-[80px] border-[0.5px] border-components-panel-border bg-components-card-bg shadow-xs',
           !uploadError && 'hover:bg-components-card-bg-alt',
           uploadError && 'border border-state-destructive-border bg-state-destructive-hover',
-          uploadError && 'hover:border-[0.5px] hover:border-state-destructive-border bg-state-destructive-hover-alt',
+          uploadError && 'bg-state-destructive-hover-alt hover:border-[0.5px] hover:border-state-destructive-border',
         )}
       >
         {
           showDeleteAction && (
             <Button
-              className='hidden group-hover/file-item:flex absolute -right-1.5 -top-1.5 p-0 w-5 h-5 rounded-full z-[11]'
+              className='absolute -right-1.5 -top-1.5 z-[11] hidden h-5 w-5 rounded-full p-0 group-hover/file-item:flex'
               onClick={() => onRemove?.(id)}
             >
-              <RiCloseLine className='w-4 h-4 text-components-button-secondary-text' />
+              <RiCloseLine className='h-4 w-4 text-components-button-secondary-text' />
             </Button>
           )
         }
@@ -74,7 +74,7 @@ const FileItem = ({
           {name}
         </div>
         <div className='relative flex items-center justify-between'>
-          <div className='flex items-center system-2xs-medium-uppercase text-text-tertiary'>
+          <div className='system-2xs-medium-uppercase flex items-center text-text-tertiary'>
             <FileTypeIcon
               size='sm'
               type={getFileAppearanceType(name, type)}
@@ -96,13 +96,13 @@ const FileItem = ({
             showDownloadAction && tmp_preview_url && (
               <ActionButton
                 size='m'
-                className='hidden group-hover/file-item:flex absolute -right-1 -top-1'
+                className='absolute -right-1 -top-1 hidden group-hover/file-item:flex'
                 onClick={(e) => {
                   e.stopPropagation()
                   downloadFile(tmp_preview_url || '', name)
                 }}
               >
-                <RiDownloadLine className='w-3.5 h-3.5 text-text-tertiary' />
+                <RiDownloadLine className='h-3.5 w-3.5 text-text-tertiary' />
               </ActionButton>
             )
           }
@@ -118,7 +118,7 @@ const FileItem = ({
           {
             uploadError && (
               <ReplayLine
-                className='w-4 h-4 text-text-tertiary'
+                className='h-4 w-4 text-text-tertiary'
                 onClick={() => onReUpload?.(id)}
               />
             )

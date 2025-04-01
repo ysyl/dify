@@ -1,9 +1,10 @@
 import {
+  ChangeEvent,
   useCallback,
   useRef,
   useState,
 } from 'react'
-import Textarea from 'rc-textarea'
+import Textarea from 'react-textarea-autosize'
 import { useTranslation } from 'react-i18next'
 import Recorder from 'js-audio-recorder'
 import type {
@@ -29,6 +30,7 @@ import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
 import { useChatWithHistoryContext } from '../../chat-with-history/context'
 import Button from '../../../button'
+import { TextAreaRef } from 'rc-textarea'
 
 type ChatInputAreaProps = {
   showFeatureBar?: boolean
@@ -101,6 +103,7 @@ const ChatInputArea = ({
     })
   }, [newConversationInputsRef, handleNewConversationInputsChange])
 
+  const isComposingRef = useRef(false)
   const handleSend = () => {
     if (isResponding) {
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForResponse') })
@@ -124,8 +127,21 @@ const ChatInputArea = ({
       }
     }
   }
+  const handleCompositionStart = () => {
+    // e: React.CompositionEvent<HTMLTextAreaElement>
+    isComposingRef.current = true
+  }
+  const handleCompositionEnd = () => {
+    // safari or some browsers will trigger compositionend before keydown.
+    // delay 50ms for safari.
+    setTimeout(() => {
+      isComposingRef.current = false
+    }, 50)
+  }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+      // if isComposing, exit
+      if (isComposingRef.current) return
       e.preventDefault()
       setQuery(query.replace(/\n$/, ''))
       historyRef.current.push(query)
@@ -193,7 +209,7 @@ const ChatInputArea = ({
         className={cn(
           'mt-1 relative bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[25px]',
           isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
-          disabled && 'opacity-50 pointer-events-none border-components-panel-border shadow-none',
+          disabled && 'pointer-events-none border-components-panel-border opacity-50 shadow-none',
         )}
       >
         <div className='relative px-[9px] max-h-[158px] overflow-x-hidden overflow-y-auto'>
@@ -201,28 +217,30 @@ const ChatInputArea = ({
             ref={wrapperRef}
             className='flex items-center justify-between h-12'
           >
-            <div className='flex items-center relative grow w-full'>
+            <div className='relative flex w-full grow items-center'>
               <div
                 ref={textValueRef}
-                className='absolute w-auto h-auto p-1 leading-6 body-lg-regular pointer-events-none whitespace-pre invisible'
+                className='body-lg-regular pointer-events-none invisible absolute h-auto w-auto whitespace-pre p-1 leading-6'
               >
                 {query}
               </div>
               <Textarea
-                ref={textareaRef}
+                ref={(ref: TextAreaRef) => textareaRef.current = ref as any}
                 className={cn(
-                  'p-1 w-full leading-6 body-lg-regular text-text-tertiary bg-transparent outline-none',
+                  'body-lg-regular w-full resize-none bg-transparent p-1 leading-6 text-text-tertiary outline-none',
                 )}
                 placeholder={t('common.chat.inputPlaceholder') || ''}
                 autoFocus={autofocus}
                 autoSize={{ minRows: 1 }}
                 onResize={handleTextareaResize}
                 value={query}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setQuery(e.target.value)
-                  handleTextareaResize()
+                  setTimeout(handleTextareaResize, 0)
                 }}
                 onKeyDown={handleKeyDown}
+                onCompositionStart={handleCompositionStart}
+                onCompositionEnd={handleCompositionEnd}
                 onPaste={handleClipboardPasteFile}
                 onDragEnter={handleDragFileEnter}
                 onDragLeave={handleDragFileLeave}

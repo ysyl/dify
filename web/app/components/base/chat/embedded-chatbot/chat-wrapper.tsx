@@ -34,6 +34,7 @@ const ChatWrapper = () => {
     appPrevChatList,
     currentConversationId,
     currentConversationItem,
+    currentConversationInputs,
     inputsForms,
     newConversationInputs,
     newConversationInputsRef,
@@ -73,7 +74,7 @@ const ChatWrapper = () => {
   } = useChat(
     appConfig,
     {
-      inputs: (currentConversationId ? currentConversationItem?.inputs : newConversationInputs) as any,
+      inputs: (currentConversationId ? currentConversationInputs : newConversationInputs) as any,
       inputsForm: inputsForms,
     },
     appPrevChatList,
@@ -81,7 +82,7 @@ const ChatWrapper = () => {
     clearChatList,
     setClearChatList,
   )
-  const inputsFormValue = currentConversationId ? currentConversationItem?.inputs : newConversationInputsRef?.current
+  const inputsFormValue = currentConversationId ? currentConversationInputs : newConversationInputsRef?.current
   const inputDisabled = useMemo(() => {
     let hasEmptyInput = ''
     let fileIsUploading = false
@@ -126,7 +127,7 @@ const ChatWrapper = () => {
     const data: any = {
       query: message,
       files,
-      inputs: currentConversationId ? currentConversationItem?.inputs : newConversationInputs,
+      inputs: currentConversationId ? currentConversationInputs : newConversationInputs,
       conversation_id: currentConversationId,
       parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }
@@ -204,8 +205,8 @@ const ChatWrapper = () => {
     }
     if (welcomeMessage.suggestedQuestions && welcomeMessage.suggestedQuestions?.length > 0) {
       return (
-        <div className='h-[50vh] py-12 px-4 flex items-center justify-center'>
-          <div className='grow max-w-[720px] flex gap-4'>
+        <div className='flex h-[50vh] items-center justify-center px-4 py-12'>
+          <div className='flex max-w-[720px] grow gap-4'>
             <AppIcon
               size='xl'
               iconType={appData?.site.icon_type}
@@ -213,7 +214,7 @@ const ChatWrapper = () => {
               background={appData?.site.icon_background}
               imageUrl={appData?.site.icon_url}
             />
-            <div className='grow px-4 py-3 bg-chat-bubble-bg text-text-primary rounded-2xl body-lg-regular'>
+            <div className='body-lg-regular grow rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary'>
               <Markdown content={welcomeMessage.content} />
               <SuggestedQuestions item={welcomeMessage} />
             </div>
@@ -221,10 +222,21 @@ const ChatWrapper = () => {
         </div>
       )
     }
-    <div className='px-4 max-w-[768px]'>
-      <Markdown className='!text-text-tertiary !body-2xl-regular' content={welcomeMessage.content} />
-    </div>
-  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, respondingState, doSend])
+    return (
+      <div className={cn('flex h-[50vh] flex-col items-center justify-center gap-3 py-12')}>
+        <AppIcon
+          size='xl'
+          iconType={appData?.site.icon_type}
+          icon={appData?.site.icon}
+          background={appData?.site.icon_background}
+          imageUrl={appData?.site.icon_url}
+        />
+        <div className='max-w-[768px] px-4'>
+          <Markdown className='!body-2xl-regular !text-text-tertiary' content={welcomeMessage.content} />
+        </div>
+      </div>
+    )
+  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, respondingState])
 
   const answerIcon = isDify()
     ? <LogoAvatar className='relative shrink-0' />
@@ -250,7 +262,7 @@ const ChatWrapper = () => {
       // chatFooterClassName={cn('pb-4', !isMobile && 'rounded-b-2xl')}
       // chatFooterInnerClassName={cn('mx-auto w-full max-w-full px-4', isMobile && 'px-2')}
       onSend={doSend}
-      inputs={currentConversationId ? currentConversationItem?.inputs as any : newConversationInputs}
+      inputs={currentConversationId ? currentConversationInputs as any : newConversationInputs}
       inputsForm={inputsForms}
       onRegenerate={doRegenerate}
       onStopResponding={handleStop}
