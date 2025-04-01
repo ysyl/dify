@@ -162,8 +162,8 @@ const VoiceInput = ({
       setStartConvert(false)
 
       recorder.current.start().then(() => {
-        if (canvasRef.current && ctxRef.current)
-          drawRecord()
+        // if (canvasRef.current && ctxRef.current)
+        // drawRecord()
         callback?.()
       })
     }
