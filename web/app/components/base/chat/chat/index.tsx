@@ -181,7 +181,7 @@ const Chat: FC<ChatProps> = ({
         for (const entry of entries) {
           const { blockSize } = entry.borderBoxSize[0]
 
-          chatContainerRef.current!.style.paddingBottom = `${blockSize + 40}px`
+          chatContainerRef.current!.style.paddingBottom = `${blockSize}px`
           handleScrollToBottom()
         }
       })
