@@ -35,6 +35,10 @@ type AnswerProps = {
   appData?: AppData
   noChatInput?: boolean
   switchSibling?: (siblingMessageId: string) => void
+  handleScrollToBottom?: (args: {
+    forceScroll: boolean,
+    smooth: boolean
+  }) => void
 }
 const Answer: FC<AnswerProps> = ({
   item,
@@ -49,6 +53,7 @@ const Answer: FC<AnswerProps> = ({
   appData,
   noChatInput,
   switchSibling,
+  handleScrollToBottom,
 }) => {
   const { t } = useTranslation()
   const {
@@ -94,6 +99,10 @@ const Answer: FC<AnswerProps> = ({
       getContentWidth()
     })
     resizeObserver.observe(containerRef.current)
+    handleScrollToBottom?.({
+      forceScroll: true,
+      smooth: true,
+    })
     return () => {
       resizeObserver.disconnect()
     }

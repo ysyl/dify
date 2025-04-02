@@ -66,7 +66,7 @@ const HelloWidget = ({
     onSend?.(msg)
     handleScrollToBottom?.({
       forceScroll: true,
-      smooth: true,
+      smooth: false,
     })
   }
 

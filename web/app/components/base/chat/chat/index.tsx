@@ -261,6 +261,7 @@ const Chat: FC<ChatProps> = ({
                   const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (
                     <Answer
+                      handleScrollToBottom={handleScrollToBottom}
                       appData={appData}
                       key={item.id}
                       item={item}
