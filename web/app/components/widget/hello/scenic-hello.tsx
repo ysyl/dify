@@ -6,7 +6,10 @@ type HelloWidgetProps = {
   widgetTag: string
   onSend?: (msg: string) => void
   suggestedQuestions?: string[]
-  handleScrollToBottom?: (forceScroll?: boolean) => void
+  handleScrollToBottom?: (args: {
+    forceScroll: boolean,
+    smooth: boolean
+  }) => void
 }
 
 const ARROW_ICON = () => (
@@ -61,7 +64,10 @@ const HelloWidget = ({
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
     onSend?.(msg)
-    handleScrollToBottom?.(true)
+    handleScrollToBottom?.({
+      forceScroll: true,
+      smooth: true,
+    })
   }
 
   return (
@@ -98,7 +104,7 @@ const HelloWidget = ({
           <ul className='mt-4 flex gap-2 flex-col'>
             {
               suggestedQuestions?.map(question => (<li key={question}>
-                {getPreconfigQueryItem(question, onSend)}
+                {getPreconfigQueryItem(question, handleSend)}
               </li>))
             }
           </ul>

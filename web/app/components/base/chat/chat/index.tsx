@@ -133,9 +133,16 @@ const Chat: FC<ChatProps> = ({
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
 
-  const handleScrollToBottom = useCallback((forceScroll: boolean = false) => {
-    if (chatList.length > 1 && chatContainerRef.current && (forceScroll || !userScrolledRef.current))
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+  const handleScrollToBottom = useCallback(({
+    forceScroll = false,
+    smooth = false,
+  } = {}) => {
+    if (chatList.length > 1 && chatContainerRef.current && (forceScroll || !userScrolledRef.current)) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: smooth ? 'smooth' : 'instant', // 添加平滑滚动效果
+      })
+    }
   }, [chatList.length])
 
   const handleWindowResize = useCallback(() => {
@@ -247,6 +254,7 @@ const Chat: FC<ChatProps> = ({
                     return <TourismPreference
                       key={index}
                       widgetTag={item.content}
+                      handleScrollToBottom={handleScrollToBottom}
                       onSend={onSend}
                     />
                   }

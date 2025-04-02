@@ -6,6 +6,10 @@ import cn from '@/utils/classnames'
 type TourismPreferenceProps = {
   widgetTag: string
   onSend?: (msg: string) => void
+  handleScrollToBottom?: (args: {
+    forceScroll: boolean,
+    smooth: boolean
+  }) => void
 }
 
 type SelectorValueType = {
@@ -44,7 +48,7 @@ function initAlert(formField: TourismPreferenceConfigType): Record<string, strin
   return res
 }
 
-const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
+const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismPreferenceProps) => {
   const selectorConfigObj = getTourismPreferenceConfig(widgetTag)
   const styleConfig = getStyleConfig(widgetTag)
 
@@ -69,8 +73,17 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
-    setTimeout(() => setShow(true), 1000)
+    setTimeout(() => setShow(true), 0)
   }, [])
+
+  useEffect(() => {
+    if (show) {
+      handleScrollToBottom?.({
+        forceScroll: true,
+        smooth: true,
+      })
+    }
+  }, [show])
 
   const handleClickOption = (key: string, value: string) => {
     setFormValues(pre => ({
@@ -126,7 +139,7 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
   }
 
   return (
-    <div className={cn('relative border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden pb-5 max-w-[720px]',
+    <div className={cn('relative border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden max-w-[720px]',
       'transition duration-300 ease-in',
     )} style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
@@ -136,7 +149,7 @@ const TourismPreference = ({ widgetTag, onSend }: TourismPreferenceProps) => {
         top: '0px',
       } : {
         opacity: 0,
-        top: '100px',
+        top: '1000px',
       }),
     }}>
       <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])}>
