@@ -118,6 +118,7 @@ export function isScenicHelloWidget(widgetName: string) {
 export function getScenicHelloConfig(widgetTagStr: string) {
   const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   if (index >= 0) {
+    // 融合tag中的自定义配置到预设配置
     const tagItem = parseHtmlTag(widgetTagStr)
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
     const mergeConfig: Record<string, any> = {
@@ -125,6 +126,7 @@ export function getScenicHelloConfig(widgetTagStr: string) {
       ...tagItem?.attributes,
     }
 
+    // tag特殊属性处理
     Object.keys(tagItem?.attributes || {}).forEach((key) => {
       if (typeof tagItem?.attributes[key] === 'string') {
         if (tagItem?.attributes[key]?.startsWith('[') && tagItem?.attributes[key]?.endsWith(']'))
