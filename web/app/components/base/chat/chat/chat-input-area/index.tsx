@@ -181,7 +181,7 @@ const ChatInputArea = ({
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
       {/* 自定义变量按钮区 */}
-      <div>
+      <div className='flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
             <Button key={input.variable} className={cn('text-text-tertiary action-btn uppercase rounded-3xl', inputFormBtnIsActivate(input.variable) ? 'action-btn-active ' : '')} size='medium'
