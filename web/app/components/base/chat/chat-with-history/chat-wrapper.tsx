@@ -191,7 +191,7 @@ const ChatWrapper = () => {
       return null
     if (!welcomeMessage)
       return null
-    if (!collapsed && inputsForms.length > 0)
+    if (!collapsed && inputsForms.filter(input => !input.variable.startsWith('btn_')).length > 0)
       return null
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
