@@ -57,6 +57,15 @@ html[data-theme="light"] {
   --color-components-button-destructive-primary-border-hover: #18181b14;
   --color-components-button-destructive-primary-border-disabled: #ffffff00;
 
+  --color-components-button-active-primary-bg: #E6F0FF;  /* 深海蓝，高饱和度科技感 */
+  --color-components-button-active-primary-bg-hover: #E6F0FF;  /* 悬停加深，增强交互反馈 */
+  --color-components-button-active-primary-bg-disabled: #E6F0FF;  /* 浅灰蓝，弱化禁用状态 */
+  --color-components-button-active-primary-text: #2D5BFF;
+  --color-components-button-active-primary-text-disabled: #FFFFFF99;
+  --color-components-button-active-primary-border: #E6F0FF;  /* 弱边框，减少视觉干扰 */
+  --color-components-button-active-primary-border-hover: #18181B14;  /* 悬停微调透明度 */
+  --color-components-button-active-primary-border-disabled: #FFFFFF00;  /* 禁用无边框 */
+
   --color-components-button-destructive-secondary-text: #d92d20;
   --color-components-button-destructive-secondary-text-disabled: #f0443833;
   --color-components-button-destructive-secondary-bg: #ffffff;

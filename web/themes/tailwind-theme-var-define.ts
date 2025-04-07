@@ -57,6 +57,15 @@ const vars = {
   'components-button-destructive-primary-border-hover': 'var(--color-components-button-destructive-primary-border-hover)',
   'components-button-destructive-primary-border-disabled': 'var(--color-components-button-destructive-primary-border-disabled)',
 
+  'components-button-active-primary-text': 'var(--color-components-button-active-primary-text)',
+  'components-button-active-primary-text-disabled': 'var(--color-components-button-active-primary-text-disabled)',
+  'components-button-active-primary-bg': 'var(--color-components-button-active-primary-bg)',
+  'components-button-active-primary-bg-hover': 'var(--color-components-button-active-primary-bg-hover)',
+  'components-button-active-primary-bg-disabled': 'var(--color-components-button-active-primary-bg-disabled)',
+  'components-button-active-primary-border': 'var(--color-components-button-active-primary-border)',
+  'components-button-active-primary-border-hover': 'var(--color-components-button-active-primary-border-hover)',
+  'components-button-active-primary-border-disabled': 'var(--color-components-button-active-primary-border-disabled)',
+
   'components-button-destructive-secondary-text': 'var(--color-components-button-destructive-secondary-text)',
   'components-button-destructive-secondary-text-disabled': 'var(--color-components-button-destructive-secondary-text-disabled)',
   'components-button-destructive-secondary-bg': 'var(--color-components-button-destructive-secondary-bg)',

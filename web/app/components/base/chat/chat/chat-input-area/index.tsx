@@ -181,10 +181,10 @@ const ChatInputArea = ({
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
       {/* 自定义变量按钮区 */}
-      <div className='flex gap-1'>
+      <div className='flex gap-1 my-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
-            <Button key={input.variable} className={cn('text-text-tertiary action-btn uppercase rounded-3xl', inputFormBtnIsActivate(input.variable) ? 'action-btn-active ' : '')} size='medium'
+            <Button key={input.variable} className={cn('text-text-tertiary btn-primary uppercase rounded-3xl', inputFormBtnIsActivate(input.variable) ? 'btn-active ' : '')} size='medium'
               onClick={() => triggleForm(input.variable)}>{input.label}</Button>
           ))
         }

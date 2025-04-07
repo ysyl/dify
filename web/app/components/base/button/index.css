@@ -40,6 +40,15 @@
     text-components-button-destructive-primary-text;
   }
 
+  .btn-primary.btn-active {
+    @apply 
+    bg-components-button-active-primary-bg
+    border-components-button-active-primary-border
+    hover:bg-components-button-active-primary-bg-hover
+    hover:border-components-button-active-primary-border-hover
+    text-components-button-active-primary-text;
+  }
+
   .btn-primary.btn-disabled {
     @apply 
     shadow-none
