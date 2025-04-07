@@ -1,3 +1,4 @@
+import type { HtmlElement } from '../../tools/widget-tool'
 import { parseHtmlTag } from '../../tools/widget-tool'
 
 type ScenicHelloType = {
@@ -12,6 +13,11 @@ type ScenicHelloType = {
   }[],
   'guide'?: string,
   'reperer-le-choix'?: boolean
+  'config'?: AgentCustomeConfig
+}
+
+type AgentCustomeConfig = {
+  deep_thinking?: boolean
 }
 
 export enum ScenicWidgetType {
@@ -133,9 +139,21 @@ export function getScenicHelloConfig(widgetTagStr: string) {
           mergeConfig[key] = JSON.parse(tagItem?.attributes[key])
       }
     })
+    // config节点解析
+    const customConfig = tagItem?.children.find(item => item.tagName === 'config')
+    if (customConfig)
+      mergeConfig.config = parseConfig(customConfig)
+
     return mergeConfig
   }
   throw new Error('illegal parametres')
+}
+
+// 当前仅支持tag attributes
+export function parseConfig(configEle: HtmlElement) {
+  return {
+    ...configEle.attributes,
+  }
 }
 
 export default getScenicHelloConfig

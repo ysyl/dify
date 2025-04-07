@@ -168,6 +168,8 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   const newConversationInputsRef = useRef<Record<string, any>>({})
   const [newConversationInputs, setNewConversationInputs] = useState<Record<string, any>>({})
   const handleNewConversationInputsChange = useCallback((newInputs: Record<string, any>) => {
+    console.dir('newInputs')
+    console.dir(newInputs)
     newConversationInputsRef.current = newInputs
     setNewConversationInputs(newInputs)
   }, [])

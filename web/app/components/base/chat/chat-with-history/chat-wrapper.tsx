@@ -83,7 +83,9 @@ const ChatWrapper = () => {
   const inputDisabled = useMemo(() => {
     let hasEmptyInput = ''
     let fileIsUploading = false
-    const requiredVars = inputsForms.filter(({ required }) => required)
+    // 过滤掉特殊变量（btn_开头的以输入框上方按钮组
+    const requiredVars = inputsForms.filter(input => !input.variable.startsWith('btn_'))
+      .filter(({ required }) => required)
     if (requiredVars.length) {
       requiredVars.forEach(({ variable, label, type }) => {
         if (hasEmptyInput)
@@ -126,7 +128,7 @@ const ChatWrapper = () => {
     const data: any = {
       query: message,
       files,
-      inputs: currentConversationId ? currentConversationItem?.inputs : newConversationInputs,
+      inputs: currentConversationId ? newConversationInputsRef.current : newConversationInputs,
       conversation_id: currentConversationId,
       parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }
@@ -167,6 +169,9 @@ const ChatWrapper = () => {
 
   const chatNode = useMemo(() => {
     if (!inputsForms.length)
+      return null
+    // 去掉特殊变量（btn_开头的变量以对话框上按钮组的形式展现，如「深度思考」)
+    if (!inputsForms.filter(input => !input.variable.startsWith('btn_')).length)
       return null
     if (isMobile) {
       if (!currentConversationId)

@@ -58,6 +58,7 @@ const HelloWidget = ({
     'shortcut-items': shortcutItems,
     guide,
     'reperer-le-choix': repererLeChoix = false,
+    config,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
 

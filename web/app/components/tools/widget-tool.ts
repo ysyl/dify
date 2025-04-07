@@ -54,9 +54,11 @@ function parseNode(node: Node): HtmlElement | null {
 }
 
 function parseChildren(nodes: NodeList): HtmlElement[] {
-  return Array.from(nodes)
+  if (!nodes || nodes.length === 0) return []
+  const children = Array.from(nodes)
     .map(node => parseNode(node))
     .filter(Boolean) as HtmlElement[]
+  return children
 }
 
 function parseAttributes(element: Element) {

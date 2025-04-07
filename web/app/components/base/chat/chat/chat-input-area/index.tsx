@@ -27,6 +27,8 @@ import { useToastContext } from '@/app/components/base/toast'
 import FeatureBar from '@/app/components/base/features/new-feature-panel/feature-bar'
 import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
+import { useChatWithHistoryContext } from '../../chat-with-history/context'
+import Button from '../../../button'
 
 type ChatInputAreaProps = {
   showFeatureBar?: boolean
@@ -80,8 +82,25 @@ const ChatInputArea = ({
     isDragActive,
   } = useFile(visionConfig!)
   const { checkInputsForm } = useCheckInputsForms()
+  const {
+    inputsForms,
+    newConversationInputs,
+    newConversationInputsRef,
+    handleNewConversationInputsChange,
+  } = useChatWithHistoryContext()
   const historyRef = useRef([''])
   const [currentIndex, setCurrentIndex] = useState(-1)
+
+  const triggleForm = useCallback((variable: string) => {
+    const inputs: Record<string, number> = newConversationInputsRef.current || {}
+    // 0代表未选中，1代表选中
+    const value = (!inputs[variable] || inputs[variable] === 0) ? 1 : 0
+    handleNewConversationInputsChange({
+      ...newConversationInputsRef.current,
+      [variable]: value,
+    })
+  }, [newConversationInputsRef, handleNewConversationInputsChange])
+
   const handleSend = () => {
     if (isResponding) {
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForResponse') })
@@ -153,9 +172,23 @@ const ChatInputArea = ({
     />
   )
 
+  const inputFormBtnIsActivate = (variable: string) => {
+    const currentFormValues: any = newConversationInputsRef.current
+    return currentFormValues[variable] === 1
+  }
+
   return (
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
+      {/* 自定义变量按钮区 */}
+      <div>
+        {
+          inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
+            <Button key={input.variable} className={cn('text-text-tertiary action-btn uppercase rounded-3xl', inputFormBtnIsActivate(input.variable) ? 'action-btn-active ' : '')} size='medium'
+              onClick={() => triggleForm(input.variable)}>{input.label}</Button>
+          ))
+        }
+      </div>
       <div
         className={cn(
           'mt-1 relative bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[25px]',
