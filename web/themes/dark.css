@@ -62,9 +62,9 @@ html[data-theme="dark"] {
   --color-components-button-active-primary-bg-disabled: #E6F0FF;  /* 浅灰蓝，弱化禁用状态 */
   --color-components-button-active-primary-text: #FFFFFF;
   --color-components-button-active-primary-text-disabled: #FFFFFF99;
-  --color-components-button-active-primary-border: #18181B0A;  /* 弱边框，减少视觉干扰 */
-  --color-components-button-active-primary-border-hover: #18181B14;  /* 悬停微调透明度 */
-  --color-components-button-active-primary-border-disabled: #FFFFFF00;  /* 禁用无边框 */
+  --color-components-button-active-primary-border: #B3D4FC;  /* 弱边框，减少视觉干扰 */
+  --color-components-button-active-primary-border-hover: #B3D4FC;  /* 悬停微调透明度 */
+  --color-components-button-active-primary-border-disabled: #B3D4FC;  /* 禁用无边框 */
 
   --color-components-button-destructive-secondary-text: #f97066;
   --color-components-button-destructive-secondary-text-disabled: #f0443833;
