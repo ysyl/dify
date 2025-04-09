@@ -20,6 +20,8 @@ import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import { checkOrSetAccessToken } from '@/app/components/share/utils'
 import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
+import type { Modifier } from '@dnd-kit/core'
+import { DndContext } from '@dnd-kit/core'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -36,12 +38,14 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     isMobile,
     themeBuilder,
     sidebarCollapseState,
+    handleSidebarCollapse,
   } = useChatWithHistoryContext()
   const isSidebarCollapsed = sidebarCollapseState
   const customConfig = appData?.custom_config
   const site = appData?.site
 
   const [showSidePanel, setShowSidePanel] = useState(false)
+  const [sidebarOffsetX, setSideOffsetX] = useState(0)
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
@@ -64,7 +68,19 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       <AppUnavailable />
     )
   }
+  const restrictToRight: Modifier = ({ transform }) => {
+    // 当X轴偏移量不超过40，且Y轴偏移量超过20时强制归零
+    let x = 0
+    if (transform.x < 40 || Math.abs(transform.y) > 20)
+      x = 0
+    else
+      x = transform.x
 
+    return {
+      ...transform,
+      x,
+    }
+  }
   return (
     <div className={cn(
       'h-full flex bg-background-default-burn',
@@ -80,7 +96,10 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
         </div>
       )}
       {isMobile && (
-        <HeaderInMobile />
+        <HeaderInMobile sidebarOffsetX={sidebarOffsetX} handleSidebarCollapse={(state) => {
+          handleSidebarCollapse(state)
+          setSideOffsetX(0)
+        }} />
       )}
       <div className={cn('relative grow p-2 overflow-y-auto', isMobile && 'h-[calc(100%_-_56px)] p-0')}>
         {isSidebarCollapsed && (
@@ -101,7 +120,9 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             <Loading type='app' />
           )}
           {!appChatListDataLoading && (
-            <ChatWrapper key={chatShouldReloadKey} />
+            <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]}>
+              <ChatWrapper key={chatShouldReloadKey} />
+            </DndContext>
           )}
         </div>
       </div>

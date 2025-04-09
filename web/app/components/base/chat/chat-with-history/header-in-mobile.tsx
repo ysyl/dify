@@ -18,7 +18,11 @@ import type { ConversationItem } from '@/models/share'
 import type { DragEndEvent, Modifier } from '@dnd-kit/core'
 import { DndContext } from '@dnd-kit/core'
 
-const HeaderInMobile = () => {
+type HeaderInMobileProps = {
+  sidebarOffsetX?: number
+  handleSidebarCollapse: (state: boolean) => void
+}
+const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobileProps) => {
   const {
     appData,
     currentConversationId,
@@ -31,7 +35,6 @@ const HeaderInMobile = () => {
     handleRenameConversation,
     conversationRenaming,
     sidebarCollapseState,
-    handleSidebarCollapse,
   } = useChatWithHistoryContext()
   const { t } = useTranslation()
   const isPin = pinnedConversationList.some(item => item.id === currentConversationId)
@@ -77,6 +80,9 @@ const HeaderInMobile = () => {
       x: transform.x > 0 ? 0 : transform.x,
     }
   }
+  if (sidebarOffsetX && sidebarOffsetX > 0)
+    handleSidebarCollapse(false)
+
   return (
     <>
       <div className='shrink-0 flex items-center px-2 py-3 gap-1 bg-mask-top2bottom-gray-50-to-transparent'>
@@ -121,7 +127,7 @@ const HeaderInMobile = () => {
       >
         <div className='flex h-full w-[calc(100vw_-_120px)] ' onClick={e => e.stopPropagation()}>
           <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} >
-            <Sidebar />
+            <Sidebar sidebarOffsetX={sidebarOffsetX}/>
           </DndContext>
         </div>
       </div>

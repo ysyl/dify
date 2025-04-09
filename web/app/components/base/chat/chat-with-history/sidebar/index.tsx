@@ -25,9 +25,9 @@ import { useEffect } from 'react'
 
 type Props = {
   isPanel?: boolean
+  sidebarOffsetX?: number
 }
-
-const Sidebar = ({ isPanel }: Props) => {
+const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
   const { t } = useTranslation()
   const {
     appData,
@@ -89,7 +89,15 @@ const Sidebar = ({ isPanel }: Props) => {
   }
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'sidebar' })
   const lastTransFormX = useRef(0)
-  const style = { transform: `translate3d(${transform ? transform.x : lastTransFormX.current}px, 0px, 0)` }
+  let currentOffsetX = 0
+  if (transform)
+    currentOffsetX = transform.x
+  else if (lastTransFormX.current !== undefined)
+    currentOffsetX = lastTransFormX.current
+  else
+    currentOffsetX = sidebarOffsetX || 0
+
+  const style = { transform: `translate3d(${currentOffsetX}px, 0px, 0)` }
   useEffect(() => {
     if (!transform) {
       if (lastTransFormX.current !== undefined)

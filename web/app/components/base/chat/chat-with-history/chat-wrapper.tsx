@@ -24,6 +24,7 @@ import cn from '@/utils/classnames'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import SuggestedQuestions from '../chat/answer/suggested-questions'
+import { useDraggable } from '@dnd-kit/core'
 
 const ChatWrapper = () => {
   const {
@@ -224,6 +225,7 @@ const ChatWrapper = () => {
         </div>
       )
     }
+
     return (
       <div className={cn('h-[50vh] py-12 flex flex-col items-center justify-center gap-3')}>
         <AppIcon
@@ -250,9 +252,13 @@ const ChatWrapper = () => {
     />
     : null
 
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'chat-body' })
   return (
     <div
       className='h-full bg-chatbot-bg bg-chatbot-ctg-bg overflow-hidden bg-center bg-no-repeat'
+      ref={setNodeRef}
+      id='chat-body'
+      {...listeners} {...attributes}
     >
       <Chat
         appData={appData}
