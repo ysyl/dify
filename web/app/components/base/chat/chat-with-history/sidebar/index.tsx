@@ -1,8 +1,6 @@
 import {
-  Dispatch,
-  FC,
-  SetStateAction,
   useCallback,
+  useRef,
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +20,8 @@ import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/re
 import LogoSite from '@/app/components/base/logo/logo-site'
 import type { ConversationItem } from '@/models/share'
 import cn from '@/utils/classnames'
+import { useDraggable } from '@dnd-kit/core'
+import { useEffect } from 'react'
 
 type Props = {
   isPanel?: boolean
@@ -87,12 +87,36 @@ const Sidebar = ({ isPanel }: Props) => {
     handleNewConversation()
     isMobile && handleSidebarCollapse(true)
   }
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'sidebar' })
+  const lastTransFormX = useRef(0)
+  const style = { transform: `translate3d(${transform ? transform.x : lastTransFormX.current}px, 0px, 0)` }
+  useEffect(() => {
+    if (!transform) {
+      if (lastTransFormX.current !== undefined)
+        setTimeout(() => lastTransFormX.current = 0, 100)
+
+      return
+    };
+    lastTransFormX.current = transform.x
+  }, [transform])
 
   return (
     <div className={cn(
-      'grow flex flex-col w-full',
+      'grow flex flex-col w-full relative bg-components-panel-bg rounded-xl shadow-lg ',
       isPanel && 'rounded-xl bg-components-panel-bg border-[0.5px] border-components-panel-border-subtle shadow-lg',
-    )}>
+    )}
+    style={style}
+    ref={setNodeRef}
+    id='sidebar'
+    {...listeners} {...attributes}
+    >
+      <div
+        className='absolute right-0 top-[50%] w-10'
+      >
+        <div className='relative -right-7 w-1.5 h-10 rounded-lg bg-gray-300'
+        >
+        </div>
+      </div>
       <div className={cn(
         'shrink-0 flex items-center gap-3 p-3 pr-2',
       )}>

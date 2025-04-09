@@ -15,6 +15,8 @@ import InputsFormContent from '@/app/components/base/chat/chat-with-history/inpu
 import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
 import type { ConversationItem } from '@/models/share'
+import type { DragEndEvent, Modifier } from '@dnd-kit/core'
+import { DndContext } from '@dnd-kit/core'
 
 const HeaderInMobile = () => {
   const {
@@ -64,6 +66,17 @@ const HeaderInMobile = () => {
   }, [showRename, handleRenameConversation, handleCancelRename])
   const [showChatSettings, setShowChatSettings] = useState(false)
 
+  const onDragEnd = (e: DragEndEvent) => {
+    if (e.delta.x < 0)
+      handleSidebarCollapse(true)
+  }
+  const restrictToLeft: Modifier = ({ transform }) => {
+    // 当X轴偏移量超过0（向右）时强制归零
+    return {
+      ...transform,
+      x: transform.x > 0 ? 0 : transform.x,
+    }
+  }
   return (
     <>
       <div className='shrink-0 flex items-center px-2 py-3 gap-1 bg-mask-top2bottom-gray-50-to-transparent'>
@@ -103,11 +116,13 @@ const HeaderInMobile = () => {
           handleViewChatSettings={() => setShowChatSettings(true)}
         />
       </div>
-      <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
+      <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out bg-transparent', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
         onClick={() => handleSidebarCollapse(true)}
       >
-        <div className='flex h-full w-[calc(100vw_-_120px)] bg-components-panel-bg backdrop-blur-sm rounded-xl shadow-lg' onClick={e => e.stopPropagation()}>
-          <Sidebar />
+        <div className='flex h-full w-[calc(100vw_-_120px)] ' onClick={e => e.stopPropagation()}>
+          <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} >
+            <Sidebar />
+          </DndContext>
         </div>
       </div>
       {showChatSettings && (
