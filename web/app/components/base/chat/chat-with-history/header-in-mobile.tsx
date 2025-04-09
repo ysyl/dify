@@ -70,7 +70,7 @@ const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobil
   const [showChatSettings, setShowChatSettings] = useState(false)
 
   const onDragEnd = (e: DragEndEvent) => {
-    if (e.delta.x < 0)
+    if (e.delta.x < -20 && Math.abs(e.delta.y) < 20)
       handleSidebarCollapse(true)
   }
   const restrictToLeft: Modifier = ({ transform }) => {
