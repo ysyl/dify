@@ -102,8 +102,9 @@ const Sidebar = ({ isPanel }: Props) => {
 
   return (
     <div className={cn(
-      'grow flex flex-col w-full relative bg-components-panel-bg rounded-xl shadow-lg ',
+      'grow flex flex-col w-full relative',
       isPanel && 'rounded-xl bg-components-panel-bg border-[0.5px] border-components-panel-border-subtle shadow-lg',
+      isMobile && 'bg-components-panel-bg rounded-xl shadow-lg',
     )}
     style={style}
     ref={setNodeRef}
