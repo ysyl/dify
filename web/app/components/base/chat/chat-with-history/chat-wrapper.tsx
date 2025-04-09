@@ -255,7 +255,7 @@ const ChatWrapper = () => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'chat-body' })
   return (
     <div
-      className='h-full bg-chatbot-bg bg-chatbot-ctg-bg overflow-hidden bg-center bg-no-repeat'
+      className='h-full bg-chatbot-ctg-bg overflow-hidden bg-center bg-no-repeat'
       ref={setNodeRef}
       id='chat-body'
       {...listeners} {...attributes}

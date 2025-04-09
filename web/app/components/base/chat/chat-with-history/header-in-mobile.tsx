@@ -126,7 +126,7 @@ const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobil
         onClick={() => handleSidebarCollapse(true)}
       >
         <div className='flex h-full w-[calc(100vw_-_120px)] ' onClick={e => e.stopPropagation()}>
-          <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} >
+          <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd}>
             <Sidebar sidebarOffsetX={sidebarOffsetX}/>
           </DndContext>
         </div>
