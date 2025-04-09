@@ -110,13 +110,14 @@ const Sidebar = ({ isPanel }: Props) => {
     id='sidebar'
     {...listeners} {...attributes}
     >
-      <div
-        className='absolute right-0 top-[50%] w-10'
-      >
-        <div className='relative -right-7 w-1.5 h-10 rounded-lg bg-gray-300'
+      {
+        isMobile && <div
+          className='absolute right-0 top-[50%] w-10'
         >
+          <div className='relative -right-7 w-1.5 h-10 rounded-lg bg-gray-300'>
+          </div>
         </div>
-      </div>
+      }
       <div className={cn(
         'shrink-0 flex items-center gap-3 p-3 pr-2',
       )}>
