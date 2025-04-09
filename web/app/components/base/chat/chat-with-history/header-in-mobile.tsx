@@ -123,11 +123,14 @@ const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobil
         />
       </div>
       <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out bg-transparent', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
+        onTouchEnd={(_) => {
+          handleSidebarCollapse(true)
+        }}
         onClick={() => handleSidebarCollapse(true)}
       >
         <div className='flex h-full w-[calc(100vw_-_120px)] ' onClick={e => e.stopPropagation()}>
           <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd}>
-            <Sidebar sidebarOffsetX={sidebarOffsetX}/>
+            <Sidebar sidebarOffsetX={sidebarOffsetX} />
           </DndContext>
         </div>
       </div>
