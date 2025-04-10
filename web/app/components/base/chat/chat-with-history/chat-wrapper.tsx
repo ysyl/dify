@@ -26,7 +26,10 @@ import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-
 import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 
-const ChatWrapper = () => {
+type Props = {
+  setChatState: (state: 'static' | 'thinking' | 'talking') => void
+}
+const ChatWrapper = ({ setChatState }: Props) => {
   const {
     appParams,
     appPrevChatTree,
@@ -123,6 +126,8 @@ const ChatWrapper = () => {
 
   useEffect(() => {
     setIsResponding(respondingState)
+    // 设置数字人聊天状态
+    setChatState(respondingState ? 'talking' : 'static')
   }, [respondingState, setIsResponding])
 
   const doSend: OnSend = useCallback((message, files, isRegenerate = false, parentAnswer: ChatItem | null = null) => {

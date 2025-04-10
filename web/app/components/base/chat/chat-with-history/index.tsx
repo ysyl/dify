@@ -45,10 +45,14 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const customConfig = appData?.custom_config
   const site = appData?.site
   const agentConfig = parseAgentConfig(site?.description)
-  console.dir(agentConfig)
 
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
+  const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
+
+  const getDigitalHumainImg = (chatState: 'static' | 'thinking' | 'talking') => {
+    return agentConfig?.digitalHuman?.humanImage[chatState]
+  }
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
@@ -132,19 +136,25 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             <Loading type='app' />
           )}
           {
-            agentConfig?.digitalHuman && <div className='h-[50%] overflow-hidden rounded-2xl mb-1' style={{
+            agentConfig?.digitalHuman && <div className='h-[50%] overflow-hidden rounded-2xl mb-1 flex justify-center' style={{
               backgroundImage: `url('${agentConfig.digitalHuman.backgroundImage.src}')`,
               backgroundPositionY: agentConfig.digitalHuman.backgroundImage.positionY,
               backgroundPositionX: agentConfig.digitalHuman.backgroundImage.positionX,
             }}>
               <img
-                className='relative -top-6'
+                className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
+                src={agentConfig.digitalHuman.humanImage.static} />
+              <img
+                className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
                 src={agentConfig.digitalHuman.humanImage.thinking} />
+              <img
+                className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
+                src={agentConfig.digitalHuman.humanImage.talking} />
             </div>
           }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
-              <ChatWrapper key={chatShouldReloadKey} />
+              <ChatWrapper key={chatShouldReloadKey} setChatState={setChatState} />
             </DndContext>
           )}
         </div>
