@@ -132,7 +132,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             <Loading type='app' />
           )}
           {
-            isMobile && agentConfig?.digitalHuman && <div className='h-[50%] overflow-hidden mb-1 flex justify-center' style={{
+            isMobile && agentConfig?.digitalHuman && <div className='relative z-10 h-[50%] overflow-hidden m-[16px] -mb-3 flex justify-center rounded-2xl' style={{
               backgroundImage: `url('${agentConfig.digitalHuman.backgroundImage.src}')`,
               backgroundPositionY: agentConfig.digitalHuman.backgroundImage.positionY,
               backgroundPositionX: agentConfig.digitalHuman.backgroundImage.positionX,
