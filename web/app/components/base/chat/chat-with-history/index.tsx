@@ -136,6 +136,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
               backgroundImage: `url('${agentConfig.digitalHuman.backgroundImage.src}')`,
               backgroundPositionY: agentConfig.digitalHuman.backgroundImage.positionY,
               backgroundPositionX: agentConfig.digitalHuman.backgroundImage.positionX,
+              boxShadow: '0px 12px 20px 0px rgba(0, 0, 0, 0.30)',
             }}>
               <img
                 className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}

@@ -42,6 +42,7 @@ import { changeLanguage } from '@/i18n/i18next-config'
 import { useAppFavicon } from '@/hooks/use-app-favicon'
 import { InputVarType } from '@/app/components/workflow/types'
 import { TransferMethod } from '@/types/app'
+import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 
 function getFormattedChatList(messages: any[]) {
   const newChatList: ChatItem[] = []
@@ -104,6 +105,8 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     return appInfo
   }, [isInstalledApp, installedAppInfo, appInfo])
   const appId = useMemo(() => appData?.app_id, [appData])
+  const media = useBreakpoints()
+  const isMobile = media === MediaType.mobile
 
   useEffect(() => {
     if (appData?.site.default_language)
@@ -120,7 +123,11 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   useEffect(() => {
     if (appId) {
       const localState = localStorage.getItem('webappSidebarCollapse')
-      setSidebarCollapseState(localState === 'collapsed')
+      // 手机端默认不展示侧边栏，pc端默认展开
+      if (localState === null)
+        setSidebarCollapseState(isMobile)
+      else
+        setSidebarCollapseState(localState === 'collapsed')
     }
   }, [appId])
   const [conversationIdInfo, setConversationIdInfo] = useLocalStorageState<Record<string, string>>(CONVERSATION_ID_INFO, {
