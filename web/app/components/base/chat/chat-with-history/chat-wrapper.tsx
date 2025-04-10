@@ -27,9 +27,11 @@ import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 
 type Props = {
+  chatState: 'static' | 'thinking' | 'talking'
   setChatState: (state: 'static' | 'thinking' | 'talking') => void
+  hasDigitalHuman: boolean
 }
-const ChatWrapper = ({ setChatState }: Props) => {
+const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
   const {
     appParams,
     appPrevChatTree,
@@ -126,8 +128,7 @@ const ChatWrapper = ({ setChatState }: Props) => {
 
   useEffect(() => {
     setIsResponding(respondingState)
-    // 设置数字人聊天状态
-    setChatState(respondingState ? 'talking' : 'static')
+    if (!respondingState) setChatState('static')
   }, [respondingState, setIsResponding])
 
   const doSend: OnSend = useCallback((message, files, isRegenerate = false, parentAnswer: ChatItem | null = null) => {
@@ -188,6 +189,19 @@ const ChatWrapper = ({ setChatState }: Props) => {
       return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
     }
   }, [inputsForms.length, isMobile, currentConversationId, collapsed])
+
+  useEffect(() => {
+    const markdownBodyList = document.querySelectorAll('.answer .markdown-body')
+    if (markdownBodyList.length === 0) return
+
+    const lastChild = markdownBodyList[markdownBodyList.length - 1].lastChild
+    console.log('lastChild?.nodeName')
+    console.dir(lastChild?.nodeName)
+    if (lastChild?.nodeName.toLocaleLowerCase() === 'details' && respondingState && chatState !== 'thinking')
+      setChatState('thinking')
+    else if (!['details', 'div'].includes(lastChild?.nodeName.toLocaleLowerCase() || '') && respondingState && chatState !== 'talking')
+      setChatState('talking')
+  }, [chatList])
 
   const welcome = useMemo(() => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
@@ -270,7 +284,7 @@ const ChatWrapper = ({ setChatState }: Props) => {
         config={appConfig}
         chatList={messageList}
         isResponding={respondingState}
-        chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[720px] ${isMobile && 'px-4'}`}
+        chatContainerInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile && 'px-4'} ${hasDigitalHuman ? 'pt-2' : 'pt-6'} `}
         chatFooterClassName='pb-4'
         chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}

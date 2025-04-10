@@ -50,10 +50,6 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
   const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
 
-  const getDigitalHumainImg = (chatState: 'static' | 'thinking' | 'talking') => {
-    return agentConfig?.digitalHuman?.humanImage[chatState]
-  }
-
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
     if (site) {
@@ -154,7 +150,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
-              <ChatWrapper key={chatShouldReloadKey} setChatState={setChatState} />
+              <ChatWrapper key={chatShouldReloadKey} chatState={chatState} setChatState={setChatState} hasDigitalHuman={!!agentConfig?.digitalHuman}/>
             </DndContext>
           )}
         </div>
