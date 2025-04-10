@@ -22,6 +22,7 @@ import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
 import type { Modifier } from '@dnd-kit/core'
 import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { parseAgentConfig } from './agent-config'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -43,6 +44,8 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const isSidebarCollapsed = sidebarCollapseState
   const customConfig = appData?.custom_config
   const site = appData?.site
+  const agentConfig = parseAgentConfig(site?.description)
+  console.dir(agentConfig)
 
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
@@ -108,7 +111,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
         <HeaderInMobile sidebarOffsetX={sidebarOffsetX} handleSidebarCollapse={(state) => {
           handleSidebarCollapse(state)
           setSideOffsetX(0)
-        }} setSidebarOffsetX={setSideOffsetX}/>
+        }} setSidebarOffsetX={setSideOffsetX} />
       )}
       <div className={cn('relative grow p-2 overflow-y-auto', isMobile && 'h-[calc(100%_-_56px)] p-0')}>
         {isSidebarCollapsed && (
@@ -128,6 +131,17 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           {appChatListDataLoading && (
             <Loading type='app' />
           )}
+          {
+            agentConfig?.digitalHuman && <div className='h-[50%] overflow-hidden rounded-2xl mb-1' style={{
+              backgroundImage: `url('${agentConfig.digitalHuman.backgroundImage.src}')`,
+              backgroundPositionY: agentConfig.digitalHuman.backgroundImage.positionY,
+              backgroundPositionX: agentConfig.digitalHuman.backgroundImage.positionX,
+            }}>
+              <img
+                className='relative -top-6'
+                src={agentConfig.digitalHuman.humanImage.thinking} />
+            </div>
+          }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
               <ChatWrapper key={chatShouldReloadKey} />

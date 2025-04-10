@@ -5,6 +5,34 @@ export type HtmlElement = {
   textContent?: string
 }
 
+export function validateXML(xmlString: string) {
+  try {
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(xmlString, 'text/xml')
+    const parserError = xmlDoc.getElementsByTagName('parsererror')
+
+    if (parserError.length > 0)
+      return { isValid: false, error: parserError[0].textContent }
+
+    return { isValid: true }
+  }
+  catch (e: any) {
+    return { isValid: false, error: e.message }
+  }
+}
+
+export function parseHtmlTagRaw(htmlString: string): HTMLElement | null {
+  try {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(htmlString, 'text/html')
+    return doc.body
+  }
+  catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
 export function parseHtmlTag(htmlString: string): HtmlElement | null {
   try {
     const parser = new DOMParser()
