@@ -87,7 +87,9 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
     handleNewConversation()
     isMobile && handleSidebarCollapse(true)
   }
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'sidebar' })
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: 'sidebar',
+  })
   const lastTransFormX = useRef(0)
   let currentOffsetX = 0
   if (transform)

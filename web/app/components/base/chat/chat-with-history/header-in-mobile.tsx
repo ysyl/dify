@@ -16,13 +16,14 @@ import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
 import type { ConversationItem } from '@/models/share'
 import type { DragEndEvent, Modifier } from '@dnd-kit/core'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 
 type HeaderInMobileProps = {
   sidebarOffsetX?: number
+  setSidebarOffsetX?: (x: number) => void
   handleSidebarCollapse: (state: boolean) => void
 }
-const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobileProps) => {
+const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollapse }: HeaderInMobileProps) => {
   const {
     appData,
     currentConversationId,
@@ -70,18 +71,28 @@ const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobil
   const [showChatSettings, setShowChatSettings] = useState(false)
 
   const onDragEnd = (e: DragEndEvent) => {
-    if (e.delta.x < -20 && Math.abs(e.delta.y) < 20)
+    if (e.delta.x < -10)
       handleSidebarCollapse(true)
+    else
+      setSidebarOffsetX?.(0)
   }
   const restrictToLeft: Modifier = ({ transform }) => {
     // 当X轴偏移量超过0（向右）时强制归零
     return {
       ...transform,
-      x: transform.x > 0 ? 0 : transform.x,
+      x: (transform.x > 0) ? 0 : transform.x,
     }
   }
   if (sidebarOffsetX && sidebarOffsetX > 0)
     handleSidebarCollapse(false)
+
+  const sensors = useSensors(
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+  )
 
   return (
     <>
@@ -123,13 +134,15 @@ const HeaderInMobile = ({ sidebarOffsetX, handleSidebarCollapse }: HeaderInMobil
         />
       </div>
       <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out bg-transparent', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
-        onTouchEnd={(_) => {
-          handleSidebarCollapse(true)
+        id='sidebar_wrap'
+        onTouchEnd={(e) => {
+          if (e.target instanceof HTMLElement && e.target.id === 'sidebar_wrap')
+            handleSidebarCollapse(true)
         }}
-        onClick={() => handleSidebarCollapse(true)}
+        // onClick={() => handleSidebarCollapse(true)}
       >
-        <div className='flex h-full w-[calc(100vw_-_120px)] ' onClick={e => e.stopPropagation()}>
-          <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd}>
+        <div className='flex h-full w-[calc(100vw_-_120px)] '>
+          <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd} sensors={sensors}>
             <Sidebar sidebarOffsetX={sidebarOffsetX} />
           </DndContext>
         </div>

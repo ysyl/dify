@@ -21,7 +21,7 @@ import { checkOrSetAccessToken } from '@/app/components/share/utils'
 import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
 import type { Modifier } from '@dnd-kit/core'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -57,17 +57,14 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     }
   }, [site, customConfig, themeBuilder])
 
-  if (appInfoLoading) {
-    return (
-      <Loading type='app' />
-    )
-  }
+  const sensors = useSensors(
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+  )
 
-  if (appInfoError) {
-    return (
-      <AppUnavailable />
-    )
-  }
   const restrictToRight: Modifier = ({ transform }) => {
     // 当X轴偏移量不超过40，且Y轴偏移量超过20时强制归零
     let x = 0
@@ -80,6 +77,18 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       ...transform,
       x,
     }
+  }
+
+  if (appInfoLoading) {
+    return (
+      <Loading type='app' />
+    )
+  }
+
+  if (appInfoError) {
+    return (
+      <AppUnavailable />
+    )
   }
   return (
     <div className={cn(
@@ -99,7 +108,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
         <HeaderInMobile sidebarOffsetX={sidebarOffsetX} handleSidebarCollapse={(state) => {
           handleSidebarCollapse(state)
           setSideOffsetX(0)
-        }} />
+        }} setSidebarOffsetX={setSideOffsetX}/>
       )}
       <div className={cn('relative grow p-2 overflow-y-auto', isMobile && 'h-[calc(100%_-_56px)] p-0')}>
         {isSidebarCollapsed && (
@@ -120,7 +129,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             <Loading type='app' />
           )}
           {!appChatListDataLoading && (
-            <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]}>
+            <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
               <ChatWrapper key={chatShouldReloadKey} />
             </DndContext>
           )}
