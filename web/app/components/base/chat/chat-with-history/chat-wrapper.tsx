@@ -197,8 +197,6 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     if (markdownBodyList.length === 0) return
 
     const lastChild = markdownBodyList[markdownBodyList.length - 1].lastChild
-    console.log('lastChild?.nodeName')
-    console.dir(lastChild?.nodeName)
     if (lastChild?.nodeName.toLocaleLowerCase() === 'details' && respondingState && chatState !== 'thinking')
       setChatState('thinking')
     else if (!['details', 'div'].includes(lastChild?.nodeName.toLocaleLowerCase() || '') && respondingState && chatState !== 'talking')
@@ -217,7 +215,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       return null
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
-        <div className={cn('py-0 mx-2 flex flex-col items-center justify-center gap-3')}>
+        <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
           <HelloWidget
             key="hello-widget"
             widgetTag={welcomeMessage.content}
@@ -277,7 +275,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'chat-body' })
   return (
     <div
-      className='h-full bg-chatbot-ctg-bg overflow-hidden bg-center bg-no-repeat'
+      className='h-full overflow-hidden bg-chatbot-ctg-bg bg-center bg-no-repeat'
       ref={setNodeRef}
       id='chat-body'
       {...listeners} {...attributes}

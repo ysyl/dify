@@ -1,5 +1,4 @@
 import {
-  ChangeEvent,
   useCallback,
   useRef,
   useState,
@@ -30,7 +29,7 @@ import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
 import { useChatWithHistoryContext } from '../../chat-with-history/context'
 import Button from '../../../button'
-import { TextAreaRef } from 'rc-textarea'
+import type { TextAreaRef } from 'rc-textarea'
 
 type ChatInputAreaProps = {
   showFeatureBar?: boolean
@@ -197,25 +196,25 @@ const ChatInputArea = ({
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
       {/* 自定义变量按钮区 */}
-      <div className='flex gap-1 my-1'>
+      <div className='my-1 flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
-            <Button key={input.variable} className={cn('text-text-tertiary btn-primary uppercase rounded-3xl', inputFormBtnIsActivate(input.variable) ? 'btn-active ' : '')} size='medium'
+            <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', inputFormBtnIsActivate(input.variable) ? 'btn-active ' : '')} size='medium'
               onClick={() => triggleForm(input.variable)}>{input.label}</Button>
           ))
         }
       </div>
       <div
         className={cn(
-          'mt-1 relative bg-components-panel-bg-blur border border-components-chat-input-border shadow-md z-10 rounded-[25px]',
+          'relative z-10 mt-1 rounded-[25px] border border-components-chat-input-border bg-components-panel-bg-blur shadow-md',
           isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
           disabled && 'pointer-events-none border-components-panel-border opacity-50 shadow-none',
         )}
       >
-        <div className='relative px-[9px] max-h-[158px] overflow-x-hidden overflow-y-auto'>
+        <div className='relative max-h-[158px] overflow-y-auto overflow-x-hidden px-[9px]'>
           <div
             ref={wrapperRef}
-            className='flex items-center justify-between h-12'
+            className='flex h-12 items-center justify-between'
           >
             <div className='relative flex w-full grow items-center'>
               <div
@@ -231,7 +230,7 @@ const ChatInputArea = ({
                 )}
                 placeholder={t('common.chat.inputPlaceholder') || ''}
                 autoFocus={autofocus}
-                autoSize={{ minRows: 1 }}
+                minRows={1}
                 onResize={handleTextareaResize}
                 value={query}
                 onChange={(e: any) => {
