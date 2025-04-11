@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   RiMenuLine,
@@ -83,8 +83,10 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
       x: (transform.x > 0) ? 0 : transform.x,
     }
   }
-  if (sidebarOffsetX && sidebarOffsetX > 0)
-    handleSidebarCollapse(false)
+  useEffect(() => {
+    if (sidebarOffsetX && sidebarOffsetX > 0)
+      handleSidebarCollapse(false)
+  })
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -96,9 +98,9 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
 
   return (
     <>
-      <div className='shrink-0 flex items-center px-2 py-3 gap-1 bg-mask-top2bottom-gray-50-to-transparent'>
+      <div className='flex shrink-0 items-center gap-1 bg-mask-top2bottom-gray-50-to-transparent px-2 py-3'>
         <ActionButton size='l' className='shrink-0' onClick={() => handleSidebarCollapse(false)}>
-          <RiMenuLine className='w-[18px] h-[18px]' />
+          <RiMenuLine className='h-[18px] w-[18px]' />
         </ActionButton>
         <div className='flex grow items-center justify-center'>
           {!currentConversationId && (
@@ -133,13 +135,13 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
           handleViewChatSettings={() => setShowChatSettings(true)}
         />
       </div>
-      <div className={cn('fixed inset-0 z-50 flex p-1 transition-transform duration-300 ease-in-out bg-transparent', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
+      <div className={cn('fixed inset-0 z-50 flex bg-transparent p-1 transition-transform duration-300 ease-in-out', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
         id='sidebar_wrap'
         onTouchEnd={(e) => {
           if (e.target instanceof HTMLElement && e.target.id === 'sidebar_wrap')
             handleSidebarCollapse(true)
         }}
-        // onClick={() => handleSidebarCollapse(true)}
+      // onClick={() => handleSidebarCollapse(true)}
       >
         <div className='flex h-full w-[calc(100vw_-_120px)] '>
           <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd} sensors={sensors}>
