@@ -89,7 +89,8 @@ const HelloWidget = ({
       </section>
       {
         shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
-          <ul className={cn(`md:grid-cols- grid w-full${Math.min(shortcutItems.length, 4)} flex-wrap justify-between gap-1`,
+          <ul className={cn('grid w-full flex-wrap justify-between gap-1',
+            `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
             shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
             {
               shortcutItems.map((item: any) => (
