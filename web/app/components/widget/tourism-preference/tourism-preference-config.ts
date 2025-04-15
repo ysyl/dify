@@ -87,7 +87,7 @@ const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigTyp
       key: 'hotel',
       name: '入住酒店',
       type: 'Option',
-      value: ['沙漠星星酒店', '沙漠钻石酒店', '其他'].map(name => ({ name, value: name })),
+      value: ['沙漠星星酒店', '沙漠钻石酒店', '不住酒店'].map(name => ({ name, value: name })),
     },
   },
 }
