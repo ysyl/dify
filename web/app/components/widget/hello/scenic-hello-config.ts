@@ -143,6 +143,10 @@ export function getScenicHelloConfig(widgetTagStr: string) {
     const customConfig = tagItem?.children.find(item => item.tagName === 'config')
     if (customConfig)
       mergeConfig.config = parseConfig(customConfig)
+    // shortcutItems节点解析
+    const customShortcutItems = tagItem?.children.find(item => item.tagName === 'shortcut-items')
+    if (customShortcutItems)
+      mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
 
     return mergeConfig
   }
@@ -154,6 +158,21 @@ export function parseConfig(configEle: HtmlElement) {
   return {
     ...configEle.attributes,
   }
+}
+
+function parseShortcutItems(shortcutItemsEl: HtmlElement) {
+  const shortcutItemsElList = shortcutItemsEl.children.filter(el => el.tagName === 'shortcut-item')
+
+  const result = shortcutItemsElList.map((el) => {
+    const { title, 'sub-title': subTitle, 'send-message': sendMessage, url } = el.attributes
+    return {
+      title,
+      subTitle,
+      sendMessage: sendMessage || title,
+      url,
+    }
+  })
+  return result
 }
 
 export default getScenicHelloConfig

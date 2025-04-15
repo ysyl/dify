@@ -36,12 +36,12 @@ export function parseHtmlTagRaw(htmlString: string): HTMLElement | null {
 export function parseHtmlTag(htmlString: string): HtmlElement | null {
   try {
     const parser = new DOMParser()
-    const doc = parser.parseFromString(`<template>${htmlString}</template>`, 'text/html')
-    const template = doc.querySelector('template')
+    const doc = parser.parseFromString(`${htmlString}`, 'text/html')
+    const body = doc.body
 
-    if (!template) return null
+    if (!body) return null
 
-    const node = parseNode(template.content)?.children[0] || null
+    const node = parseNode(body.childNodes[0]) || null
     return node
   }
   catch (e) {
