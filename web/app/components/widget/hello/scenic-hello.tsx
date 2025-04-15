@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useContext } from 'use-context-selector'
 import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
+import { getLanguage } from '@/i18n/language'
+import I18n from '@/context/i18n'
 
 type HelloWidgetProps = {
   widgetTag: string
@@ -60,8 +63,11 @@ const HelloWidget = ({
     'reperer-le-choix': repererLeChoix = false,
     config,
   } = getScenicHelloConfig(widgetTag)
+  const { locale } = useContext(I18n)
+  const language = getLanguage(locale)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
+  console.log('language', language)
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)

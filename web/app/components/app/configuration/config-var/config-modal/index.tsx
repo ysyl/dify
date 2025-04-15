@@ -44,7 +44,7 @@ const ConfigModal: FC<IConfigModalProps> = ({
   const { modelConfig } = useContext(ConfigContext)
   const { t } = useTranslation()
   const [tempPayload, setTempPayload] = useState<InputVar>(payload || getNewVarInWorkflow('') as any)
-  const { type, label, variable, options, max_length } = tempPayload
+  const { type, label, variable, options, max_length, default: defaultValue } = tempPayload
   const modalRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     // To fix the first input element auto focus, then directly close modal will raise error
@@ -212,6 +212,16 @@ const ConfigModal: FC<IConfigModalProps> = ({
               placeholder={t('appDebug.variableConfig.inputPlaceholder')!}
             />
           </Field>
+          {
+            type === InputVarType.number
+            && <Field title={t('workflow.chatVariable.modal.objectValue')}>
+              <Input
+                value={defaultValue as string || ''}
+                onChange={e => handlePayloadChange('default')(Number.parseInt(e.target.value))}
+                placeholder={t('appDebug.variableConfig.inputPlaceholder')!}
+              />
+            </Field>
+          }
 
           {isStringInput && (
             <Field title={t('appDebug.variableConfig.maxLength')}>
