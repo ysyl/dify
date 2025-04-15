@@ -19,8 +19,8 @@ const ARROW_ICON = () => (
   </svg>
 )
 
-const getShortcutListItem = (title: string, subTitle: string, agentUrl: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
-  <div className='h-16 p-3 bg-white rounded-xl cursor-pointer' onClick={() => {
+const getShortcutListItem = (size: string, title: string, subTitle: string, agentUrl: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
+  <div className={cn('cursor-pointer rounded-xl bg-white', size === 'sm' ? 'p-1' : 'h-16 p-3')} onClick={() => {
     if (agentUrl)
       window.location.href = agentUrl
     else
@@ -28,16 +28,16 @@ const getShortcutListItem = (title: string, subTitle: string, agentUrl: string, 
   }} style={{
     border: (repererLeChoix && selectedShortcut === title) ? '2px solid #c0dafa' : '2px solid white',
   }}>
-    <div className='w-full flex justify-between items-center'>
-      <h1 className='text-base font-bold'>{title}</h1>
+    <div className='flex w-full items-center justify-between'>
+      <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{title}</h1>
       <ARROW_ICON />
     </div>
-    <h2 className='text-[10px] text-[#A7B3C2] mt-0.5'>{subTitle}</h2>
+    <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{subTitle}</h2>
   </div>
 )
 
 const getPreconfigQueryItem = (title: string, onSend?: (msg: string) => void) => (
-  <div className='flex w-full h-10 rounded-3xl bg-white p-0.5 px-4 items-center justify-between' onClick={() => onSend?.(title)}>
+  <div className='flex h-10 w-full items-center justify-between rounded-3xl bg-white p-0.5 px-4' onClick={() => onSend?.(title)}>
     <span className='leading-10 text-[#7B8295]'>
       {title}
     </span>
@@ -61,6 +61,7 @@ const HelloWidget = ({
     config,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
+  const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
@@ -72,27 +73,28 @@ const HelloWidget = ({
   }
 
   return (
-    <div key="WidgetComponent" className='border border-green-50 rounded-[20.8px] p-[12px] mb-[30px] mt-[13px]' style={{
+    <div key="WidgetComponent" className='mb-[30px] mt-[13px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
       maxWidth: 'calc(720px - 4rem)',
     }}>
-      <div className='flex justify-between w-full'>
+      <div className='flex w-full justify-between'>
         <div>
-          <h1 className='text-[25px] mt-1'>Hi,你好</h1>
+          <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
           <h1 className={`text-[${nameFontSize}]`}>我是{name}</h1>
         </div>
         <img alt='智能体头像' className='mr-7' width={81} src={avatar} />
       </div>
-      <section className='text-[17px] text-[#7C879B] mt-6'>
+      <section className='mt-6 text-[17px] text-[#7C879B]'>
         {introduce}
       </section>
       {
         shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
-          <ul className={cn(`grid grid-cols-2 md:grid-cols-${Math.min(shortcutItems.length, 4)} w-full flex-wrap justify-between gap-1`)}>
+          <ul className={cn(`md:grid-cols- grid${Math.min(shortcutItems.length, 4)} w-full flex-wrap justify-between gap-1`,
+            shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
             {
               shortcutItems.map((item: any) => (
                 <li key={item.title} className="">
-                  {getShortcutListItem(item.title, item.desc, item.agent_url, repererLeChoix, selectedShortcut, handleSend)}
+                  {getShortcutListItem(item.size, item.title, item.desc, item.agent_url, repererLeChoix, selectedShortcut, handleSend)}
                 </li>
               ))
             }
@@ -102,7 +104,7 @@ const HelloWidget = ({
       {
         guide && <section className='mt-9'>
           <h1 className='text-base text-[#7C879B]'>{guide}</h1>
-          <ul className='mt-4 flex gap-2 flex-col'>
+          <ul className='mt-4 flex flex-col gap-2'>
             {
               suggestedQuestions?.map(question => (<li key={question}>
                 {getPreconfigQueryItem(question, handleSend)}

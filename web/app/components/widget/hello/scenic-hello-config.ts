@@ -10,6 +10,7 @@ type ScenicHelloType = {
     title: string
     desc: string
     agent_url?: string
+    size?: 'sm' | 'md'
   }[],
   'guide'?: string,
   'reperer-le-choix'?: boolean
@@ -121,7 +122,7 @@ export function isScenicHelloWidget(widgetName: string) {
   return index >= 0
 }
 
-export function getScenicHelloConfig(widgetTagStr: string) {
+export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
   const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   if (index >= 0) {
     // 融合tag中的自定义配置到预设配置
@@ -148,7 +149,7 @@ export function getScenicHelloConfig(widgetTagStr: string) {
     if (customShortcutItems)
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
 
-    return mergeConfig
+    return mergeConfig as ScenicHelloType
   }
   throw new Error('illegal parametres')
 }
@@ -162,6 +163,7 @@ export function parseConfig(configEle: HtmlElement) {
 
 function parseShortcutItems(shortcutItemsEl: HtmlElement) {
   const shortcutItemsElList = shortcutItemsEl.children.filter(el => el.tagName === 'shortcut-item')
+  const size = shortcutItemsEl.attributes.size
 
   const result = shortcutItemsElList.map((el) => {
     const { title, 'sub-title': subTitle, 'send-message': sendMessage, url } = el.attributes
@@ -170,6 +172,7 @@ function parseShortcutItems(shortcutItemsEl: HtmlElement) {
       subTitle,
       sendMessage: sendMessage || title,
       url,
+      size,
     }
   })
   return result
