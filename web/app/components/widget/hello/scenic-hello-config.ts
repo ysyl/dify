@@ -166,12 +166,12 @@ function parseShortcutItems(shortcutItemsEl: HtmlElement) {
   const size = shortcutItemsEl.attributes.size
 
   const result = shortcutItemsElList.map((el) => {
-    const { title, desc, 'send-message': sendMessage, url } = el.attributes
+    const { title, desc, 'send-message': sendMessage, agent_url } = el.attributes
     return {
       title,
       desc,
       sendMessage: sendMessage || title,
-      url,
+      agent_url,
       size,
     }
   })
