@@ -67,7 +67,6 @@ const HelloWidget = ({
   const language = getLanguage(locale)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
-  console.log('language', language)
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)

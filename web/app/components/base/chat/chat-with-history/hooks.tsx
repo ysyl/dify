@@ -176,8 +176,6 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   const newConversationInputsRef = useRef<Record<string, any>>({})
   const [newConversationInputs, setNewConversationInputs] = useState<Record<string, any>>({})
   const handleNewConversationInputsChange = useCallback((newInputs: Record<string, any>) => {
-    console.dir('newInputs')
-    console.dir(newInputs)
     newConversationInputsRef.current = newInputs
     setNewConversationInputs(newInputs)
   }, [])
@@ -289,7 +287,6 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     let hasEmptyInput = ''
     let fileIsUploading = false
     const requiredVars = inputsForms.filter(({ required }) => required)
-    console.log('requiredVars, ', requiredVars)
     if (requiredVars.length) {
       requiredVars.forEach(({ variable, label, type }) => {
         if (hasEmptyInput)
