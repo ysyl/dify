@@ -46,7 +46,7 @@ const VoiceInput = ({
   }, 1000)
   const [buttonText, setButtonText] = useState('按住说话')
   const buttonRef: any = useRef(null)
-  let isInside = true
+  const [isInside, setIsInside] = useState(true)
 
   // 获取元素边界范围
   const getButtonRect = () => {
@@ -71,8 +71,8 @@ const VoiceInput = ({
     const currentInside = isTouchInside(touch.clientX, touch.clientY)
 
     if (currentInside !== isInside) {
-      isInside = currentInside
-      setButtonText(isInside ? '松手发送，移出取消' : '松手取消')
+      setIsInside(currentInside)
+      setButtonText(currentInside ? '松手发送，移出取消' : '松手取消')
     }
   }
 
@@ -111,7 +111,6 @@ const VoiceInput = ({
     ctx.closePath()
   }, [])
   const handleStopRecorder = useCallback(async (startConvert: boolean = true) => {
-    console.log('startConvert: ', startConvert)
     clearInterval()
     setStartRecord(false)
     setStartConvert(startConvert)
@@ -178,7 +177,7 @@ const VoiceInput = ({
     handleStartRecord(() => {
       setButtonText('松手发送，移出取消')
       setOriginDuration(0)
-      isInside = true
+      setIsInside(true)
     })
   }
   // 触摸结束
@@ -232,30 +231,50 @@ const VoiceInput = ({
 
   const minutes = Number.parseInt(`${Number.parseInt(`${originDuration}`) / 60}`)
   const seconds = Number.parseInt(`${originDuration}`) % 60
+  const recordStatus = (): 'recording' | 'unstarted' | 'to_quitted' => {
+    const map: Record<string, 'recording' | 'unstarted' | 'to_quitted'> = {
+      '按住说话': 'unstarted',
+      '录音启动中': 'unstarted',
+      '松手发送，移出取消': 'recording',
+      '松手取消': 'to_quitted',
+    }
+
+    return map[buttonText]
+  }
+
+  const getBtnBg = () => {
+    const status = recordStatus()
+    if (status === 'unstarted') return 'bg-primary-25'
+    else if (status === 'recording') return 'bg-blue-700'
+    else if (status === 'to_quitted') return 'bg-red-700'
+    else return ''
+  }
 
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}>
-      <div className='absolute inset-[1.5px] flex items-center pl-[14.5px] pr-[6.5px] py-[14px] bg-primary-25 rounded-[53px] overflow-hidden'>
-        <canvas id='voice-input-record' className='absolute z-10 left-0 bottom-0 w-full h-[45px]' />
+      <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-[53px] py-[14px] pl-[14.5px] pr-[6.5px]',
+        getBtnBg(),
+      )}>
+        <canvas id='voice-input-record' className='absolute bottom-0 left-0 z-10 h-[45px] w-full' />
         {
           !startRecord && <ActionButton
-            className='absolute z-50 l-1'
+            className='l-1 absolute z-50'
             size='l'
             onClick={onCancel}
           >
-            <RiKeyboardBoxLine className='w-5 h-5' />
+            <RiKeyboardBoxLine className='h-5 w-5' />
           </ActionButton>
         }
         {
-          startConvert && <RiLoader2Line className='absolute right-2 animate-spin mr-2 w-4 h-4 text-primary-700' />
+          startConvert && <RiLoader2Line className='absolute right-2 mr-2 h-4 w-4 animate-spin text-primary-700' />
         }
         <div className='relative z-20 grow'>
-          <div className='text-md text-gray-500 text-center font-bold select-none' ref={buttonRef}
+          <div className={cn('text-md  select-none text-center font-bold', recordStatus() === 'unstarted' ? 'text-gray-500' : 'text-white')} ref={buttonRef}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className='flex justify-center items-center'>
+            <div className='flex items-center justify-center'>
               {buttonText === '录音启动中' && <RiLoader2Line className='mr-2 h-4 w-4 animate-spin text-primary-700' />}
               {buttonText}
             </div>
