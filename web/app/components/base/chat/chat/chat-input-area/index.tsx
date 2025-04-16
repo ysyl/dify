@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react'
 import {
   useCallback,
   useRef,
@@ -30,6 +31,20 @@ import { TransferMethod } from '@/types/app'
 import { useChatWithHistoryContext } from '../../chat-with-history/context'
 import Button from '../../../button'
 import type { TextAreaRef } from 'rc-textarea'
+
+type CustomeButtonProps = {
+  input: any
+  onClick: MouseEventHandler<HTMLButtonElement>
+  isActive: boolean
+  type: 'number' | 'select'
+}
+const CustomeButton = ({ type, input, onClick, isActive }: CustomeButtonProps) => {
+  if (type === 'number') {
+    return <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='medium'
+      onClick={onClick}>{input.label}</Button>
+  }
+  return <div></div>
+}
 
 type ChatInputAreaProps = {
   showFeatureBar?: boolean
@@ -199,8 +214,7 @@ const ChatInputArea = ({
       <div className='my-1 flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
-            <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', inputFormBtnIsActivate(input.variable) ? 'btn-active ' : '')} size='medium'
-              onClick={() => triggleForm(input.variable)}>{input.label}</Button>
+            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input} isActive={inputFormBtnIsActivate(input.variable)} onClick={() => triggleForm(input.variable)} />
           ))
         }
       </div>
