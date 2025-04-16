@@ -31,17 +31,28 @@ import { TransferMethod } from '@/types/app'
 import { useChatWithHistoryContext } from '../../chat-with-history/context'
 import Button from '../../../button'
 import type { TextAreaRef } from 'rc-textarea'
+import SimpleSelect from '../../../select_bar'
 
 type CustomeButtonProps = {
   input: any
   onClick: MouseEventHandler<HTMLButtonElement>
+  onChange?: (option: string) => void
   isActive: boolean
   type: 'number' | 'select'
 }
-const CustomeButton = ({ type, input, onClick, isActive }: CustomeButtonProps) => {
+const CustomeButton = ({ type, input, onClick, onChange, isActive }: CustomeButtonProps) => {
   if (type === 'number') {
     return <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='medium'
       onClick={onClick}>{input.label}</Button>
+  }
+  if (type === 'select' && onChange) {
+    return <SimpleSelect
+      className="w-26"
+      defaultValue={input.options[0] || ''}
+      items={input.options?.map((option: any) => ({ name: option, value: option })) || []}
+      onSelect={i => onChange(`${i.value}`)}
+      allowSearch={false}
+    />
   }
   return <div></div>
 }
@@ -107,10 +118,12 @@ const ChatInputArea = ({
   const historyRef = useRef([''])
   const [currentIndex, setCurrentIndex] = useState(-1)
 
-  const triggleForm = useCallback((variable: string) => {
+  const handleChange = useCallback((variable: string, value?: string | number) => {
     const inputs: Record<string, number> = newConversationInputsRef.current || {}
     // 0代表未选中，1代表选中
-    const value = (!inputs[variable] || inputs[variable] === 0) ? 1 : 0
+    if (value === undefined)
+      value = (!inputs[variable] || inputs[variable] === 0) ? 1 : 0
+
     handleNewConversationInputsChange({
       ...newConversationInputsRef.current,
       [variable]: value,
@@ -213,8 +226,11 @@ const ChatInputArea = ({
       {/* 自定义变量按钮区 */}
       <div className='my-1 flex gap-1'>
         {
-          inputsForms.filter(input => input.variable.startsWith('btn_') && input.type === 'number').map(input => (
-            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input} isActive={inputFormBtnIsActivate(input.variable)} onClick={() => triggleForm(input.variable)} />
+          inputsForms.filter(input => input.variable.startsWith('btn_')).map(input => (
+            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input} isActive={inputFormBtnIsActivate(input.variable)}
+              onClick={() => handleChange(input.variable)}
+              onChange={(option) => { handleChange(input.variable, option) }}
+            />
           ))
         }
       </div>
