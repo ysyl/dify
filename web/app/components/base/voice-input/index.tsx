@@ -252,7 +252,7 @@ const VoiceInput = ({
 
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}>
-      <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-[53px] py-[14px] pl-[14.5px] pr-[6.5px]',
+      <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-xl py-[14px] pl-[14.5px] pr-[6.5px]',
         getBtnBg(),
       )}>
         <canvas id='voice-input-record' className='absolute bottom-0 left-0 z-10 h-[45px] w-full' />

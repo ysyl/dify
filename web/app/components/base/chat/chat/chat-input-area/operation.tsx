@@ -35,7 +35,7 @@ const Operation = (
   return (
     <div
       className={cn(
-        'flex shrink-0 items-center justify-end',
+        'flex h-12 shrink-0 items-center justify-end',
       )}
     >
       <div
@@ -56,7 +56,7 @@ const Operation = (
           {fileConfig?.enabled && <FileUploaderInChatInput fileConfig={fileConfig} />}
         </div>
         <Button
-          className='ml-6 px-0 w-8 rounded-full'
+          className='ml-6 w-8 rounded-full px-0'
           variant='primary'
           onClick={onSend}
           style={

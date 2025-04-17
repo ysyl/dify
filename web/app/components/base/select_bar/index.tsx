@@ -90,7 +90,7 @@ const SimpleSelect: FC<ISelectProps> = ({
       <div className={classNames('relative', wrapperClassName)}>
         {renderTrigger && <ListboxButton className='w-full'>{renderTrigger(selectedItem)}</ListboxButton>}
         {!renderTrigger && (
-          <ListboxButton className={classNames(`flex btn-secondary btn-medium btn-primary items-center w-full rounded-full border bg-white pl-3 pr-6 sm:text-sm sm:leading-6 focus-visible:outline-none focus-visible:bg-state-base-hover-alt group-hover/simple-select:bg-state-base-hover-alt ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`, className)}>
+          <ListboxButton className={classNames(`flex btn-secondary btn-large btn-primary items-center w-full rounded-xl border bg-white pl-3 pr-6 sm:text-sm sm:leading-6 focus-visible:outline-none focus-visible:bg-state-base-hover-alt group-hover/simple-select:bg-state-base-hover-alt ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`, className)}>
             <span className={classNames('block truncate text-left system-sm-regular text-components-input-text-filled', !selectedItem?.name && 'text-components-input-text-placeholder')}>{selectedItem?.name ?? localPlaceholder}</span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronDownIcon

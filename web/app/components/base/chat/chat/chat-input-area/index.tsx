@@ -43,7 +43,7 @@ type CustomeButtonProps = {
 }
 const CustomeButton = ({ type, input, onClick, onChange, isActive, value }: CustomeButtonProps) => {
   if (type === 'number') {
-    return <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='medium'
+    return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='large'
       onClick={onClick}>{input.label}</Button>
   }
   if (type === 'select' && onChange) {
@@ -200,6 +200,7 @@ const ChatInputArea = ({
   const handleShowVoiceInput = useCallback(() => {
     (Recorder as any).getPermission().then(() => {
       setShowVoiceInput(true)
+      setQuery('')
     }, () => {
       notify({ type: 'error', message: t('common.voiceInput.notAllow') })
     })
@@ -238,15 +239,15 @@ const ChatInputArea = ({
       </div>
       <div
         className={cn(
-          'relative z-10 mt-1 rounded-[25px] border border-components-chat-input-border bg-components-panel-bg-blur shadow-md',
+          'relative z-10 mt-1 rounded-xl border border-components-chat-input-border bg-components-panel-bg-blur shadow-md',
           isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
           disabled && 'pointer-events-none border-components-panel-border opacity-50 shadow-none',
         )}
       >
-        <div className='relative max-h-[158px] overflow-y-auto overflow-x-hidden px-[9px]'>
+        <div className='relative max-h-[258px] overflow-y-auto overflow-x-hidden px-[9px]'>
           <div
             ref={wrapperRef}
-            className='flex h-12 items-center justify-between'
+            className='flex min-h-12 items-center justify-between'
           >
             <div className='relative flex w-full grow items-center'>
               <div
@@ -280,17 +281,17 @@ const ChatInputArea = ({
               />
             </div>
             {
-              !isMultipleLine && operation
+              !isMultipleLine && !showVoiceInput && operation
             }
           </div>
           <VoiceInput
             show={showVoiceInput}
-            onCancel={() => setShowVoiceInput(false)}
+            onCancel={() => { setShowVoiceInput(false) }}
             onConverted={text => onSend?.(text)}
           />
         </div>
         {
-          isMultipleLine && (
+          isMultipleLine && !showVoiceInput && (
             <div className='px-[9px]'>{operation}</div>
           )
         }
