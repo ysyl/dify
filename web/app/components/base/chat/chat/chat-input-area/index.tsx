@@ -37,19 +37,18 @@ type CustomeButtonProps = {
   input: any
   onClick: MouseEventHandler<HTMLButtonElement>
   onChange?: (option: string) => void
-  isActive: boolean
   type: 'number' | 'select'
-  value: Record<string, any> | null
+  value: string | number
 }
-const CustomeButton = ({ type, input, onClick, onChange, isActive, value }: CustomeButtonProps) => {
+const CustomeButton = ({ type, input, onClick, onChange, value }: CustomeButtonProps) => {
   if (type === 'number') {
-    return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='large'
+    return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '')} size='large'
       onClick={onClick}>{input.label}</Button>
   }
   if (type === 'select' && onChange) {
     return <SimpleSelect
       className="w-26"
-      defaultValue={value?.[input.variable] || input.default || ''}
+      defaultValue={value}
       items={input.options?.map((option: any) => ({ name: option, value: option })) || []}
       onSelect={i => onChange(`${i.value}`)}
       allowSearch={false}
@@ -72,6 +71,7 @@ type ChatInputAreaProps = {
   theme?: Theme | null
   isResponding?: boolean
   disabled?: boolean
+  onChangeInputs: (a: any) => void
 }
 const ChatInputArea = ({
   showFeatureBar,
@@ -87,6 +87,7 @@ const ChatInputArea = ({
   isResponding,
   autofocus = true,
   disabled,
+  onChangeInputs,
 }: ChatInputAreaProps) => {
   const { t } = useTranslation()
   const { notify } = useToastContext()
@@ -112,24 +113,22 @@ const ChatInputArea = ({
   const { checkInputsForm } = useCheckInputsForms()
   const {
     inputsForms,
-    newConversationInputs,
-    newConversationInputsRef,
-    handleNewConversationInputsChange,
   } = useChatWithHistoryContext()
   const historyRef = useRef([''])
   const [currentIndex, setCurrentIndex] = useState(-1)
 
-  const handleChange = useCallback((variable: string, value?: string | number) => {
-    const inputs: Record<string, number> = newConversationInputsRef.current || {}
+  const handleChange = (variable: string, value?: string | number) => {
     // 0代表未选中，1代表选中
     if (value === undefined)
-      value = (!inputs[variable] || inputs[variable] === 0) ? 1 : 0
+      value = inputs[variable] === 1 ? 0 : 1
 
-    handleNewConversationInputsChange({
-      ...newConversationInputsRef.current,
+    const newInputs = {
+      ...inputs,
       [variable]: value,
-    })
-  }, [newConversationInputsRef, handleNewConversationInputsChange])
+    }
+
+    onChangeInputs(newInputs)
+  }
 
   const isComposingRef = useRef(false)
   const handleSend = () => {
@@ -217,11 +216,6 @@ const ChatInputArea = ({
     />
   )
 
-  const inputFormBtnIsActivate = (variable: string) => {
-    const currentFormValues: any = newConversationInputsRef.current
-    return currentFormValues[variable] === 1
-  }
-
   return (
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
@@ -229,9 +223,9 @@ const ChatInputArea = ({
       <div className='my-1 flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_')).map(input => (
-            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input} isActive={inputFormBtnIsActivate(input.variable)}
+            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input}
               onClick={() => handleChange(input.variable)}
-              value={newConversationInputsRef.current}
+              value={inputs?.[input.variable]}
               onChange={(option) => { handleChange(input.variable, option) }}
             />
           ))

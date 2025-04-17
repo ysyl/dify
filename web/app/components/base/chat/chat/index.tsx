@@ -77,6 +77,7 @@ export type ChatProps = {
   inputDisabled?: boolean
   isMobile?: boolean
   sidebarCollapseState?: boolean
+  onChangeInputs: (a: any) => void
 }
 
 const Chat: FC<ChatProps> = ({
@@ -116,6 +117,7 @@ const Chat: FC<ChatProps> = ({
   inputDisabled,
   isMobile,
   sidebarCollapseState,
+  onChangeInputs,
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -343,6 +345,7 @@ const Chat: FC<ChatProps> = ({
                   inputsForm={inputsForm}
                   theme={themeBuilder?.theme}
                   isResponding={isResponding}
+                  onChangeInputs={onChangeInputs}
                 />
               )
             }

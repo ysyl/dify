@@ -41,6 +41,8 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     inputsForms,
     newConversationInputs,
     newConversationInputsRef,
+    handleNewConversationInputsChange,
+    setCurrentConversationInputs,
     handleNewConversationCompleted,
     isMobile,
     isInstalledApp,
@@ -136,7 +138,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     const data: any = {
       query: message,
       files,
-      inputs: currentConversationId ? newConversationInputsRef.current : newConversationInputs,
+      inputs: currentConversationId ? currentConversationInputs : newConversationInputs,
       conversation_id: currentConversationId,
       parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }
@@ -273,6 +275,12 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     : null
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'chat-body' })
+  const onChangeInputs = (inputs: any) => {
+    console.log('onChangeInputs: ', JSON.stringify(inputs))
+    handleNewConversationInputsChange(inputs)
+    setCurrentConversationInputs(inputs)
+  }
+  console.log(JSON.stringify(newConversationInputsRef.current), '|', currentConversationInputs)
   return (
     <div
       className='h-full overflow-hidden bg-chatbot-ctg-bg bg-center bg-no-repeat'
@@ -289,7 +297,8 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
         chatFooterClassName='pb-4'
         chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}
-        inputs={newConversationInputsRef.current || undefined}
+        onChangeInputs={onChangeInputs}
+        inputs={currentConversationId ? currentConversationInputs as any : newConversationInputsRef.current}
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}

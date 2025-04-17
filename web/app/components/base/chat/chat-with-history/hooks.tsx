@@ -221,17 +221,11 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     })
   }, [appParams])
   useEffect(() => {
-    let conversationInputs: Record<string, any> = {}
+    const conversationInputs: Record<string, any> = {}
 
     inputsForms.forEach((item: any) => {
       conversationInputs[item.variable] = item.default || null
     })
-    if (appChatListData) {
-      const lastChat = appChatListData.data[appChatListData.data.length - 1]
-      const currentInput = lastChat?.inputs
-      if (!currentInput) return
-      conversationInputs = currentInput
-    }
     handleNewConversationInputsChange(conversationInputs)
   }, [handleNewConversationInputsChange, inputsForms, currentConversationId])
 
@@ -491,5 +485,6 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     setIsResponding,
     currentConversationInputs,
     setCurrentConversationInputs,
+    setNewConversationInputs,
   }
 }
