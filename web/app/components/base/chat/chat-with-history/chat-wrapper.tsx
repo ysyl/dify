@@ -177,7 +177,6 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
   const [collapsed, setCollapsed] = useState(!!currentConversationId)
 
   const chatNode = useMemo(() => {
-    console.log(inputsForms)
     if (!inputsForms.length)
       return null
     // 去掉特殊变量（btn_开头的变量以对话框上按钮组的形式展现，如「深度思考」)

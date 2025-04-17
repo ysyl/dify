@@ -39,8 +39,9 @@ type CustomeButtonProps = {
   onChange?: (option: string) => void
   isActive: boolean
   type: 'number' | 'select'
+  value: Record<string, any> | null
 }
-const CustomeButton = ({ type, input, onClick, onChange, isActive }: CustomeButtonProps) => {
+const CustomeButton = ({ type, input, onClick, onChange, isActive, value }: CustomeButtonProps) => {
   if (type === 'number') {
     return <Button key={input.variable} className={cn('btn-primary rounded-3xl uppercase text-text-tertiary', isActive ? 'btn-active ' : '')} size='medium'
       onClick={onClick}>{input.label}</Button>
@@ -48,7 +49,7 @@ const CustomeButton = ({ type, input, onClick, onChange, isActive }: CustomeButt
   if (type === 'select' && onChange) {
     return <SimpleSelect
       className="w-26"
-      defaultValue={input.options[0] || ''}
+      defaultValue={value?.[input.variable] || input.default || ''}
       items={input.options?.map((option: any) => ({ name: option, value: option })) || []}
       onSelect={i => onChange(`${i.value}`)}
       allowSearch={false}
@@ -229,6 +230,7 @@ const ChatInputArea = ({
           inputsForms.filter(input => input.variable.startsWith('btn_')).map(input => (
             <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input} isActive={inputFormBtnIsActivate(input.variable)}
               onClick={() => handleChange(input.variable)}
+              value={newConversationInputsRef.current}
               onChange={(option) => { handleChange(input.variable, option) }}
             />
           ))

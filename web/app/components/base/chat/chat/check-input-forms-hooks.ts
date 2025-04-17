@@ -22,7 +22,7 @@ export const useCheckInputsForms = () => {
         if (fileIsUploading)
           return
 
-        if (!inputs[variable])
+        if (inputs[variable] === undefined)
           hasEmptyInput = label as string
 
         if ((type === InputVarType.singleFile || type === InputVarType.multiFiles) && inputs[variable]) {

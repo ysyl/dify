@@ -221,13 +221,19 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     })
   }, [appParams])
   useEffect(() => {
-    const conversationInputs: Record<string, any> = {}
+    let conversationInputs: Record<string, any> = {}
 
     inputsForms.forEach((item: any) => {
       conversationInputs[item.variable] = item.default || null
     })
+    if (appChatListData) {
+      const lastChat = appChatListData.data[appChatListData.data.length - 1]
+      const currentInput = lastChat?.inputs
+      if (!currentInput) return
+      conversationInputs = currentInput
+    }
     handleNewConversationInputsChange(conversationInputs)
-  }, [handleNewConversationInputsChange, inputsForms])
+  }, [handleNewConversationInputsChange, inputsForms, currentConversationId])
 
   const { data: newConversation } = useSWR(newConversationId ? [isInstalledApp, appId, newConversationId] : null, () => generationConversationName(isInstalledApp, appId, newConversationId), { revalidateOnFocus: false })
   const [originConversationList, setOriginConversationList] = useState<ConversationItem[]>([])

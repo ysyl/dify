@@ -213,11 +213,11 @@ const ConfigModal: FC<IConfigModalProps> = ({
             />
           </Field>
           {
-            type === InputVarType.number
+            (type === InputVarType.number || type === InputVarType.select)
             && <Field title={t('workflow.chatVariable.modal.objectValue')}>
               <Input
                 value={defaultValue as string || ''}
-                onChange={e => handlePayloadChange('default')(Number.parseInt(e.target.value))}
+                onChange={e => handlePayloadChange('default')(type === InputVarType.number ? Number.parseInt(e.target.value) : e.target.value)}
                 placeholder={t('appDebug.variableConfig.inputPlaceholder')!}
               />
             </Field>
