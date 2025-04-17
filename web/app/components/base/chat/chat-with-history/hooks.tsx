@@ -484,7 +484,10 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     isResponding,
     setIsResponding,
     currentConversationInputs,
-    setCurrentConversationInputs,
+    setCurrentConversationInputs: (a: any) => {
+      console.log('setCurrentConversationInputs', JSON.stringify(a))
+      setCurrentConversationInputs(a)
+    },
     setNewConversationInputs,
   }
 }
