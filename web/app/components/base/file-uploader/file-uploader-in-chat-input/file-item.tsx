@@ -96,7 +96,7 @@ const FileItem = ({
             showDownloadAction && tmp_preview_url && (
               <ActionButton
                 size='m'
-                className='absolute -right-1 -top-1 hidden group-hover/file-item:flex'
+                className='absolute -right-1 -top-1  border bg-white group-hover/file-item:flex'
                 onClick={(e) => {
                   e.stopPropagation()
                   downloadFile(tmp_preview_url || '', name)
