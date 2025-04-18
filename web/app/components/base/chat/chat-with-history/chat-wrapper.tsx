@@ -122,12 +122,19 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       return true
     return false
   }, [inputsFormValue, inputsForms])
+  const [barInputs, setBarInputs] = useState<Record<string, any>>({})
 
   useEffect(() => {
     if (currentChatInstanceRef.current)
       currentChatInstanceRef.current.handleStop = handleStop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  useEffect(() => {
+    // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
+    // 但是新建对话后，currentConversationInputs是空对象，这时候需要保持自定义底栏inputs不变
+    if (Object.keys(currentConversationInputs || {}).length > 0)
+      setBarInputs(currentConversationInputs || {})
+  }, [currentConversationInputs])
 
   useEffect(() => {
     setIsResponding(respondingState)
@@ -138,7 +145,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     const data: any = {
       query: message,
       files,
-      inputs: currentConversationId ? currentConversationInputs : newConversationInputs,
+      inputs: { ...(currentConversationId ? currentConversationInputs : newConversationInputs), ...barInputs }, // 混合原始dify inputs和新增的自定义底栏inputs
       conversation_id: currentConversationId,
       parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }
@@ -276,11 +283,10 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: 'chat-body' })
   const onChangeInputs = (inputs: any) => {
-    console.log('onChangeInputs: ', JSON.stringify(inputs))
-    handleNewConversationInputsChange(inputs)
-    setCurrentConversationInputs(inputs)
+    setBarInputs({
+      ...inputs,
+    })
   }
-  console.log(JSON.stringify(newConversationInputsRef.current), '|', currentConversationInputs)
   return (
     <div
       className='h-full overflow-hidden bg-chatbot-ctg-bg bg-center bg-no-repeat'
@@ -298,7 +304,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
         chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}
         onChangeInputs={onChangeInputs}
-        inputs={currentConversationId ? currentConversationInputs as any : newConversationInputsRef.current}
+        inputs={{ ...(currentConversationId ? currentConversationInputs as any : newConversationInputsRef.current), ...barInputs }}
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
