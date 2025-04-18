@@ -39,11 +39,16 @@ type CustomeButtonProps = {
   onChange?: (option: string) => void
   type: 'number' | 'select'
   value: string | number
+  disabled?: boolean
 }
-const CustomeButton = ({ type, input, onClick, onChange, value }: CustomeButtonProps) => {
+const CustomeButton = ({ type, input, onClick, onChange, value, disabled }: CustomeButtonProps) => {
   if (type === 'number') {
-    return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '')} size='large'
-      onClick={onClick}>{input.label}</Button>
+    return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '',
+      disabled && 'btn-disabled',
+    )} size='large'
+    onClick={(e) => {
+      !disabled && onClick(e)
+    }}>{input.label}</Button>
   }
   if (type === 'select' && onChange) {
     return <SimpleSelect
@@ -227,6 +232,8 @@ const ChatInputArea = ({
               onClick={() => handleChange(input.variable)}
               value={inputs?.[input.variable]}
               onChange={(option) => { handleChange(input.variable, option) }}
+              // 临时处理：如果btn_assistant的值等于采购助手或者财务助手，则联网按钮禁止
+              disabled={ ['采购助手', '财务助手'].includes(inputs?.btn_assistant) && input.variable === 'btn_online' }
             />
           ))
         }
