@@ -220,7 +220,7 @@ const ChatInputArea = ({
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
       {/* 自定义变量按钮区 */}
-      <div className='my-1 flex gap-1'>
+      <div className='my-2 flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_')).map(input => (
             <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input}

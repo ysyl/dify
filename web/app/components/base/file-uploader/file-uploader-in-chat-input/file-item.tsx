@@ -50,7 +50,7 @@ const FileItem = ({
     <>
       <div
         className={cn(
-          'group/file-item relative px-4 pt-2 truncate w-[144px] h-[54px] rounded-[80px] border-[0.5px] border-components-panel-border bg-components-card-bg shadow-xs',
+          'group/file-item relative h-[54px] w-[144px] truncate rounded-xl border-[0.5px] border-components-panel-border bg-components-card-bg px-4 pt-2 shadow-xs',
           !uploadError && 'hover:bg-components-card-bg-alt',
           uploadError && 'border border-state-destructive-border bg-state-destructive-hover',
           uploadError && 'bg-state-destructive-hover-alt hover:border-[0.5px] hover:border-state-destructive-border',
@@ -59,7 +59,7 @@ const FileItem = ({
         {
           showDeleteAction && (
             <Button
-              className='absolute -right-1.5 -top-1.5 z-[11] hidden h-5 w-5 rounded-full p-0 group-hover/file-item:flex'
+              className='absolute right-1.5 top-1.5 z-[11] hidden h-5 w-5 rounded-full p-0 group-hover/file-item:flex'
               onClick={() => onRemove?.(id)}
             >
               <RiCloseLine className='h-4 w-4 text-components-button-secondary-text' />
@@ -67,13 +67,13 @@ const FileItem = ({
           )
         }
         <div
-          className='line-clamp-2 system-xs-medium text-text-tertiary break-all cursor-pointer'
+          className='system-xs-medium line-clamp-2 cursor-pointer break-all text-text-tertiary'
           title={name}
           onClick={() => canPreview && setPreviewUrl(tmp_preview_url || '')}
         >
           {name}
         </div>
-        <div className='relative flex items-center justify-between'>
+        <div className='relative mt-1 flex items-center justify-between'>
           <div className='system-2xs-medium-uppercase flex items-center text-text-tertiary'>
             <FileTypeIcon
               size='sm'
