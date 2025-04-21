@@ -122,7 +122,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       return true
     return false
   }, [inputsFormValue, inputsForms])
-  const [barInputs, setBarInputs] = useState<Record<string, any>>(newConversationInputs)
+  const [barInputs, setBarInputs] = useState<Record<string, any>>({})
 
   useEffect(() => {
     if (currentChatInstanceRef.current)
