@@ -137,6 +137,9 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       && Object.keys(newConversationInputs).length > 0
       && Object.keys(currentConversationInputs || {}).length === 0)
       setBarInputs({ ...newConversationInputs })
+    console.log(`newConversationInputs: ${JSON.stringify(newConversationInputs)}`)
+    console.log(`currentConversationInputs: ${JSON.stringify(currentConversationInputs)}`)
+    console.log(`barInputs: ${JSON.stringify(barInputs)}`)
   }, [newConversationInputs, currentConversationInputs])
   useEffect(() => {
     // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
