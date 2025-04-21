@@ -134,7 +134,6 @@ const Chat: FC<ChatProps> = ({
   const chatFooterRef = useRef<HTMLDivElement>(null)
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
-  console.log(`chat: mergedInputs: ${JSON.stringify(inputs)}`)
 
   const handleScrollToBottom = useCallback(({
     forceScroll = false,
