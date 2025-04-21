@@ -127,11 +127,17 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
   useEffect(() => {
     if (currentChatInstanceRef.current)
       currentChatInstanceRef.current.handleStop = handleStop
-
+  }, [])
+  useEffect(() => {
     // 新建对话后，提问前，newConversationInputs有值（默认值），currentConversationInputs和barInputs无值
     // 需要用默认值填充barInputs
-    setBarInputs({ ...newConversationInputs })
-  }, [])
+    const hasDefaultValue = inputsForms.filter(form => form.required).length > 0
+    // 如果配置了默认值，且newConversationInputs有值、currentConversationInputs无值，则设置barInputs
+    if (hasDefaultValue
+      && Object.keys(newConversationInputs).length > 0
+      && Object.keys(currentConversationInputs || {}).length === 0)
+      setBarInputs({ ...newConversationInputs })
+  }, [newConversationInputs, currentConversationInputs])
   useEffect(() => {
     // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
     // 但是新建对话后，currentConversationInputs是空对象，这时候需要保持自定义底栏inputs不变
