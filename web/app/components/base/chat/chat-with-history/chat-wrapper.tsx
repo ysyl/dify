@@ -127,7 +127,10 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
   useEffect(() => {
     if (currentChatInstanceRef.current)
       currentChatInstanceRef.current.handleStop = handleStop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // 新建对话后，提问前，newConversationInputs有值（默认值），currentConversationInputs和barInputs无值
+    // 需要用默认值填充barInputs
+    setBarInputs({ ...newConversationInputs })
   }, [])
   useEffect(() => {
     // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
