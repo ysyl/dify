@@ -318,7 +318,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
         chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}
         onChangeInputs={onChangeInputs}
-        inputs={{ ...(currentConversationId ? currentConversationInputs as any : newConversationInputs), ...barInputs }}
+        inputs={{ ...newConversationInputs, ...currentConversationInputs, ...barInputs }}
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
