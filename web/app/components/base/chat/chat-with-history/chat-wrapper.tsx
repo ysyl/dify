@@ -135,8 +135,10 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
     // 如果配置了默认值，且newConversationInputs有值、currentConversationInputs无值，则设置barInputs
     if (hasDefaultValue
       && Object.keys(newConversationInputs).length > 0
-      && Object.keys(currentConversationInputs || {}).length === 0)
+      && Object.keys(currentConversationInputs || {}).length === 0) {
+      console.log(`设置初始值: ${JSON.stringify(newConversationInputs)} ${JSON.stringify(newConversationInputsRef.current)}`)
       setBarInputs({ ...newConversationInputs })
+    }
     console.log(`newConversationInputs: ${JSON.stringify(newConversationInputs)}`)
     console.log(`currentConversationInputs: ${JSON.stringify(currentConversationInputs)}`)
     console.log(`barInputs: ${JSON.stringify(barInputs)}`)
