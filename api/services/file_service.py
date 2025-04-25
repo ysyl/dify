@@ -69,8 +69,7 @@ class FileService:
 
         file_key = "upload_files/" + (current_tenant_id or "") + "/" + file_uuid + "." + extension
         # 新增此行
-        source_url = '/app/api/storage/' + file_key if not source_url else source_url
-
+        source_url = source_url if source_url else '/app/api/storage/' + file_key
         # save file to storage
         storage.save(file_key, content)
 
@@ -93,6 +92,11 @@ class FileService:
 
         db.session.add(upload_file)
         db.session.commit()
+
+        if not upload_file.source_url:
+            upload_file.source_url = file_helpers.get_signed_file_url(upload_file_id=upload_file.id)
+            db.session.add(upload_file)
+            db.session.commit()
 
         return upload_file
 

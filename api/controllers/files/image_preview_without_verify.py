@@ -1,7 +1,6 @@
-from urllib.parse import quote
 
-from flask import Response, request
-from flask_restful import Resource, reqparse  # type: ignore
+from flask import Response
+from flask_restful import Resource  # type: ignore
 
 import services
 from controllers.files import api

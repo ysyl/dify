@@ -7,7 +7,6 @@ import {
 import { useTranslation } from 'react-i18next'
 import {
   RiClipboardLine,
-  RiEditLine,
   RiResetLeftLine,
   RiThumbDownLine,
   RiThumbUpLine,
@@ -16,6 +15,7 @@ import type { ChatItem } from '../../types'
 import { useChatContext } from '../context'
 import copy from 'copy-to-clipboard'
 import Toast from '@/app/components/base/toast'
+import AnnotationCtrlButton from '@/app/components/base/features/new-feature-panel/annotation-reply/annotation-ctrl-button'
 import EditReplyModal from '@/app/components/app/annotation/edit-annotation-modal'
 import Log from '@/app/components/base/chat/chat/log'
 import ActionButton, { ActionButtonState } from '@/app/components/base/action-button'
@@ -115,7 +115,7 @@ const Operation: FC<OperationProps> = ({
           </div>
         )}
         {!isOpeningStatement && (
-          <div className='flex ml-1 items-center gap-0.5 p-0.5 rounded-[10px] border-[0.5px] border-components-actionbar-border bg-components-actionbar-bg shadow-md backdrop-blur-sm'>
+          <div className='ml-1 flex items-center gap-0.5 rounded-[10px] border-[0.5px] border-components-actionbar-border bg-components-actionbar-bg p-0.5 shadow-md backdrop-blur-sm'>
             {(config?.text_to_speech?.enabled) && (
               <NewAudioButton
                 id={id}
@@ -135,16 +135,22 @@ const Operation: FC<OperationProps> = ({
               </ActionButton>
             )}
             {(config?.supportAnnotation && config.annotation_reply?.enabled) && (
-              <ActionButton onClick={() => setIsShowReplyModal(true)}>
-                <RiEditLine className='h-4 w-4' />
-              </ActionButton>
+              <AnnotationCtrlButton
+                appId={config?.appId || ''}
+                messageId={id}
+                cached={!!annotation?.id}
+                query={question}
+                answer={content}
+                onAdded={(id, authorName) => onAnnotationAdded?.(id, authorName, question, content, index)}
+                onEdit={() => setIsShowReplyModal(true)}
+              />
             )}
               <>
                 <ActionButton state={localFeedback?.rating === 'like' ? ActionButtonState.Active : ActionButtonState.Default} onClick={() => handleFeedback('like')}>
-                  <RiThumbUpLine className='w-4 h-4' />
+                  <RiThumbUpLine className='h-4 w-4' />
                 </ActionButton>
                 <ActionButton state={localFeedback?.rating === 'dislike' ? ActionButtonState.Destructive : ActionButtonState.Default} onClick={() => handleFeedback('dislike')}>
-                  <RiThumbDownLine className='w-4 h-4' />
+                  <RiThumbDownLine className='h-4 w-4' />
                 </ActionButton>
               </>
           </div>

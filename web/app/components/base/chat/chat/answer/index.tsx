@@ -2,7 +2,7 @@ import type {
   FC,
   ReactNode,
 } from 'react'
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type {
   ChatConfig,
@@ -21,6 +21,7 @@ import type { AppData } from '@/models/share'
 import { ChevronRight } from '@/app/components/base/icons/src/vender/line/arrows'
 import cn from '@/utils/classnames'
 import { FileList } from '@/app/components/base/file-uploader'
+import ContentSwitch from '../content-switch'
 
 type AnswerProps = {
   item: ChatItem
@@ -108,21 +109,28 @@ const Answer: FC<AnswerProps> = ({
     }
   }, [])
 
+  const handleSwitchSibling = useCallback((direction: 'prev' | 'next') => {
+    if (direction === 'prev')
+      item.prevSibling && switchSibling?.(item.prevSibling)
+    else
+      item.nextSibling && switchSibling?.(item.nextSibling)
+  }, [switchSibling, item.prevSibling, item.nextSibling])
+
   return (
-    <div className='flex mb-10 last:mb-0'>
+    <div className='mb-10 flex last:mb-0'>
       {/* <div className='shrink-0 relative w-10 h-10'>
         {answerIcon || <AnswerIcon />}
         {responding && (
-          <div className='absolute -left-[3px] -top-[3px] flex h-4 w-4 items-center rounded-full border-[0.5px] border-divider-subtle bg-background-section-burn pl-[6px] shadow-xs'>
+          <div className='absolute left-[-3px] top-[-3px] flex h-4 w-4 items-center rounded-full border-[0.5px] border-divider-subtle bg-background-section-burn pl-[6px] shadow-xs'>
             <LoadingAnim type='avatar' />
           </div>
         )}
       </div> */}
-      <div className='chat-answer-container group grow w-0' ref={containerRef}>
+      <div className='chat-answer-container group w-0 grow' ref={containerRef}>
         <div className={cn('group relative', chatAnswerContainerInner)}>
           <div
             ref={contentRef}
-            className={cn('answer relative inline-block px-4 py-3 max-w-full bg-chat-bubble-bg rounded-2xl body-lg-regular text-text-primary', workflowProcess && 'w-full',
+            className={cn('answer body-lg-regular relative inline-block max-w-full rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary', workflowProcess && 'w-full',
               !responding && 'mb-10',
             )}
           >
@@ -236,7 +244,18 @@ const Answer: FC<AnswerProps> = ({
               </button>
             </div>}
             {
-              !item.isOpeningStatement && item.isAnswer && <div className='mt-2 -mb-1 text-2xs text-gray-400'>所有内容均由AI生成，仅供参考</div>
+              !item.isOpeningStatement && item.isAnswer && <div className='-mb-1 mt-2 text-2xs text-gray-400'>所有内容均由AI生成，仅供参考</div>
+            }
+            {
+              item.siblingCount && item.siblingCount > 1 && item.siblingIndex !== undefined && (
+                <ContentSwitch
+                  count={item.siblingCount}
+                  currentIndex={item.siblingIndex}
+                  prevDisabled={!item.prevSibling}
+                  nextDisabled={!item.nextSibling}
+                  switchSibling={handleSwitchSibling}
+                />
+              )
             }
           </div>
         </div>
@@ -246,4 +265,6 @@ const Answer: FC<AnswerProps> = ({
   )
 }
 
-export default memo(Answer)
+export default memo(Answer, (prevProps, nextProps) =>
+  prevProps.responding === false && nextProps.responding === false,
+)

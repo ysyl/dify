@@ -23,7 +23,9 @@ def hash_password(password_str, salt_byte):
 
 def compare_password(password_base64_str, password_hashed_base64, salt_base64):
     # compare password for login
-    return hash_password(base64_to_text(password_base64_str), base64.b64decode(salt_base64)) == base64.b64decode(password_hashed_base64)
+    decode_salt = base64.b64decode(salt_base64)
+    decode_password = base64.b64decode(password_hashed_base64)
+    return hash_password(base64_to_text(password_base64_str), decode_salt) == decode_password
 
 def base64_to_text(base64_str: str) -> str:
     """将Base64字符串转换为原文"""

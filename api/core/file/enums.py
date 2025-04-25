@@ -47,7 +47,6 @@ class FileAttribute(StrEnum):
     NAME = "name"
     MIME_TYPE = "mime_type"
     TRANSFER_METHOD = "transfer_method"
-    RELATED_ID = "related_id"
     URL = "url"
     EXTENSION = "extension"
     RELATED_ID = "related_id"
