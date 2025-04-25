@@ -1,6 +1,7 @@
 import type { TouchEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, usePathname } from 'next/navigation'
+import { useContext } from 'use-context-selector'
 import {
   RiKeyboardBoxLine,
   RiLoader2Line,
@@ -12,6 +13,7 @@ import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { audioToText } from '@/service/share'
 import ActionButton from '../action-button'
+import { ToastContext } from '../toast'
 
 type VoiceInputTypes = {
   onConverted: (text: string) => void
@@ -47,6 +49,7 @@ const VoiceInput = ({
   const [buttonText, setButtonText] = useState('按住说话')
   const buttonRef: any = useRef(null)
   const [isInside, setIsInside] = useState(true)
+  const { notify } = useContext(ToastContext)
 
   // 获取元素边界范围
   const getButtonRect = () => {
@@ -143,7 +146,10 @@ const VoiceInput = ({
     if (startConvert) {
       try {
         const audioResponse = await audioToText(url, isPublic, formData)
-        onConverted(audioResponse.text)
+        if (audioResponse.text.trim().length === 0)
+          notify({ type: 'error', message: '识别失败' })
+         else
+          onConverted(audioResponse.text)
       }
       catch (e) {
         console.error(e)
@@ -251,7 +257,11 @@ const VoiceInput = ({
   }
 
   return (
-    <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}>
+    <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')} ref={buttonRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-xl py-[14px] pl-[14.5px] pr-[6.5px]',
         getBtnBg(),
       )}>
@@ -269,11 +279,7 @@ const VoiceInput = ({
           startConvert && <RiLoader2Line className='absolute right-2 mr-2 h-4 w-4 animate-spin text-primary-700' />
         }
         <div className='relative z-20 grow'>
-          <div className={cn('text-md  select-none text-center font-bold', recordStatus() === 'unstarted' ? 'text-gray-500' : 'text-white')} ref={buttonRef}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+          <div className={cn('text-md  select-none text-center font-bold', recordStatus() === 'unstarted' ? 'text-gray-500' : 'text-white')}>
             <div className='flex items-center justify-center'>
               {buttonText === '录音启动中' && <RiLoader2Line className='mr-2 h-4 w-4 animate-spin text-primary-700' />}
               {buttonText}
