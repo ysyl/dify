@@ -258,8 +258,14 @@ const Chat: FC<ChatProps> = ({
                       key="hello-widget"
                       widgetTag={item.content}
                       onSend={onSend}
+                      input={inputs || {}}
                       suggestedQuestions={item.suggestedQuestions}
                       handleScrollToBottom={handleScrollToBottom}
+                      onChangeInput={(variable, value) => {
+                        onChangeInputs({
+                          [variable]: value,
+                        })
+                      }}
                     />
                   }
                   else if (isTourismPreference(item.content)) {

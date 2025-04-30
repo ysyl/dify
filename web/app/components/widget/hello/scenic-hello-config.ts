@@ -1,17 +1,20 @@
 import type { HtmlElement } from '../../tools/widget-tool'
 import { parseHtmlTag } from '../../tools/widget-tool'
 
+export type HelloWidgetShortCutItems = {
+  title: string
+  desc?: string
+  agent_url?: string
+  size?: 'sm' | 'md'
+  input_variable?: string,
+  input_value?: string,
+}
 type ScenicHelloType = {
   'introduction': string
   'name': string
   'nameFontSize'?: string,
   'avatar': string
-  'shortcut-items': {
-    title: string
-    desc: string
-    agent_url?: string
-    size?: 'sm' | 'md'
-  }[],
+  'shortcut-items': HelloWidgetShortCutItems[],
   'guide'?: string,
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
@@ -101,15 +104,18 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
     'shortcut-items': [
       {
         title: '财务助手',
-        desc: '',
+        input_variable: 'btn_assistant',
+        input_value: '财务助手',
       },
       {
         title: '采购助手',
-        desc: '',
+        input_variable: 'btn_assistant',
+        input_value: '采购助手',
       },
       {
         title: 'DeepSeek',
-        desc: '',
+        input_variable: 'btn_assistant',
+        input_value: 'DeepSeek',
       },
     ],
     'guide': '请选择AI助手并向我提问',

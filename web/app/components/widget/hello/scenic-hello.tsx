@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useContext } from 'use-context-selector'
+import type { HelloWidgetShortCutItems } from './scenic-hello-config'
 import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
 import { getLanguage } from '@/i18n/language'
@@ -8,6 +9,8 @@ import I18n from '@/context/i18n'
 type HelloWidgetProps = {
   widgetTag: string
   onSend?: (msg: string) => void
+  input: Record<string, any>,
+  onChangeInput?: (variable: string, value: string) => void
   suggestedQuestions?: string[]
   handleScrollToBottom?: (args: {
     forceScroll: boolean,
@@ -22,20 +25,36 @@ const ARROW_ICON = () => (
   </svg>
 )
 
-const getShortcutListItem = (size: string, title: string, subTitle: string, agentUrl: string, repererLeChoix: boolean, selectedShortcut: string, onSend?: (msg: string) => void) => (
+const getShortcutListItem = ({
+  size,
+  shortcutItem,
+  repererLeChoix,
+  selectedShortcut,
+  onSend,
+  onChangeInput,
+}: {
+  shortcutItem: HelloWidgetShortCutItems,
+  size: 'md' | 'sm',
+  repererLeChoix: boolean,
+  selectedShortcut: string,
+  onSend?: (msg: string) => void,
+  onChangeInput?: (variable: string, value: string) => void
+}) => (
   <div className={cn('cursor-pointer rounded-xl bg-white', size === 'sm' ? 'p-1' : 'h-16 p-3')} onClick={() => {
-    if (agentUrl)
-      window.location.href = agentUrl
+    if (shortcutItem.agent_url)
+      window.location.href = shortcutItem.agent_url
+    else if (shortcutItem.input_variable)
+      onChangeInput?.(shortcutItem.input_variable, shortcutItem.input_value || shortcutItem.title)
     else
-      onSend?.(title)
+      onSend?.(shortcutItem.title)
   }} style={{
-    border: (repererLeChoix && selectedShortcut === title) ? '2px solid #c0dafa' : '2px solid white',
+    border: (repererLeChoix) ? '2px solid #c0dafa' : '2px solid white',
   }}>
     <div className='flex w-full items-center justify-between'>
-      <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{title}</h1>
+      <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{shortcutItem.title}</h1>
       <ARROW_ICON />
     </div>
-    <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{subTitle}</h2>
+    <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{shortcutItem.desc}</h2>
   </div>
 )
 
@@ -50,6 +69,8 @@ const getPreconfigQueryItem = (title: string, onSend?: (msg: string) => void) =>
 const HelloWidget = ({
   widgetTag,
   onSend,
+  input,
+  onChangeInput,
   suggestedQuestions,
   handleScrollToBottom,
 }: HelloWidgetProps) => {
@@ -98,9 +119,16 @@ const HelloWidget = ({
             `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
             shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
             {
-              shortcutItems.map((item: any) => (
+              shortcutItems.map((item: HelloWidgetShortCutItems) => (
                 <li key={item.title} className="">
-                  {getShortcutListItem(item.size, item.title, item.desc, item.agent_url, repererLeChoix, selectedShortcut, handleSend)}
+                  {getShortcutListItem({
+                    size: item.size || 'md',
+                    shortcutItem: item,
+                    repererLeChoix: item.input_variable ? input[item.input_variable] === item.input_value : false,
+                    selectedShortcut,
+                    onSend: handleSend,
+                    onChangeInput,
+                  })}
                 </li>
               ))
             }

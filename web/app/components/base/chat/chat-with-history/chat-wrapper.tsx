@@ -234,8 +234,15 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
           <HelloWidget
             key="hello-widget"
             widgetTag={welcomeMessage.content}
+            input={{ ...newConversationInputs, ...currentConversationInputs, ...barInputs }}
             onSend={doSend}
             suggestedQuestions={welcomeMessage.suggestedQuestions}
+            onChangeInput={(variable, value) => {
+              setBarInputs(pre => ({
+                ...pre,
+                [variable]: value,
+              }))
+            }}
           />
         </div>
       )
