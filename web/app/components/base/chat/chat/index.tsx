@@ -38,6 +38,7 @@ import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import { isTourismPreference } from '@/app/components/widget/tourism-preference/tourism-preference-config'
 import TourismPreference from '@/app/components/widget/tourism-preference/tourism-preference'
+import ProductRecommand, { isProductRecommand } from '@/app/components/widget/product_recommand/product_recommand'
 
 export type ChatProps = {
   appData?: AppData
@@ -275,6 +276,9 @@ const Chat: FC<ChatProps> = ({
                       handleScrollToBottom={handleScrollToBottom}
                       onSend={onSend}
                     />
+                  }
+                  else if (isProductRecommand(item.content)) {
+                    return <ProductRecommand key={`product_recommand_${index}`} widgetTag={item.content} />
                   }
                   const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (
