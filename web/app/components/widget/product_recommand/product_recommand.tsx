@@ -47,7 +47,6 @@ function getProductRecommandConfig(widgetTag: string): ProductRecommandConfig | 
 
 const ProductRecommand = ({ widgetTag }: ProductRecommandProps) => {
   const config = getProductRecommandConfig(widgetTag)
-  console.dir(config)
 
   if (!config?.products || config.products.length === 0) return <></>
   return <div>

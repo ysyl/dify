@@ -120,6 +120,7 @@ const Chat: FC<ChatProps> = ({
   sidebarCollapseState,
   onChangeInputs,
 }) => {
+  console.log('input: ', JSON.stringify(inputs))
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
     currentLogItem: state.currentLogItem,

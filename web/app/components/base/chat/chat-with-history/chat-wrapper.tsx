@@ -130,16 +130,17 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       currentChatInstanceRef.current.handleStop = handleStop
   }, [])
   useEffect(() => {
+    // 第一个场景：
     // 新建对话后，提问前，newConversationInputs有值（默认值），currentConversationInputs和barInputs无值
+    // 这会导致初次对话后，预设的默认值失效
     // 需要用默认值填充barInputs
     const hasDefaultValue = inputsForms.filter(form => form.required).length > 0
-    // 如果配置了默认值，且newConversationInputs有值、currentConversationInputs无值，则设置barInputs
+    // 如果配置了必填，且newConversationInputs有值、currentConversationInputs无值，barInputs无值，则设置barInputs
     if (hasDefaultValue
       && Object.keys(newConversationInputs).length > 0
-      && Object.keys(currentConversationInputs || {}).length === 0) {
-      console.log(`设置初始值: ${JSON.stringify(newConversationInputs)} ${JSON.stringify(newConversationInputsRef.current)}`)
+      && Object.keys(currentConversationInputs || {}).length === 0
+      && Object.keys(barInputs || {}).length === 0)
       setBarInputs({ ...newConversationInputs })
-    }
   }, [newConversationInputs, currentConversationInputs])
   useEffect(() => {
     // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
