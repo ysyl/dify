@@ -156,6 +156,7 @@ const walk = async (entry, pathList, replaceFillOrStrokeColor) => {
     }
 
     if (stat.isFile() && /.+\.svg$/g.test(entry))
+      console.log('test svg: ', entry)
       await generateSvgComponent(fileHandle, entry, pathList, replaceFillOrStrokeColor)
 
     if (stat.isFile() && /.+\.png$/g.test(entry))

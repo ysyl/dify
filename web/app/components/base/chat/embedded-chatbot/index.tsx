@@ -19,12 +19,12 @@ import Loading from '@/app/components/base/loading'
 import LogoHeader from '@/app/components/base/logo/logo-embedded-chat-header'
 import Header from '@/app/components/base/chat/embedded-chatbot/header'
 import ChatWrapper from '@/app/components/base/chat/embedded-chatbot/chat-wrapper'
-import LogoSite from '@/app/components/base/logo/logo-site'
 import cn from '@/utils/classnames'
 
 const Chatbot = () => {
   const {
     isMobile,
+    allowResetChat,
     appInfoError,
     appInfoLoading,
     appData,
@@ -42,12 +42,8 @@ const Chatbot = () => {
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
-    if (site) {
-      if (customConfig)
-        document.title = `${site.title}`
-      else
-        document.title = `${site.title}`
-    }
+    if (!site) return
+    document.title = `${site.title}`
   }, [site, customConfig, themeBuilder])
 
   if (appInfoLoading) {
@@ -83,13 +79,14 @@ const Chatbot = () => {
     <div className='relative'>
       <div
         className={cn(
-          'flex flex-col border border-components-panel-border-subtle rounded-2xl',
+          'flex flex-col rounded-2xl border border-components-panel-border-subtle',
           isMobile ? 'h-[calc(100vh)] border-[0.5px] border-components-panel-border shadow-xs' : 'h-[100vh] bg-chatbot-bg',
         )}
         style={isMobile ? Object.assign({}, CssTransform(themeBuilder?.theme?.backgroundHeaderColorStyle ?? '')) : {}}
       >
         <Header
           isMobile={isMobile}
+          allowResetChat={allowResetChat}
           title={site?.title || ''}
           customerIcon={isDify() ? difyIcon : ''}
           theme={themeBuilder?.theme}
@@ -135,6 +132,7 @@ const EmbeddedChatbotWrapper = () => {
     handleNewConversationCompleted,
     chatShouldReloadKey,
     isInstalledApp,
+    allowResetChat,
     appId,
     handleFeedback,
     currentChatInstanceRef,
@@ -169,6 +167,7 @@ const EmbeddedChatbotWrapper = () => {
     chatShouldReloadKey,
     isMobile,
     isInstalledApp,
+    allowResetChat,
     appId,
     handleFeedback,
     currentChatInstanceRef,

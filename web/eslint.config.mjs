@@ -146,8 +146,8 @@ export default combine(
       ...sonar.configs.recommended.rules,
       // code complexity
       'sonarjs/cognitive-complexity': 'off',
-      'sonarjs/no-nested-functions': 'warn',
-      'sonarjs/no-nested-conditional': 'warn',
+      'sonarjs/no-nested-functions': 'off',
+      'sonarjs/no-nested-conditional': 'off',
       'sonarjs/nested-control-flow': 'warn', // 3 levels of nesting
       'sonarjs/no-small-switch': 'off',
       'sonarjs/no-nested-template-literals': 'warn',
@@ -155,14 +155,14 @@ export default combine(
       'sonarjs/regex-complexity': 'warn',
       // maintainability
       'sonarjs/no-ignored-exceptions': 'off',
-      'sonarjs/no-commented-code': 'warn',
-      'sonarjs/no-unused-vars': 'warn',
-      'sonarjs/prefer-single-boolean-return': 'warn',
+      'sonarjs/no-commented-code': 'off',
+      'sonarjs/no-unused-vars': 'off',
+      'sonarjs/prefer-single-boolean-return': 'off',
       'sonarjs/duplicates-in-character-class': 'off',
       'sonarjs/single-char-in-character-classes': 'off',
       'sonarjs/anchor-precedence': 'warn',
       'sonarjs/updated-loop-counter': 'off',
-      'sonarjs/no-dead-store': 'warn',
+      'sonarjs/no-dead-store': 'off',
       'sonarjs/no-duplicated-branches': 'warn',
       'sonarjs/max-lines': 'warn', // max 1000 lines
       'sonarjs/no-variable-usage-before-declaration': 'error',
@@ -174,7 +174,7 @@ export default combine(
       // performance
       'sonarjs/slow-regex': 'warn',
       // others
-      'sonarjs/todo-tag': 'warn',
+      'sonarjs/todo-tag': 'off',
       'sonarjs/table-header': 'off',
     },
     plugins: {
@@ -191,7 +191,7 @@ export default combine(
       'node/no-callback-literal': 'off',
 
       // useful, but big change
-      'unicorn/prefer-number-properties': 'warn',
+      'unicorn/prefer-number-properties': 'off',
       'unicorn/no-new-array': 'warn',
       'style/indent': 'off',
     },

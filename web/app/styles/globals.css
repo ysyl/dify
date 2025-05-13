@@ -9,6 +9,10 @@
 @tailwind base;
 @tailwind components;
 
+@tailwind base;
+@tailwind components;
+
+
 html {
   color-scheme: light;
 }
