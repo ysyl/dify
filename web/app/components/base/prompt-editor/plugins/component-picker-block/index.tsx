@@ -132,7 +132,11 @@ const ComponentPicker = ({
   ) => {
     if (!(anchorElementRef.current && (allFlattenOptions.length || workflowVariableBlock?.show)))
       return null
-    refs.setReference(anchorElementRef.current)
+
+    setTimeout(() => {
+      if (anchorElementRef.current)
+        refs.setReference(anchorElementRef.current)
+    }, 0)
 
     return (
       <>
