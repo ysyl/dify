@@ -9,6 +9,7 @@ import { ThemeProvider } from 'next-themes'
 import './styles/globals.css'
 import './styles/markdown.scss'
 import cn from '@/utils/classnames'
+import GlobalErrorHandler from './global_error_handle'
 
 export const metadata = {
   title: '中旅国际智能体平台',
@@ -59,6 +60,11 @@ const LocaleLayout = async ({
         data-public-enable-website-firecrawl={process.env.NEXT_PUBLIC_ENABLE_WEBSITE_FIRECRAWL}
         data-public-enable-website-watercrawl={process.env.NEXT_PUBLIC_ENABLE_WEBSITE_WATERCRAWL}
       >
+        <div id="global-error-display" style={{
+          color: 'red',
+          marginTop: '20px',
+        }}></div>
+        <GlobalErrorHandler />
         <BrowserInitor>
           <SentryInitor>
             <TanstackQueryIniter>
