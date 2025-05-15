@@ -38,7 +38,7 @@ const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
     width: '32px',
     overflow: 'hidden',
   }
-  return <ul className='flex gap-3'>
+  return <ul className='mt-3 flex gap-3'>
     {
       figures.map(figure => (<li className='flex cursor-pointer items-center rounded-3xl p-1' style={{
         ...(active === figure.name ? activeStyle : desactiveStyle),
