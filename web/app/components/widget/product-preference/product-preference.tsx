@@ -112,7 +112,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
     if (!valideFormValues()) return
     // 从formValue转换到文字
     const promptPrefix = '预订偏好\n'
-    const transformPrompt = Object.values(formValues).map((perValue) => {
+    const transformPrompt = Object.values(formValues).filter(v => v.value && v.value.length > 0).map((perValue) => {
       const cntValues = perValue.value
       const cntText = cntValues.join(',')
       return `${perValue.name}: ${cntText}`
