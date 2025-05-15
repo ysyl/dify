@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { useContext } from 'use-context-selector'
-import type { HelloWidgetShortCutItems } from './scenic-hello-config'
+import type { Figure, HelloWidgetShortCutItems } from './scenic-hello-config'
 import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
-import { getLanguage } from '@/i18n/language'
 import I18n from '@/context/i18n'
 
 type HelloWidgetProps = {
@@ -25,11 +24,39 @@ const ARROW_ICON = () => (
   </svg>
 )
 
+type FigureSwitchProps = {
+  figures: Figure[],
+  active: string,
+  onSwitch: (figure: Figure) => void
+}
+const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
+  const activeStyle = {
+    backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
+  }
+  const desactiveStyle = {
+    background: 'white',
+    width: '32px',
+    overflow: 'hidden',
+  }
+  return <ul className='flex gap-3'>
+    {
+      figures.map(figure => (<li className='flex cursor-pointer items-center rounded-3xl p-1' style={{
+        ...(active === figure.name ? activeStyle : desactiveStyle),
+      }}
+        onClick={() => onSwitch(figure)}
+      >
+        <div className='flex h-[26px] w-[26px] justify-center rounded-full bg-white'>
+          <img className='h-[95%]' src={figure.avatarUrl} />
+        </div>
+        {active === figure.name && <h1 className='ml-4 mr-4 text-white'>{figure.name}</h1>}
+      </li>))
+    }
+  </ul>
+}
 const getShortcutListItem = ({
   size,
   shortcutItem,
   repererLeChoix,
-  selectedShortcut,
   onSend,
   onChangeInput,
 }: {
@@ -81,13 +108,12 @@ const HelloWidget = ({
     avatar,
     'shortcut-items': shortcutItems,
     guide,
-    'reperer-le-choix': repererLeChoix = false,
-    config,
+    multiFigure: multiFigue,
   } = getScenicHelloConfig(widgetTag)
   const { locale } = useContext(I18n)
-  const language = getLanguage(locale)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
+  const [activeFigure, setActiveFigure] = useState<Figure>(multiFigue ? multiFigue[0] : { name, avatarUrl: avatar })
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
@@ -98,55 +124,66 @@ const HelloWidget = ({
     })
   }
 
+  function onSwitchFigure(figure: Figure) {
+    setActiveFigure(figure)
+  }
+
   return (
-    <div key="WidgetComponent" className='mb-[30px] mt-[13px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
-      backgroundColor: 'rgb(235,235,236,0.4)',
-      maxWidth: 'calc(720px - 4rem)',
-    }}>
-      <div className='flex w-full justify-between'>
-        <div>
-          <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
-          <h1 className={`text-[${nameFontSize}]`}>我是{name}</h1>
-        </div>
-        <img alt='智能体头像' className='mr-7' width={81} src={avatar} />
+    <div style={{ cursor: 'default' }}>
+      <div className='flex w-full justify-center'>
+        {
+          multiFigue && <FigureSwitch figures={multiFigue} active={activeFigure?.name || ''} onSwitch={onSwitchFigure} />
+        }
       </div>
-      <section className='mt-6 text-[17px] text-[#7C879B]'>
-        {introduce}
-      </section>
-      {
-        shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
-          <ul className={cn('grid w-full flex-wrap justify-between gap-1',
-            `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
-            shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
-            {
-              shortcutItems.map((item: HelloWidgetShortCutItems) => (
-                <li key={item.title} className="">
-                  {getShortcutListItem({
-                    size: item.size || 'md',
-                    shortcutItem: item,
-                    repererLeChoix: item.input_variable ? input[item.input_variable] === item.input_value : false,
-                    selectedShortcut,
-                    onSend: handleSend,
-                    onChangeInput,
-                  })}
-                </li>
-              ))
-            }
-          </ul>
+      <div key="WidgetComponent" className='mb-[30px] mt-[13px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
+        backgroundColor: 'rgb(235,235,236,0.4)',
+        maxWidth: 'calc(720px - 4rem)',
+      }}>
+        <div className='flex w-full justify-between'>
+          <div>
+            <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
+            <h1 className={`text-[${nameFontSize}]`}>我是{activeFigure.name}</h1>
+          </div>
+          <img alt='智能体头像' className='mr-7' width={81} src={activeFigure.avatarUrl} />
+        </div>
+        <section className='mt-6 text-[17px] text-[#7C879B]'>
+          {introduce}
         </section>
-      }
-      {
-        guide && <section className='mt-9'>
-          <h1 className='text-base text-[#7C879B]'>{guide}</h1>
-          <ul className='mt-4 flex flex-col gap-2'>
-            {
-              suggestedQuestions?.map(question => (<li key={question}>
-                {getPreconfigQueryItem(question, handleSend)}
-              </li>))
-            }
-          </ul>
-        </section>
-      }
+        {
+          shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
+            <ul className={cn('grid w-full flex-wrap justify-between gap-1',
+              `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
+              shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
+              {
+                shortcutItems.map((item: HelloWidgetShortCutItems) => (
+                  <li key={item.title} className="">
+                    {getShortcutListItem({
+                      size: item.size || 'md',
+                      shortcutItem: item,
+                      repererLeChoix: item.input_variable ? input[item.input_variable] === item.input_value : false,
+                      selectedShortcut,
+                      onSend: handleSend,
+                      onChangeInput,
+                    })}
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        }
+        {
+          guide && <section className='mt-9'>
+            <h1 className='text-base text-[#7C879B]'>{guide}</h1>
+            <ul className='mt-4 flex flex-col gap-2'>
+              {
+                suggestedQuestions?.map(question => (<li key={question}>
+                  {getPreconfigQueryItem(question, handleSend)}
+                </li>))
+              }
+            </ul>
+          </section>
+        }
+      </div>
     </div>
   )
 }

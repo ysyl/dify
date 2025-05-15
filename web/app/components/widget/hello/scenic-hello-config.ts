@@ -9,12 +9,18 @@ export type HelloWidgetShortCutItems = {
   input_variable?: string,
   input_value?: string,
 }
+
+export type Figure = {
+  name: string,
+  avatarUrl: string,
+}
 type ScenicHelloType = {
   'introduction': string
   'name': string
   'nameFontSize'?: string,
   'avatar': string
   'shortcut-items': HelloWidgetShortCutItems[],
+  'multiFigure'?: Figure[],
   'guide'?: string,
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
@@ -33,8 +39,15 @@ export enum ScenicWidgetType {
 
 const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.SPT]: {
-    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/boy_stellaire.png',
-    'name': '星仔',
+    'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/spt_agent_shasha_avatar.png',
+    'name': '莎莎',
+    'multiFigure': [{
+      name: '莎莎',
+      avatarUrl: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/spt_agent_shasha_avatar.png',
+    }, {
+      name: '漠漠',
+      avatarUrl: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/spt_agent_momo_avatar.png',
+    }],
     'introduction': '我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？',
     'shortcut-items': [
       {
@@ -154,6 +167,10 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     const customShortcutItems = tagItem?.children.find(item => item.tagName === 'shortcut-items')
     if (customShortcutItems)
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
+    // multi-figue节点解析
+    const multiFigueEl = tagItem?.children.find(item => item.tagName === 'multi-figure')
+    if (multiFigueEl)
+      mergeConfig.multiFigue = parseMultiFigueEl(multiFigueEl)
 
     return mergeConfig as ScenicHelloType
   }
@@ -179,6 +196,19 @@ function parseShortcutItems(shortcutItemsEl: HtmlElement) {
       sendMessage: sendMessage || title,
       agent_url,
       size,
+    }
+  })
+  return result
+}
+
+function parseMultiFigueEl(multiFigueEl: HtmlElement) {
+  const figueElList = multiFigueEl.children.filter(el => el.tagName === 'figue')
+
+  const result = figueElList.map((el) => {
+    const { name, 'avatar-url': avatarUrl } = el.attributes
+    return {
+      name,
+      avatarUrl,
     }
   })
   return result
