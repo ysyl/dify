@@ -62,7 +62,6 @@ const LocaleLayout = async ({
       >
         <div id="global-error-display" style={{
           color: 'red',
-          marginTop: '20px',
         }}></div>
         <GlobalErrorHandler />
         <BrowserInitor>
