@@ -61,7 +61,7 @@ function getProductRecommandConfig(widgetTag: string): ProductRecommandConfig | 
         map[cur.id] = cur
         return map
       }, {})
-      const recommandProductIds: string[] = el.querySelector('recommand_product_ids')?.textContent?.trim().split(',') || []
+      const recommandProductIds: string[] = el.querySelector('recommand-product-ids')?.textContent?.trim().split(',') || []
 
       if (!recommandProductIds) return null
 
