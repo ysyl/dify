@@ -41,6 +41,7 @@ import TourismPreference from '@/app/components/widget/tourism-preference/touris
 import ProductRecommand, { isProductRecommand } from '@/app/components/widget/product_recommand/product_recommand'
 import { isProductPreference } from '@/app/components/widget/product-preference/product-preference-config'
 import ProductPreference from '@/app/components/widget/product-preference/product-preference'
+import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 
 export type ChatProps = {
   appData?: AppData
@@ -290,6 +291,9 @@ const Chat: FC<ChatProps> = ({
                   }
                   else if (isProductRecommand(item.content)) {
                     return <ProductRecommand key={`product_recommand_${index}`} widgetTag={item.content} />
+                  }
+                  else if (isProductList(item.content)) {
+                    return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
                   }
                   const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (

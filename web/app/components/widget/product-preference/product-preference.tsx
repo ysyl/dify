@@ -111,7 +111,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
     // 校验
     if (!valideFormValues()) return
     // 从formValue转换到文字
-    const promptPrefix = '预定偏好\n'
+    const promptPrefix = '预订偏好\n'
     const transformPrompt = Object.values(formValues).map((perValue) => {
       const cntValues = perValue.value
       const cntText = cntValues.join(',')
@@ -137,7 +137,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
       <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])}>
         <div className="flex h-[45px] items-center justify-start pl-4 text-lg leading-[45px] text-white">
           <TourismeIcon />
-          <h1 className={cn('pl-2', styleConfig['header-text-color'])}>预定偏好</h1>
+          <h1 className={cn('pl-2', styleConfig['header-text-color'])}>预订偏好</h1>
         </div>
         <div className={cn('rounded-3xl p-[16px]', styleConfig['body-bg'])}>
           {
