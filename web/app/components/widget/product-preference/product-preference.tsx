@@ -73,7 +73,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
           value: oldValue.value.filter(v => v !== value),
         }
       }
- else {
+      else {
         // 未选当前值，需要添加当前值
         newValues = {
           name: oldValue.name,
@@ -111,16 +111,13 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
     // 校验
     if (!valideFormValues()) return
     // 从formValue转换到文字
+    const promptPrefix = '预定偏好\n'
     const transformPrompt = Object.values(formValues).map((perValue) => {
-      if (typeof perValue.value === 'string')
-        return `${perValue.name}: ${perValue.value}`
       const cntValues = perValue.value
-      const cntText = Object.entries(cntValues).map((entry) => {
-        return `${entry[0]}: ${entry[1]}`
-      }).join(',')
+      const cntText = cntValues.join(',')
       return `${perValue.name}: ${cntText}`
     }).join('\n')
-    onSend?.(transformPrompt)
+    onSend?.(promptPrefix + transformPrompt)
   }
 
   return (
@@ -177,7 +174,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
               </div>)
             })
           }
-          { formAlert.global && <h1 className='ml-4 text-xs text-red-500'>* {formAlert.global}</h1>}
+          {formAlert.global && <h1 className='ml-4 text-xs text-red-500'>* {formAlert.global}</h1>}
           <div className="mb-7 mt-8 flex justify-center">
             <button className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px]',
               styleConfig['btn-text-color'])}
