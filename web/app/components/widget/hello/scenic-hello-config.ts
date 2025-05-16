@@ -55,15 +55,15 @@ const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
         desc: '景点快捷购票',
       },
       {
-        title: '酒店预定',
-        desc: '景区酒店快速预定',
+        title: 'AI游记',
+        desc: '上传美拍自动生成游记',
       },
       {
         title: '行程规划',
         desc: '智能生成景区游玩攻略',
       },
       {
-        title: '公共服务',
+        title: '景区服务',
         desc: '景区交通、厕所查询服务',
       },
     ],
