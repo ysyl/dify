@@ -96,7 +96,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
   if (!config?.products || config.products.length === 0) return <></>
   return <div className='mb-[10px] mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] py-[28px]'>
     <section className='text-[#7C879B]'>
-      我是你的AI旅行助手，很高兴能遇见你！我会热心解答你的每一个问题。有什么需要我帮助的吗？
+      我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
     </section>
     <span className='my-2 flex items-center'>
       <span className='mr-2'><TITLE_ICON /></span>
