@@ -1,9 +1,3 @@
-import { parseHtmlTagRaw } from '../../tools/widget-tool'
-
-type ProductRecommandProps = {
-  widgetTag: string
-}
-
 type ProductRecommandConfig = {
   title: string
   products: ProductInfo[]
@@ -40,9 +34,9 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       map[cur.id] = cur
       return map
     }, {})
-    const recommandProductIds: string[] = node.children.filter((el: any) => el.tagName === 'recommand-product-ids')
+    const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName === 'recommand-product-ids')
       .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
-      .split(',')
+    const recommandProductIds: string[] = recommandProductIdsRaw.split(',')
 
     if (!recommandProductIds) return null
 
@@ -56,59 +50,6 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   catch (ex) {
     console.error(ex)
     return null
-  }
-}
-
-function getProductRecommandConfigRaw(widgetTag: string): ProductRecommandConfig | null {
-  console.log('widgetTag')
-  console.log(widgetTag)
-  const body = parseHtmlTagRaw(widgetTag)
-  const el = body?.children[0]
-  if (!el || el.tagName.toLocaleLowerCase() !== 'product-recommand') return null
-
-  const productsRawInfosStr = el.querySelector('product-raw-info')?.textContent
-
-  if (!productsRawInfosStr) {
-    const productsConfigEl = el.querySelector('products')
-    if (!productsConfigEl) return null
-    const productElList = [...productsConfigEl.querySelectorAll('product')]
-    const productConfigList: ProductInfo[] = productElList.map(el => ({
-      coverImg: el?.querySelector('cover-img')?.attributes.getNamedItem('value')?.value || '',
-      productName: el?.querySelector('product-name')?.attributes.getNamedItem('value')?.value || '',
-      salePrice: el?.querySelector('sale-price')?.attributes.getNamedItem('value')?.value || '',
-      productPageUrl: el?.querySelector('product-page-url')?.attributes.getNamedItem('value')?.value || '',
-      id: el?.querySelector('id')?.attributes.getNamedItem('value')?.value || '',
-    }))
-
-    return {
-      title: productsConfigEl.attributes.getNamedItem('title')?.value || '产品推荐',
-      products: productConfigList,
-    }
-  }
-  else {
-    try {
-      const productsInfos: ProductInfo[] = JSON.parse(
-        Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
-      )
-      const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
-        map[cur.id] = cur
-        return map
-      }, {})
-      const recommandProductIds: string[] = el.querySelector('recommand-product-ids')?.textContent?.trim().split(',') || []
-
-      if (!recommandProductIds) return null
-
-      const productConfigList = recommandProductIds.map(id => productIdInfoMap[id]).filter(t => t)
-
-      return {
-        title: '产品推荐',
-        products: productConfigList,
-      }
-    }
-    catch (ex) {
-      console.error(ex)
-      return null
-    }
   }
 }
 
