@@ -1,3 +1,4 @@
+import type { Components } from 'react-markdown'
 import ReactMarkdown from 'react-markdown'
 import ReactEcharts from 'echarts-for-react'
 import 'katex/dist/katex.min.css'
@@ -29,6 +30,7 @@ import { Theme } from '@/types/app'
 import useTheme from '@/hooks/use-theme'
 import cn from '@/utils/classnames'
 import SVGRenderer from './svg-gallery'
+import ProductRecommand from '../widget/product_recommand/product_recommand'
 
 // Available language https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD
 const capitalizationLanguageNameMap: Record<string, string> = {
@@ -289,7 +291,7 @@ export function Markdown(props: { content: string; className?: string; customDis
                 if (node.type === 'element' && node.properties?.ref)
                   delete node.properties.ref
 
-                if (node.type === 'element' && !/^[a-z][a-z0-9]*$/i.test(node.tagName)) {
+                if (node.type === 'element' && !/^[a-z][a-z0-9\-]*$/i.test(node.tagName)) {
                   node.type = 'text'
                   node.value = `<${node.tagName}`
                 }
@@ -302,18 +304,19 @@ export function Markdown(props: { content: string; className?: string; customDis
           },
         ]}
         disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body', ...(props.customDisallowedElements || [])]}
-        components={{
-          code: CodeBlock,
-          img: Img,
-          video: VideoBlock,
-          audio: AudioBlock,
-          a: Link,
-          p: Paragraph,
-          button: MarkdownButton,
-          form: MarkdownForm,
-          script: ScriptBlock as any,
-          details: ThinkBlock,
-        }}
+        components={({
+          'product-recommand': ProductRecommand,
+          'code': CodeBlock,
+          'img': Img,
+          'video': VideoBlock,
+          'audio': AudioBlock,
+          'a': Link,
+          'p': Paragraph,
+          'button': MarkdownButton,
+          'form': MarkdownForm,
+          'script': ScriptBlock as any,
+          'details': ThinkBlock,
+        } as Partial<Components>)}
       >
         {/* Markdown detect has problem. */}
         {latexContent}

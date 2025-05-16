@@ -26,7 +26,40 @@ const TITLE_ICON = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="n
   <path d="M5.26027 4.68627C5.12637 4.68627 4.99572 4.61737 4.92292 4.49322L4.80137 4.28522C4.69282 4.09932 4.75522 3.86012 4.94112 3.75157C5.12702 3.64302 5.36622 3.70542 5.47477 3.89132L5.59632 4.09932C5.70487 4.28522 5.64247 4.52442 5.45657 4.63297C5.39482 4.66937 5.32722 4.68627 5.26027 4.68627Z" fill="#5866D2" />
 </svg>
 
-function getProductRecommandConfig(widgetTag: string): ProductRecommandConfig | null {
+function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
+  if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
+
+  const productsRawInfosStr = node.children.filter((el: any) => el.tagName === 'product-raw-info')
+    .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))[0].value
+
+  try {
+    const productsInfos: ProductInfo[] = JSON.parse(
+      Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
+    )
+    const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
+      map[cur.id] = cur
+      return map
+    }, {})
+    const recommandProductIds: string[] = node.children.filter((el: any) => el.tagName === 'recommand-product-ids')
+      .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))[0].value
+      .split(',')
+
+    if (!recommandProductIds) return null
+
+    const productConfigList = recommandProductIds.map(id => productIdInfoMap[id]).filter(t => t)
+
+    return {
+      title: '产品推荐',
+      products: productConfigList,
+    }
+  }
+  catch (ex) {
+    console.error(ex)
+    return null
+  }
+}
+
+function getProductRecommandConfigRaw(widgetTag: string): ProductRecommandConfig | null {
   console.log('widgetTag')
   console.log(widgetTag)
   const body = parseHtmlTagRaw(widgetTag)
@@ -52,7 +85,7 @@ function getProductRecommandConfig(widgetTag: string): ProductRecommandConfig | 
       products: productConfigList,
     }
   }
- else {
+  else {
     try {
       const productsInfos: ProductInfo[] = JSON.parse(
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
@@ -72,27 +105,41 @@ function getProductRecommandConfig(widgetTag: string): ProductRecommandConfig | 
         products: productConfigList,
       }
     }
- catch (ex) {
+    catch (ex) {
       console.error(ex)
       return null
     }
   }
 }
 
-const ProductRecommand = ({ widgetTag }: ProductRecommandProps) => {
-  const config = getProductRecommandConfig(widgetTag)
+const ProductRecommand = ({ node }: { node: any }) => {
+  const config = getProductRecommandConfig(node)
 
   if (!config?.products || config.products.length === 0) return <></>
   return <div className='mb-2'>
     <span className='m-2 flex items-center'><span className='mr-2'><TITLE_ICON /></span>{config.title}</span>
-    <ul className='flex w-full gap-2 overflow-y-auto pb-1'>
+    <ul className='flex w-full gap-2 overflow-y-auto' style={{
+      listStyle: 'none',
+      margin: '0',
+      padding: '0',
+      display: 'flex',
+      fontSize: '16px',
+      lineHeight: '1.5',
+      color: '#333',
+      fontFamily: 'Arial, sans-serif',
+      paddingBottom: '4px',
+    }}>
       {
-        config.products.map((product, index) => (<li>
-          <a href={product.productPageUrl} target='_blank'>
-            <div key={index} className='h-[196px] w-[165px] overflow-hidden rounded-xl bg-white'>
-              {product.coverImg && <img className='h-[105px] w-full object-cover' src={product.coverImg} />}
+        config.products.map((product, index) => (<li className='list-none' style={{
+          margin: '0',
+        }}>
+          <a href={product.productPageUrl} target='_blank' className='text-inherit no-underline hover:text-inherit' style={{
+            textDecoration: 'none',
+          }}>
+            <div key={index} className='h-[196px] w-[165px] overflow-hidden rounded-xl border border-gray-300 bg-white'>
+              {product.coverImg && <img className='h-[105px] w-full object-cover' style={{ border: '0' }} src={product.coverImg} />}
               <div className='relative mt-1 h-[91px] px-2 py-1'>
-                <h1 className='mb-1 text-sm'>{product.productName}</h1>
+                <span className='mb-1 text-sm text-black no-underline hover:no-underline'>{product.productName}</span>
                 <div className='absolute bottom-3 left-3'>
                   <span className='text-xs text-gray-400'>￥</span>
                   <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
