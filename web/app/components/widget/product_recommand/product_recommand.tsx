@@ -30,7 +30,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
 
   const productsRawInfosStr = node.children.filter((el: any) => el.tagName === 'product-raw-info')
-    .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))[0].value
+    .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0].value
 
   try {
     const productsInfos: ProductInfo[] = JSON.parse(
@@ -41,7 +41,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       return map
     }, {})
     const recommandProductIds: string[] = node.children.filter((el: any) => el.tagName === 'recommand-product-ids')
-      .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))[0].value
+      .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0].value
       .split(',')
 
     if (!recommandProductIds) return null
