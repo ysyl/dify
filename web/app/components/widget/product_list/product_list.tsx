@@ -94,7 +94,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
   }, {}) || {}
 
   if (!config?.products || config.products.length === 0) return <></>
-  return <div className='mb-[10px] mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] py-[28px]'>
+  return <div className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
     <section className='text-[#7C879B]'>
       我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
     </section>
@@ -107,35 +107,39 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
         <div>
           <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
             <span>{group}</span>
-            {
-              config.moreProductUrl && <span className='text-xs text-[#B2BDCA]' onClick={() => window.open(config.moreProductUrl, '_blank')}>更多&gt;</span>
-            }
           </h1>
-          {
-            <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
-              {
-                productsGroupByProductGroup[group].slice(0, Math.min(productsGroupByProductGroup[group].length, 3)).map((product, index) => (<li>
-                  <a href={product.productPageUrl} target='_blank'>
-                    <div key={index} className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white'>
-                      <div>
-                        {product.coverImg && <img className='max-w-[110px] object-cover' src={product.coverImg} />}
-                      </div>
-                      <div className='relative mt-1 px-2 py-1'>
-                        <h1 className='mb-1 text-sm'>{product.productName}</h1>
-                        <div className='absolute bottom-0 left-2'>
-                          <span className='text-xs text-gray-400'>￥</span>
-                          <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
-                          <span className='ml-1 text-xs text-gray-400'>起</span>
-                        </div>
+          <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
+            {
+              productsGroupByProductGroup[group].slice(0, Math.min(productsGroupByProductGroup[group].length, 3)).map((product, index) => (<li>
+                <a href={product.productPageUrl} target='_blank'>
+                  <div key={index} className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white'>
+                    <div>
+                      {product.coverImg && <img className='max-w-[110px] object-cover' src={product.coverImg} />}
+                    </div>
+                    <div className='relative mt-1 px-2 py-1'>
+                      <h1 className='mb-1 text-sm'>{product.productName}</h1>
+                      <div className='absolute bottom-0 left-2'>
+                        <span className='text-xs text-gray-400'>￥</span>
+                        <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
+                        <span className='ml-1 text-xs text-gray-400'>起</span>
                       </div>
                     </div>
-                  </a>
-                </li>))
-              }
-            </ul>
-          }
+                  </div>
+                </a>
+              </li>))
+            }
+          </ul>
         </div>
       ))
+    }
+    {
+      config.moreProductUrl
+      && <button className={'btn text-md mt-2 h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white'}
+        style={{
+          backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
+        }}
+        onClick={() => window.open(config.moreProductUrl, '_blank')}
+      >更多推荐</button>
     }
   </div>
 }
