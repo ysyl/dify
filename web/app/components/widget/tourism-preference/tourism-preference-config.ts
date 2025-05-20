@@ -95,12 +95,6 @@ const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigTyp
       type: 'Option',
       value: ['黄河区入口', '沙漠区入口'].map(name => ({ name, value: name })),
     },
-    hotel: {
-      key: 'hotel',
-      name: '入住酒店',
-      type: 'Option',
-      value: ['沙漠星星酒店', '沙漠钻石酒店', '不住酒店'].map(name => ({ name, value: name })),
-    },
   },
 }
 
