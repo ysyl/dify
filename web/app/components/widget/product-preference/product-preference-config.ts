@@ -27,7 +27,7 @@ export enum ProductPreferenceTagType {
 const STYLE_CONFIG: Record<ProductPreferenceTagType, StyleConfigType> = {
   [ProductPreferenceTagType.SPT]: {
     'header-text-color': 'text-white',
-    'btn-text-color': 'text-black',
+    'btn-text-color': 'text-white',
     'card-bg': 'bg-[#FCB770]',
     'body-bg': 'bg-[rgba(235,235,236,0.8)]',
   },

@@ -134,12 +134,15 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
         top: '1000px',
       }),
     }}>
-      <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])}>
+      <div className={cn('rounded-3xl rounded-b-[26px]')} style={{
+        backgroundImage: 'linear-gradient(to left, #F7CEA3, #FBC384, #FDB770)',
+      }}>
         <div className="flex h-[45px] items-center justify-start pl-4 text-lg leading-[45px] text-white">
           <TourismeIcon />
-          <h1 className={cn('pl-2', styleConfig['header-text-color'])}>预订偏好</h1>
+          <h1 className={cn('pl-2')}
+          >预订偏好</h1>
         </div>
-        <div className={cn('rounded-3xl p-[16px]', styleConfig['body-bg'])}>
+        <div className={cn('rounded-3xl border border-white p-[16px]', styleConfig['body-bg'])}>
           {
             Object.values(selectorConfigObj).map((config) => {
               return (<div key={config.name}>
@@ -151,7 +154,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                 </h1>
                 {
                   config.type === 'Option'
-                  && <ul className={cn('mb-5 grid gap-1', `grid-cols-${Math.min(config.value.length, 4)}`)}>
+                  && <ul className={cn('mb-5 grid gap-2', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
                       config.value.map((option) => {
                         return (
@@ -160,7 +163,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                               <div className={cn('mt-[10px] rounded-[20px] px-1 text-center text-sm leading-8',
                                 formValues[config.key].value.includes(option.value) ? `${styleConfig['card-bg']} text-white` : 'bg-white text-black',
                               )} style={{
-                                boxShadow: '0px 4px 10px 0px #0000001F',
+                                // boxShadow: '0px 4px 10px 0px #0000001F',
                               }} onClick={() => handleClickOption(config.key, option.value)}>
                                 {option.name}
                               </div>
@@ -175,7 +178,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
             })
           }
           {formAlert.global && <h1 className='ml-4 text-xs text-red-500'>* {formAlert.global}</h1>}
-          <div className="mb-7 mt-8 flex justify-center">
+          <div className="mb-1 mt-8 flex justify-center">
             <button className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px]',
               styleConfig['btn-text-color'])}
               style={{

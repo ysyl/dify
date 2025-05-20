@@ -15,9 +15,15 @@ export type OptionType = {
 export type TourismPreferenceConfigType = Record<string, OptionType>
 
 export type StyleConfigType = {
-  'card-bg': string,
-  'body-bg': string,
+  'card-bg'?: string,
+  'card-bg-image'?: string,
+  'body-bg'?: string,
+  'body-border'?: string
+  'body-bg-image'?: string,
   'header-text-color': string,
+  'btn-text-color': string,
+  'btn-bg-image'?: string,
+  'active-bg'?: string
 }
 
 export enum TourismPreferenceTagType {
@@ -28,12 +34,18 @@ const STYLE_CONFIG: Record<TourismPreferenceTagType, StyleConfigType> = {
   [TourismPreferenceTagType.XJ]: {
     'header-text-color': 'text-white',
     'card-bg': 'bg-[#32ADE6]',
-    'body-bg': 'bg-white',
+    'active-bg': 'bg-[#32ADE6]',
+    'body-bg': 'bg-[rgba(235,235,236,0.8)]',
+    'btn-text-color': 'btn-white',
   },
   [TourismPreferenceTagType.SPT]: {
-    'header-text-color': 'text-black',
-    'card-bg': 'bg-[#55B4B9]',
+    'header-text-color': 'text-white',
+    'body-border': 'border border-white',
     'body-bg': 'bg-[rgba(235,235,236,0.8)]',
+    'btn-bg-image': 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
+    'card-bg-image': 'linear-gradient(to left, #F7CEA2, #FBC384, #FDB76E)',
+    'btn-text-color': 'btn-white',
+    'active-bg': 'bg-[#FDB76E]',
   },
 }
 

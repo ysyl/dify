@@ -139,7 +139,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
   }
 
   return (
-    <div className={cn('relative border border-green-50 rounded-[20.8px] mb-[30px] mt-[13px] overflow-hidden max-w-[720px]',
+    <div className={cn('relative mb-[30px] mt-[13px] max-w-[720px] overflow-hidden rounded-[20.8px] border border-green-50',
       'transition duration-300 ease-in',
     )} style={{
       backgroundColor: 'rgb(235,235,236,0.4)',
@@ -152,33 +152,41 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
         top: '1000px',
       }),
     }}>
-      <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])}>
-        <div className="flex justify-start text-lg text-white font-bold h-[45px] leading-[45px] items-center pl-4">
+      <div className={cn('rounded-3xl rounded-b-[26px]', styleConfig['card-bg'])} style={{
+        ...(styleConfig['card-bg-image'] ? {
+          backgroundImage: styleConfig['card-bg-image'],
+        } : {}),
+      }}>
+        <div className="flex h-[45px] items-center justify-start pl-4 text-lg font-bold leading-[45px] text-white">
           <TourismeIcon />
           <h1 className={cn('pl-2', styleConfig['header-text-color'])}>旅行偏好</h1>
         </div>
-        <div className={cn('p-[16px] rounded-3xl', styleConfig['body-bg'])}>
+        <div className={cn('rounded-3xl p-[16px]', styleConfig['body-bg'], styleConfig['body-border'])} style={{
+          ...(styleConfig['body-bg-image'] ? {
+            backgroundImage: styleConfig['body-bg-image'],
+          } : {}),
+        }}>
           {
             Object.values(selectorConfigObj).map((config) => {
               return (<div key={config.name}>
                 <h1 className="text-md">
                   {config.name}
                   {
-                    formAlert[config.key] && <span className='text-xs ml-4 text-red-500'>* {formAlert[config.key]}</span>
+                    formAlert[config.key] && <span className='ml-4 text-xs text-red-500'>* {formAlert[config.key]}</span>
                   }
                 </h1>
                 {
                   config.type === 'Option'
-                  && <ul className={cn('grid gap-1 mb-5', `grid-cols-${Math.min(config.value.length, 4)}`)}>
+                  && <ul className={cn('mb-5 grid gap-1', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
                       config.value.map((option) => {
                         return (
                           <li key={option.value}>
                             {
-                              <div className={cn('rounded-[20px] px-1 text-sm leading-8 text-center mt-[10px]',
-                                formValues[config.key].value === option.value ? `${styleConfig['card-bg']} text-white` : 'bg-white text-black',
+                              <div className={cn('mt-[10px] rounded-[20px] px-1 text-center text-sm leading-8',
+                                formValues[config.key].value === option.value ? `${styleConfig['active-bg']} text-white` : 'bg-white text-black',
                               )} style={{
-                                boxShadow: '0px 4px 10px 0px #0000001F',
+                                // boxShadow: '0px 4px 10px 0px #0000001F',
                               }} onClick={() => handleClickOption(config.key, option.value)}>
                                 {option.name}
                               </div>
@@ -191,7 +199,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                 }
                 {
                   config.type === 'OptionWithCnt'
-                  && <div className="rounded-[20px] bg-white py-3 px-4 mt-[10px]" style={{
+                  && <div className="mt-[10px] rounded-[20px] bg-white px-4 py-3" style={{
                     boxShadow: '0px 4px 10px 0px #0000001F',
                   }}>
                     <ul>
@@ -199,9 +207,9 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                         config.value.map((option) => {
                           const curValue = formValues[config.key].value as Record<string, number>
                           return (<li key={option.name}>
-                            <div className="flex justify-between w-full leading-10">
+                            <div className="flex w-full justify-between leading-10">
                               <div>{option.name}</div>
-                              <div className="flex justify-around items-center w-20">
+                              <div className="flex w-20 items-center justify-around">
                                 <div onClick={() => handleClickCntBtn('minus', config.key, option.name)}>
                                   <MinusIcon />
                                 </div>
@@ -224,8 +232,15 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
               </div>)
             })
           }
-          <div className="flex justify-center mb-7 mt-8">
-            <button className={cn('btn rounded-md leading-[35px] text-md w-full cursor-pointer px-5 py-1', styleConfig['card-bg'], styleConfig['header-text-color'])} onClick={handleSubmit}>确认选择</button>
+          <div className="mb-1 mt-8 flex justify-center">
+            <button className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[35px]',
+              styleConfig['card-bg'],
+              styleConfig['header-text-color'])} onClick={handleSubmit}
+              style={{
+                ...(styleConfig['btn-bg-image'] ? {
+                  backgroundImage: styleConfig['btn-bg-image'],
+                } : {}),
+              }}>确认选择</button>
           </div>
         </div>
       </div>
