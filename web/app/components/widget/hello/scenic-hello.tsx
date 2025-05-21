@@ -40,7 +40,7 @@ const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
   }
   return <ul className='flex gap-3'>
     {
-      figures.map(figure => (<li className='flex cursor-pointer items-center rounded-3xl p-1' style={{
+      figures.map(figure => (<li key={figure.name} className='flex cursor-pointer items-center rounded-3xl p-1' style={{
         ...(active === figure.name ? activeStyle : desactiveStyle),
       }}
         onClick={() => onSwitch(figure)}
