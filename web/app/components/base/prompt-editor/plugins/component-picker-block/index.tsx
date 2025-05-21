@@ -120,10 +120,8 @@ const ComponentPicker = ({
   }, [editor, checkForTriggerMatch, triggerString])
 
   const handleClose = useCallback(() => {
-    ReactDOM.flushSync(() => {
-      const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' })
-      editor.dispatchCommand(KEY_ESCAPE_COMMAND, escapeEvent)
-    })
+    const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' })
+    editor.dispatchCommand(KEY_ESCAPE_COMMAND, escapeEvent)
   }, [editor])
 
   const renderMenu = useCallback<MenuRenderFn<PickerBlockMenuOption>>((
@@ -153,7 +151,6 @@ const ComponentPicker = ({
                   visibility: isPositioned ? 'visible' : 'hidden',
                 }}
                 ref={refs.setFloating}
-                data-testid="component-picker-container"
               >
                 {
                   workflowVariableBlock?.show && (
@@ -177,7 +174,7 @@ const ComponentPicker = ({
                     <div className='my-1 h-px w-full -translate-x-1 bg-divider-subtle'></div>
                   )
                 }
-                <div data-testid="options-list">
+                <div>
                   {
                     options.map((option, index) => (
                       <Fragment key={option.key}>

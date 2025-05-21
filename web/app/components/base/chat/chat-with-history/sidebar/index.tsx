@@ -17,7 +17,7 @@ import List from '@/app/components/base/chat/chat-with-history/sidebar/list'
 import MenuDropdown from '@/app/components/share/text-generation/menu-dropdown'
 import Confirm from '@/app/components/base/confirm'
 import RenameModal from '@/app/components/base/chat/chat-with-history/sidebar/rename-modal'
-import LogoSite from '@/app/components/base/logo/logo-site'
+import DifyLogo from '@/app/components/base/logo/dify-logo'
 import type { ConversationItem } from '@/models/share'
 import cn from '@/utils/classnames'
 import { useDraggable } from '@dnd-kit/core'
@@ -112,9 +112,9 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
 
   return (
     <div className={cn(
-      'grow flex flex-col w-full relative',
-      isPanel && 'rounded-xl bg-components-panel-bg border-[0.5px] border-components-panel-border-subtle shadow-lg',
-      isMobile && 'bg-components-panel-bg rounded-xl shadow-lg',
+      'relative flex w-full grow flex-col',
+      isPanel && 'rounded-xl border-[0.5px] border-components-panel-border-subtle bg-components-panel-bg shadow-lg',
+      isMobile && 'rounded-xl bg-components-panel-bg shadow-lg',
     )}
     style={style}
     ref={setNodeRef}
@@ -125,7 +125,7 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
         isMobile && <div
           className='absolute right-0 top-[50%] w-10'
         >
-          <div className='relative -right-7 w-1.5 h-10 rounded-lg bg-gray-300'>
+          <div className='relative -right-7 h-10 w-1.5 rounded-lg bg-gray-300'>
           </div>
         </div>
       }
@@ -155,7 +155,7 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
       </div>
       <div className='shrink-0 px-3 py-4'>
         <Button variant='secondary-accent' disabled={isResponding} className='w-full justify-center' onClick={aroundHandleNewConversation}>
-          <RiEditBoxLine className='w-4 h-4 mr-1' />
+          <RiEditBoxLine className='mr-1 h-4 w-4' />
           {t('share.chat.newChat')}
         </Button>
       </div>
@@ -189,14 +189,14 @@ const Sidebar = ({ isPanel, sidebarOffsetX }: Props) => {
         <div className='shrink-0'>
           {!appData?.custom_config?.remove_webapp_brand && (
             <div className={cn(
-              'flex shrink-0 items-center gap-1.5 px-2',
+              'flex shrink-0 items-center gap-1.5 px-1',
             )}>
               <div className='system-2xs-medium-uppercase text-text-tertiary'>{t('share.chat.poweredBy')}</div>
               {appData?.custom_config?.replace_webapp_logo && (
                 <img src={appData?.custom_config?.replace_webapp_logo} alt='logo' className='block h-5 w-auto' />
               )}
               {!appData?.custom_config?.replace_webapp_logo && (
-                <LogoSite className='!h-5' />
+                <DifyLogo size='small' />
               )}
             </div>
           )}

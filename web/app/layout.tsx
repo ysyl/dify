@@ -41,7 +41,9 @@ const LocaleLayout = async ({
       <body
         className={cn('color-scheme h-full select-auto bg-background-default-burn')}
         data-api-prefix={process.env.NEXT_PUBLIC_API_PREFIX}
+        data-web-prefix={process.env.NEXT_PUBLIC_WEB_PREFIX}
         data-pubic-api-prefix={process.env.NEXT_PUBLIC_PUBLIC_API_PREFIX}
+        data-pubic-web-prefix={process.env.NEXT_PUBLIC_PUBLIC_WEB_PREFIX}
         data-marketplace-api-prefix={process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX}
         data-marketplace-url-prefix={process.env.NEXT_PUBLIC_MARKETPLACE_URL_PREFIX}
         data-public-edition={process.env.NEXT_PUBLIC_EDITION}
@@ -69,8 +71,7 @@ const LocaleLayout = async ({
             <TanstackQueryIniter>
               <ThemeProvider
                 attribute='data-theme'
-                forcedTheme='light'
-                defaultTheme='light' // TODO: change to 'system' when dark mode ready
+                defaultTheme='system'
                 enableSystem
                 disableTransitionOnChange
               >

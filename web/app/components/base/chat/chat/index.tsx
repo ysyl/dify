@@ -321,6 +321,7 @@ const Chat: FC<ChatProps> = ({
                     item={item}
                     questionIcon={questionIcon}
                     theme={themeBuilder?.theme}
+                    enableEdit={config?.questionEditEnable}
                     switchSibling={switchSibling}
                   />
                 )

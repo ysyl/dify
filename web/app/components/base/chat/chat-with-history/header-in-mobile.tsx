@@ -36,6 +36,7 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
     handleRenameConversation,
     conversationRenaming,
     sidebarCollapseState,
+    inputsForms,
   } = useChatWithHistoryContext()
   const { t } = useTranslation()
   const isPin = pinnedConversationList.some(item => item.id === currentConversationId)
@@ -133,6 +134,7 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
         <MobileOperationDropdown
           handleResetChat={handleNewConversation}
           handleViewChatSettings={() => setShowChatSettings(true)}
+          hideViewChatSettings={inputsForms.length < 1}
         />
       </div>
       <div className={cn('fixed inset-0 z-50 flex bg-transparent p-1 transition-transform duration-300 ease-in-out', sidebarCollapseState ? '-translate-x-full' : 'translate-x-0')}
