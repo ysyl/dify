@@ -22,7 +22,9 @@ RUN touch /etc/apt/sources.list \
 
 # Install Python dependencies
 COPY pyproject.toml uv.lock ./
-RUN uv sync --locked
+RUN UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" 
+RUN uv lock
+RUN uv sync --index "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 
 # production stage
 FROM base AS production
