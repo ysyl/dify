@@ -1,5 +1,5 @@
 import type { HtmlElement } from '../../tools/widget-tool'
-import { parseHtmlTag } from '../../tools/widget-tool'
+import { parseHtmlTag, parseHtmlTagRaw } from '../../tools/widget-tool'
 
 export type HelloWidgetShortCutItems = {
   title: string
@@ -164,7 +164,8 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     if (customConfig)
       mergeConfig.config = parseConfig(customConfig)
     // shortcutItems节点解析
-    const customShortcutItems = tagItem?.children.find(item => item.tagName === 'shortcut-items')
+    const rawTagItem = parseHtmlTagRaw(widgetTagStr)
+    const customShortcutItems = rawTagItem?.querySelector('shortcut-items')
     if (customShortcutItems)
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
     // multi-figue节点解析
@@ -184,17 +185,17 @@ export function parseConfig(configEle: HtmlElement) {
   }
 }
 
-function parseShortcutItems(shortcutItemsEl: HtmlElement) {
-  const shortcutItemsElList = shortcutItemsEl.children.filter(el => el.tagName === 'shortcut-item')
-  const size = shortcutItemsEl.attributes.size
+function parseShortcutItems(shortcutItemsEl: Element) {
+  const shortcutItemsElList = shortcutItemsEl.querySelectorAll('shortcut-item')
+  const size = shortcutItemsEl.attributes.getNamedItem('size')
 
-  const result = shortcutItemsElList.map((el) => {
-    const { title, desc, 'send-message': sendMessage, agent_url } = el.attributes
+  const result = [...shortcutItemsElList].map((el) => {
+    const attributes = el.attributes
     return {
-      title,
-      desc,
-      sendMessage: sendMessage || title,
-      agent_url,
+      title: attributes.getNamedItem('title')?.value,
+      desc: attributes.getNamedItem('desc')?.value,
+      sendMessage: attributes.getNamedItem('send-message')?.value || attributes.getNamedItem('title')?.value,
+      agent_url: attributes.getNamedItem('agent-url')?.value,
       size,
     }
   })

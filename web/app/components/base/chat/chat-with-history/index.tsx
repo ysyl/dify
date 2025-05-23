@@ -23,6 +23,8 @@ import cn from '@/utils/classnames'
 import type { Modifier } from '@dnd-kit/core'
 import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { parseAgentConfig } from './agent-config'
+import { FigureSwitch } from '@/app/components/widget/hello/scenic-hello'
+import type { Figure } from '@/app/components/widget/hello/scenic-hello-config'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -49,15 +51,14 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
   const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
+  const [activeDigitalHuman, setActiveDigitalHuman] = useState(agentConfig?.digitalHumans && agentConfig.digitalHumans[0])
+  console.log('activeDigitalHuman')
+  console.dir(activeDigitalHuman)
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
-    if (site) {
-      if (customConfig)
+    if (site)
         document.title = `${site.title}`
-      else
-        document.title = `${site.title}`
-    }
   }, [site, customConfig, themeBuilder])
 
   const sensors = useSensors(
@@ -68,12 +69,14 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     }),
   )
 
+  function onSwitchFigure(figure: Figure) {
+    setActiveDigitalHuman(agentConfig?.digitalHumans?.find(dh => dh.name === figure.name))
+  }
+
   const restrictToRight: Modifier = ({ transform }) => {
     // 当X轴偏移量不超过40，且Y轴偏移量超过20时强制归零
     let x = 0
-    if (transform.x < 40 || Math.abs(transform.y) > 20)
-      x = 0
-    else
+    if (!(transform.x < 40 || Math.abs(transform.y) > 20))
       x = transform.x
 
     return {
@@ -93,6 +96,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       <AppUnavailable />
     )
   }
+
   return (
     <div className={cn(
       'flex h-full bg-background-default-burn',
@@ -113,7 +117,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           setSideOffsetX(0)
         }} setSidebarOffsetX={setSideOffsetX} />
       )}
-      <div className={cn('relative grow p-2 overflow-y-auto', isMobile && 'h-[calc(100%_-_56px)] p-0')}>
+      <div className={cn('relative grow overflow-y-auto p-2', isMobile && 'h-[calc(100%_-_56px)] p-0')}>
         {isSidebarCollapsed && (
           <div
             className={cn(
@@ -131,27 +135,62 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           {appChatListDataLoading && (
             <Loading type='app' />
           )}
+          <div className='my-2 flex w-full justify-center'>
           {
-            isMobile && agentConfig?.digitalHuman && <div className='relative z-10 h-[50%] overflow-hidden m-[16px] -mb-3 flex justify-center rounded-2xl' style={{
-              backgroundImage: `url('${agentConfig.digitalHuman.backgroundImage.src}')`,
-              backgroundPositionY: agentConfig.digitalHuman.backgroundImage.positionY,
-              backgroundPositionX: agentConfig.digitalHuman.backgroundImage.positionX,
-              boxShadow: '0px 12px 20px 0px rgba(0, 0, 0, 0.30)',
+            (agentConfig?.digitalHumans && agentConfig?.digitalHumans?.length > 1)
+            && <FigureSwitch figures={agentConfig.digitalHumans.map(dh => ({ name: dh.name, avatarUrl: dh.avatar }))}
+              active={activeDigitalHuman?.name || ''} onSwitch={onSwitchFigure} />
+          }
+          </div>
+          {
+            isMobile && activeDigitalHuman && <div className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden' style={{
+              ...(activeDigitalHuman.backgroundImage ? {
+                backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
+                backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
+                backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
+              } : {}),
             }}>
-              <img
-                className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
-                src={agentConfig.digitalHuman.humanImage.static} />
-              <img
-                className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
-                src={agentConfig.digitalHuman.humanImage.thinking} />
-              <img
-                className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
-                src={agentConfig.digitalHuman.humanImage.talking} />
+              {
+                activeDigitalHuman.humanImage?.static && <img
+                  className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
+                  src={activeDigitalHuman.humanImage.static} />
+              }
+              {
+                activeDigitalHuman.humanImage?.thinking && <img
+                  className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
+                  src={activeDigitalHuman.humanImage.thinking} />
+              }
+              {
+                activeDigitalHuman.humanImage?.talking && <img
+                  className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
+                  src={activeDigitalHuman.humanImage.talking} />
+              }
+              {
+                activeDigitalHuman.humanVideo?.static && <video autoPlay muted loop
+                  className={cn('', chatState !== 'static' && 'hidden')}
+                >
+                  <source src={activeDigitalHuman.humanVideo.talking} />
+                </video>
+              }
+              {
+                activeDigitalHuman.humanVideo?.thinking && <video autoPlay muted loop
+                  className={cn('', chatState !== 'thinking' && 'hidden')}
+                >
+                  <source src={activeDigitalHuman.humanVideo.talking} />
+                </video>
+              }
+              {
+                activeDigitalHuman.humanVideo?.talking && <video autoPlay muted loop
+                  className={cn('', chatState !== 'talking' && 'hidden')}
+                >
+                  <source src={activeDigitalHuman.humanVideo.talking} />
+                </video>
+              }
             </div>
           }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
-              <ChatWrapper key={chatShouldReloadKey} chatState={chatState} setChatState={setChatState} hasDigitalHuman={!!agentConfig?.digitalHuman}/>
+              <ChatWrapper key={chatShouldReloadKey} chatState={chatState} setChatState={setChatState} activeDigitalHuman={activeDigitalHuman} />
             </DndContext>
           )}
         </div>

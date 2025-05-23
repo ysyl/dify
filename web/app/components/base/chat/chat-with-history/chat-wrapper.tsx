@@ -26,13 +26,14 @@ import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-
 import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 import type { FileEntity } from '../../file-uploader/types'
+import type { DigitalHuman } from './agent-config'
 
 type Props = {
   chatState: 'static' | 'thinking' | 'talking'
   setChatState: (state: 'static' | 'thinking' | 'talking') => void
-  hasDigitalHuman: boolean
+  activeDigitalHuman?: DigitalHuman
 }
-const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
+const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman }: Props) => {
   const {
     appParams,
     appPrevChatTree,
@@ -142,10 +143,6 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       && Object.keys(barInputs || {}).length === 0)
       setBarInputs({ ...newConversationInputs })
   }, [newConversationInputs, currentConversationInputs])
-    console.debug(`打印Input: 
-      newConversationInputs: ${JSON.stringify(newConversationInputs)} 
-      currentConversationInputs: ${JSON.stringify(currentConversationInputs)}
-      barInptus: ${JSON.stringify(barInputs)}`)
   useEffect(() => {
     // 处理切换对话的场景，自定义底栏inputs需要从当前对话的最新inputs中取
     // 但是新建对话后，currentConversationInputs是空对象，这时候需要保持自定义底栏inputs不变
@@ -242,6 +239,7 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
             input={{ ...newConversationInputs, ...currentConversationInputs, ...barInputs }}
             onSend={doSend}
             suggestedQuestions={welcomeMessage.suggestedQuestions}
+            activeFigure={activeDigitalHuman && { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar }}
             onChangeInput={(variable, value) => {
               setBarInputs(pre => ({
                 ...pre,
@@ -311,13 +309,19 @@ const ChatWrapper = ({ chatState, setChatState, hasDigitalHuman }: Props) => {
       ref={setNodeRef}
       id='chat-body'
       {...listeners} {...attributes}
+      style={activeDigitalHuman ? {
+        maskImage: `linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(0,0,0,0.8) 20px, 
+        rgba(0,0,0,1) 100%)`,
+      } : {}}
     >
       <Chat
         appData={appData}
         config={appConfig}
         chatList={messageList}
         isResponding={respondingState}
-        chatContainerInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile && 'px-4'} ${hasDigitalHuman ? 'pt-2' : 'pt-6'} `}
+        chatContainerInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile && 'px-4'} ${activeDigitalHuman ? 'pt-10' : 'pt-6'} `}
         chatFooterClassName='pb-4'
         chatFooterInnerClassName={`mx-auto w-full max-w-[720px] ${isMobile ? 'px-2' : 'px-4'}`}
         onSend={doSend}

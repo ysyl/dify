@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useContext } from 'use-context-selector'
 import type { Figure, HelloWidgetShortCutItems } from './scenic-hello-config'
 import getScenicHelloConfig from './scenic-hello-config'
@@ -11,6 +11,8 @@ type HelloWidgetProps = {
   input: Record<string, any>,
   onChangeInput?: (variable: string, value: string) => void
   suggestedQuestions?: string[]
+  // 有值则说明有数字人形象，卡片中的静态形象和切换按钮不展示
+  activeFigure?: Figure
   handleScrollToBottom?: (args: {
     forceScroll: boolean,
     smooth: boolean
@@ -29,7 +31,7 @@ type FigureSwitchProps = {
   active: string,
   onSwitch: (figure: Figure) => void
 }
-const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
+export const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
   const activeStyle = {
     backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
   }
@@ -53,7 +55,7 @@ const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
     }
   </ul>
 }
-const getShortcutListItem = ({
+const ShortcutListItem = ({
   size,
   shortcutItem,
   repererLeChoix,
@@ -66,24 +68,26 @@ const getShortcutListItem = ({
   selectedShortcut: string,
   onSend?: (msg: string) => void,
   onChangeInput?: (variable: string, value: string) => void
-}) => (
-  <div className={cn('cursor-pointer rounded-xl bg-white', size === 'sm' ? 'p-1' : 'h-16 p-3')} onClick={() => {
-    if (shortcutItem.agent_url)
-      window.location.href = shortcutItem.agent_url
-    else if (shortcutItem.input_variable)
-      onChangeInput?.(shortcutItem.input_variable, shortcutItem.input_value || shortcutItem.title)
-    else
-      onSend?.(shortcutItem.title)
-  }} style={{
-    border: (repererLeChoix) ? '2px solid #c0dafa' : '2px solid white',
-  }}>
-    <div className='flex w-full items-center justify-between'>
-      <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{shortcutItem.title}</h1>
-      <ARROW_ICON />
+}) => {
+  return (
+    <div className={cn('cursor-pointer rounded-xl bg-white', size === 'sm' ? 'p-1' : 'h-16 p-3')} onClick={() => {
+      if (shortcutItem.agent_url)
+        window.location.href = shortcutItem.agent_url
+      else if (shortcutItem.input_variable)
+        onChangeInput?.(shortcutItem.input_variable, shortcutItem.input_value || shortcutItem.title)
+      else
+        onSend?.(shortcutItem.title)
+    }} style={{
+      border: (repererLeChoix) ? '2px solid #c0dafa' : '2px solid white',
+    }}>
+      <div className='flex w-full items-center justify-between'>
+        <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{shortcutItem.title}</h1>
+        <ARROW_ICON />
+      </div>
+      <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{shortcutItem.desc}</h2>
     </div>
-    <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{shortcutItem.desc}</h2>
-  </div>
-)
+  )
+}
 
 const getPreconfigQueryItem = (title: string, onSend?: (msg: string) => void) => (
   <div className='flex h-10 w-full items-center justify-between rounded-3xl bg-white p-0.5 px-4' onClick={() => onSend?.(title)}>
@@ -98,6 +102,7 @@ const HelloWidget = ({
   onSend,
   input,
   onChangeInput,
+  activeFigure: activeFigureInput,
   suggestedQuestions,
   handleScrollToBottom,
 }: HelloWidgetProps) => {
@@ -113,7 +118,7 @@ const HelloWidget = ({
   const { locale } = useContext(I18n)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
-  const [activeFigure, setActiveFigure] = useState<Figure>(multiFigue ? multiFigue[0] : { name, avatarUrl: avatar })
+  const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
@@ -123,6 +128,10 @@ const HelloWidget = ({
       smooth: false,
     })
   }
+  useEffect(() => {
+    if (activeFigureInput)
+      setActiveFigure(activeFigureInput)
+  }, [activeFigureInput])
 
   function onSwitchFigure(figure: Figure) {
     setActiveFigure(figure)
@@ -132,7 +141,7 @@ const HelloWidget = ({
     <div style={{ cursor: 'default' }}>
       <div className='flex w-full justify-center'>
         {
-          multiFigue && <FigureSwitch figures={multiFigue} active={activeFigure?.name || ''} onSwitch={onSwitchFigure} />
+          multiFigue && !activeFigureInput && <FigureSwitch figures={multiFigue} active={activeFigure?.name || ''} onSwitch={onSwitchFigure} />
         }
       </div>
       <div key="WidgetComponent" className='mb-[30px] mt-[13px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
@@ -144,7 +153,7 @@ const HelloWidget = ({
             <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
             <h1 className={`text-[${nameFontSize}]`}>我是{activeFigure.name}</h1>
           </div>
-          <img alt='智能体头像' className='mr-7' width={81} src={activeFigure.avatarUrl} />
+          {!activeFigureInput && <img alt='智能体头像' className='mr-7' width={81} src={activeFigure.avatarUrl} />}
         </div>
         <section className='mt-6 text-[17px] text-[#7C879B]'>
           {introduce}
@@ -157,14 +166,14 @@ const HelloWidget = ({
               {
                 shortcutItems.map((item: HelloWidgetShortCutItems) => (
                   <li key={item.title} className="">
-                    {getShortcutListItem({
-                      size: item.size || 'md',
-                      shortcutItem: item,
-                      repererLeChoix: item.input_variable ? input[item.input_variable] === item.input_value : false,
-                      selectedShortcut,
-                      onSend: handleSend,
-                      onChangeInput,
-                    })}
+                    <ShortcutListItem
+                      size={item.size || 'md'}
+                      shortcutItem={item}
+                      repererLeChoix={item.input_variable ? input[item.input_variable] === item.input_value : false}
+                      selectedShortcut={selectedShortcut}
+                      onSend={handleSend}
+                      onChangeInput={onChangeInput}
+                    />
                   </li>
                 ))
               }
