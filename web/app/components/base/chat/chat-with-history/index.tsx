@@ -22,6 +22,7 @@ import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
 import type { Modifier } from '@dnd-kit/core'
 import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import type { DigitalHuman } from './agent-config'
 import { parseAgentConfig } from './agent-config'
 import { FigureSwitch } from '@/app/components/widget/hello/scenic-hello'
 import type { Figure } from '@/app/components/widget/hello/scenic-hello-config'
@@ -51,14 +52,17 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
   const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
-  const [activeDigitalHuman, setActiveDigitalHuman] = useState(agentConfig?.digitalHumans && agentConfig.digitalHumans[0])
-  console.log('activeDigitalHuman')
-  console.dir(activeDigitalHuman)
+  const [activeDigitalHuman, setActiveDigitalHuman] = useState<DigitalHuman>()
+
+  useEffect(() => {
+    if (agentConfig?.digitalHumans && !activeDigitalHuman)
+      setActiveDigitalHuman(agentConfig?.digitalHumans[0])
+  }, [agentConfig?.digitalHumans])
 
   useEffect(() => {
     themeBuilder?.buildTheme(site?.chat_color_theme, site?.chat_color_theme_inverted)
     if (site)
-        document.title = `${site.title}`
+      document.title = `${site.title}`
   }, [site, customConfig, themeBuilder])
 
   const sensors = useSensors(
@@ -135,58 +139,18 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           {appChatListDataLoading && (
             <Loading type='app' />
           )}
-          <div className='my-2 flex w-full justify-center'>
+          {/* 数字人形象切换按钮 */}
           {
             (agentConfig?.digitalHumans && agentConfig?.digitalHumans?.length > 1)
-            && <FigureSwitch figures={agentConfig.digitalHumans.map(dh => ({ name: dh.name, avatarUrl: dh.avatar }))}
-              active={activeDigitalHuman?.name || ''} onSwitch={onSwitchFigure} />
-          }
-          </div>
-          {
-            isMobile && activeDigitalHuman && <div className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden' style={{
-              ...(activeDigitalHuman.backgroundImage ? {
-                backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
-                backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
-                backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
-              } : {}),
-            }}>
-              {
-                activeDigitalHuman.humanImage?.static && <img
-                  className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
-                  src={activeDigitalHuman.humanImage.static} />
-              }
-              {
-                activeDigitalHuman.humanImage?.thinking && <img
-                  className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
-                  src={activeDigitalHuman.humanImage.thinking} />
-              }
-              {
-                activeDigitalHuman.humanImage?.talking && <img
-                  className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
-                  src={activeDigitalHuman.humanImage.talking} />
-              }
-              {
-                activeDigitalHuman.humanVideo?.static && <video autoPlay muted loop
-                  className={cn('', chatState !== 'static' && 'hidden')}
-                >
-                  <source src={activeDigitalHuman.humanVideo.talking} />
-                </video>
-              }
-              {
-                activeDigitalHuman.humanVideo?.thinking && <video autoPlay muted loop
-                  className={cn('', chatState !== 'thinking' && 'hidden')}
-                >
-                  <source src={activeDigitalHuman.humanVideo.talking} />
-                </video>
-              }
-              {
-                activeDigitalHuman.humanVideo?.talking && <video autoPlay muted loop
-                  className={cn('', chatState !== 'talking' && 'hidden')}
-                >
-                  <source src={activeDigitalHuman.humanVideo.talking} />
-                </video>
-              }
+            && <div className='my-2 flex w-full justify-center'>
+              <FigureSwitch figures={agentConfig.digitalHumans.map(dh => ({ name: dh.name, avatarUrl: dh.avatar }))}
+                active={activeDigitalHuman?.name || ''} onSwitch={onSwitchFigure} />
             </div>
+          }
+          {/* 数字人形象 */}
+          {
+            isMobile && agentConfig?.digitalHumans && activeDigitalHuman
+            && <DigitalFigure activeDigitalHuman={activeDigitalHuman} chatState={chatState} />
           }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
@@ -341,3 +305,58 @@ const ChatWithHistoryWrapWithCheckToken: FC<ChatWithHistoryWrapProps> = ({
 }
 
 export default ChatWithHistoryWrapWithCheckToken
+
+type DigitalFigureProps = {
+  activeDigitalHuman: DigitalHuman
+  chatState: string
+}
+
+function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
+  return <div className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden' style={{
+    ...(activeDigitalHuman.backgroundImage ? {
+      backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
+      backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
+      backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
+    } : {}),
+  }}>
+    {
+      activeDigitalHuman.humanImage?.static
+      && <img
+        className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
+        src={activeDigitalHuman.humanImage.static} />
+    }
+    {
+      activeDigitalHuman.humanImage?.thinking
+      && <img
+        className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
+        src={activeDigitalHuman.humanImage.thinking} />
+    }
+    {
+      activeDigitalHuman.humanImage?.talking
+      && <img
+        className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
+        src={activeDigitalHuman.humanImage.talking} />
+    }
+    {
+      activeDigitalHuman.humanVideo?.static
+      && <video autoPlay muted loop
+        className={cn('', chatState !== 'static' && 'hidden')}
+      >
+        <source src={activeDigitalHuman.humanVideo.talking} />
+      </video>}
+    {
+      activeDigitalHuman.humanVideo?.thinking
+      && <video autoPlay muted loop
+        className={cn('', chatState !== 'thinking' && 'hidden')}
+      >
+        <source src={activeDigitalHuman.humanVideo.talking} />
+      </video>}
+    {
+      activeDigitalHuman.humanVideo?.talking
+      && <video autoPlay muted loop
+        className={cn('', chatState !== 'talking' && 'hidden')}
+      >
+        <source src={activeDigitalHuman.humanVideo.talking} />
+      </video>}
+  </div>
+}
