@@ -283,7 +283,7 @@ export function Markdown(props: { content: string; className?: string; customDis
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
       <ReactMarkdown
         remarkPlugins={[
-          RemarkGfm,
+          [RemarkGfm, { singleTilde: false }],
           [RemarkMath, { singleDollarTextMath: false }],
           RemarkBreaks,
         ]}
