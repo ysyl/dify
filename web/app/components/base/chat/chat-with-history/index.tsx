@@ -332,6 +332,8 @@ function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
         autoPlay
         muted
         loop
+        playsInline
+        webkit-playsInline
         className={className}
       >
         <source src={mediaSource} />
