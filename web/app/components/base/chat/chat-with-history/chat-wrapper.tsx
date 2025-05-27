@@ -341,6 +341,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman }: Props) => 
         suggestedQuestions={suggestedQuestions}
         answerIcon={answerIcon}
         hideProcessDetail
+        activeDigitalHuman={activeDigitalHuman}
         themeBuilder={themeBuilder}
         switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
         inputDisabled={inputDisabled}

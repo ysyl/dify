@@ -312,51 +312,53 @@ type DigitalFigureProps = {
 }
 
 function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
-  return <div className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden' style={{
-    ...(activeDigitalHuman.backgroundImage ? {
-      backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
-      backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
-      backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
-    } : {}),
-  }}>
-    {
-      activeDigitalHuman.humanImage?.static
-      && <img
-        className={cn('relative -top-3 h-[180%]', chatState !== 'static' && 'hidden')}
-        src={activeDigitalHuman.humanImage.static} />
-    }
-    {
-      activeDigitalHuman.humanImage?.thinking
-      && <img
-        className={cn('relative -top-3 h-[180%]', chatState !== 'thinking' && 'hidden')}
-        src={activeDigitalHuman.humanImage.thinking} />
-    }
-    {
-      activeDigitalHuman.humanImage?.talking
-      && <img
-        className={cn('relative -top-3 h-[180%]', chatState !== 'talking' && 'hidden')}
-        src={activeDigitalHuman.humanImage.talking} />
-    }
-    {
-      activeDigitalHuman.humanVideo?.static
-      && <video autoPlay muted loop
-        className={cn('', chatState !== 'static' && 'hidden')}
+  // 创建一个渲染媒体元素的辅助函数
+  const renderMediaElement = (media: { static?: string; thinking?: string; talking?: string } | undefined, type: 'image' | 'video', state: 'static' | 'thinking' | 'talking') => {
+    if (!media) return null
+
+    const mediaSource = media[state]
+    if (!mediaSource) return null
+
+    const isActive = chatState === state
+    const className = cn('relative -top-3', !isActive && 'hidden')
+
+    if (type === 'image')
+      return <img key={`${mediaSource}image${state}`} className={className} src={mediaSource} />
+
+    // 视频处理
+    return (
+      <video
+        key={mediaSource + state}
+        autoPlay
+        muted
+        loop
+        className={className}
       >
-        <source src={activeDigitalHuman.humanVideo.talking} />
-      </video>}
-    {
-      activeDigitalHuman.humanVideo?.thinking
-      && <video autoPlay muted loop
-        className={cn('', chatState !== 'thinking' && 'hidden')}
-      >
-        <source src={activeDigitalHuman.humanVideo.talking} />
-      </video>}
-    {
-      activeDigitalHuman.humanVideo?.talking
-      && <video autoPlay muted loop
-        className={cn('', chatState !== 'talking' && 'hidden')}
-      >
-        <source src={activeDigitalHuman.humanVideo.talking} />
-      </video>}
-  </div>
+        <source src={mediaSource} />
+      </video>
+    )
+  }
+
+  return (
+    <div
+      className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden'
+      style={{
+        ...(activeDigitalHuman.backgroundImage ? {
+          backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
+          backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
+          backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
+        } : {}),
+      }}
+    >
+      {/* 渲染图片状态 */}
+      {renderMediaElement(activeDigitalHuman.humanImage, 'image', 'static')}
+      {renderMediaElement(activeDigitalHuman.humanImage, 'image', 'thinking')}
+      {renderMediaElement(activeDigitalHuman.humanImage, 'image', 'talking')}
+
+      {/* 渲染视频状态 */}
+      {renderMediaElement(activeDigitalHuman.humanVideo, 'video', 'static')}
+      {renderMediaElement(activeDigitalHuman.humanVideo, 'video', 'thinking')}
+      {renderMediaElement(activeDigitalHuman.humanVideo, 'video', 'talking')}
+    </div>
+  )
 }

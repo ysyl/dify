@@ -42,6 +42,7 @@ import { isProductPreference } from '@/app/components/widget/product-preference/
 import ProductPreference from '@/app/components/widget/product-preference/product-preference'
 import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 import ServiceList, { isServiceList } from '@/app/components/widget/service_list/service_list'
+import type { DigitalHuman } from '../chat-with-history/agent-config'
 
 export type ChatProps = {
   appData?: AppData
@@ -82,6 +83,7 @@ export type ChatProps = {
   isMobile?: boolean
   sidebarCollapseState?: boolean
   onChangeInputs: (a: any) => void
+  activeDigitalHuman?: DigitalHuman
 }
 
 const Chat: FC<ChatProps> = ({
@@ -122,8 +124,8 @@ const Chat: FC<ChatProps> = ({
   isMobile,
   sidebarCollapseState,
   onChangeInputs,
+  activeDigitalHuman,
 }) => {
-  console.log('input: ', JSON.stringify(inputs))
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
     currentLogItem: state.currentLogItem,
@@ -266,6 +268,7 @@ const Chat: FC<ChatProps> = ({
                       input={inputs || {}}
                       suggestedQuestions={item.suggestedQuestions}
                       handleScrollToBottom={handleScrollToBottom}
+                      activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
                       onChangeInput={(variable, value) => {
                         onChangeInputs({
                           [variable]: value,
