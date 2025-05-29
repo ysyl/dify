@@ -80,7 +80,7 @@ const ProductRecommand = ({ node }: { node: any }) => {
             <div key={index} className='h-[196px] w-[165px] overflow-hidden rounded-xl border border-gray-300 bg-white'>
               {product.coverImg && <img className='h-[105px] w-full object-cover' style={{ border: '0' }} src={product.coverImg} />}
               <div className='relative mt-1 h-[91px] px-2 py-1'>
-                <span className='mb-1 line-clamp-2 text-sm text-black no-underline hover:no-underline'>{product.productName}</span>
+                <span className='mb-1 text-sm text-black no-underline hover:no-underline'>{product.productName}</span>
                 <div className='absolute bottom-3 left-3'>
                   <span className='text-xs text-gray-400'>￥</span>
                   <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
