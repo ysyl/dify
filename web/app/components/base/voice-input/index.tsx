@@ -50,6 +50,7 @@ const VoiceInput = ({
   const buttonRef: any = useRef(null)
   const [isInside, setIsInside] = useState(true)
   const { notify } = useContext(ToastContext)
+  const touchStartTimeRef = useRef<number>()
 
   // 获取元素边界范围
   const getButtonRect = () => {
@@ -69,7 +70,7 @@ const VoiceInput = ({
   }
 
   // 触摸移动
-  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchMove = (e: TouchEvent<any>) => {
     const touch = e.touches[0]
     const currentInside = isTouchInside(touch.clientX, touch.clientY)
 
@@ -123,11 +124,6 @@ const VoiceInput = ({
     const canvas = canvasRef.current!
     const ctx = ctxRef.current!
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    const mp3Blob = convertToMp3(recorder.current)
-    const mp3File = new File([mp3Blob], 'temp.mp3', { type: 'audio/mp3' })
-    const formData = new FormData()
-    formData.append('file', mp3File)
-    formData.append('word_timestamps', wordTimestamps || 'disabled')
 
     let url = ''
     let isPublic = false
@@ -143,23 +139,32 @@ const VoiceInput = ({
         url = `/apps/${params.appId}/audio-to-text`
     }
 
-    if (startConvert) {
-      try {
-        const audioResponse = await audioToText(url, isPublic, formData)
-        if (audioResponse.text.trim().length === 0)
-          notify({ type: 'error', message: '识别失败' })
-         else
-          onConverted(audioResponse.text)
-      }
-      catch (e) {
-        console.error(e)
-        onConverted('')
-      }
-      finally {
-        setStartConvert(false)
+    try {
+      if (startConvert) {
+        try {
+          const mp3Blob = convertToMp3(recorder.current)
+          const mp3File = new File([mp3Blob], 'temp.mp3', { type: 'audio/mp3' })
+          const formData = new FormData()
+          formData.append('file', mp3File)
+          formData.append('word_timestamps', wordTimestamps || 'disabled')
+          const audioResponse = await audioToText(url, isPublic, formData)
+          if (audioResponse.text.trim().length === 0)
+            notify({ type: 'error', message: '识别失败' })
+          else
+            onConverted(audioResponse.text)
+        }
+        catch (e) {
+          console.error(e)
+          onConverted('')
+        }
+        finally {
+          setStartConvert(false)
+        }
       }
     }
-    recorder.current.destroy()
+ finally {
+      recorder.current.destroy()
+    }
   }, [clearInterval, onCancel, onConverted, params.appId, params.token, pathname, wordTimestamps])
   const handleStartRecord = async (callback?: () => void) => {
     try {
@@ -169,8 +174,9 @@ const VoiceInput = ({
       recorder.current.start().then(() => {
         // if (canvasRef.current && ctxRef.current)
         // drawRecord()
+        console.log('after start recorder')
         callback?.()
-      })
+      }).catch(e => console.error(e))
     }
     catch (e) {
       console.error(e)
@@ -178,25 +184,33 @@ const VoiceInput = ({
     }
   }
   // 触摸开始
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = (e: TouchEvent<any>) => {
     setButtonText('录音启动中')
+    touchStartTimeRef.current = e.timeStamp
     handleStartRecord(() => {
+      if (!touchStartTimeRef.current) {
+        handleStopRecorder(false)
+        return
+      }
       setButtonText('松手发送，移出取消')
       setOriginDuration(0)
       setIsInside(true)
     })
   }
   // 触摸结束
-  const handleTouchEnd = (_: TouchEvent<HTMLDivElement>) => {
-    if (isInside) {
-      handleStopRecorder(true)
-      console.log('执行发送操作')
-    }
-    else {
+  const handleTouchEnd = (e: TouchEvent<any>) => {
+    console.log('handleTouchEnd')
+    // 判断触摸终止时间，如果触摸持续时间小于一秒, 则不启动录音
+    if (touchStartTimeRef.current && (e.timeStamp - touchStartTimeRef.current <= 1000) && !isInside) {
       handleStopRecorder(false)
       console.log('取消发送')
     }
+    else if (isInside) {
+      handleStopRecorder(true)
+      console.log('执行发送操作')
+    }
     setButtonText('按住说话')
+    touchStartTimeRef.current = undefined
   }
 
   const initCanvas = () => {
@@ -258,16 +272,17 @@ const VoiceInput = ({
 
   return (
     <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')} ref={buttonRef}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     >
       <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-xl py-[14px] pl-[14.5px] pr-[6.5px]',
         getBtnBg(),
       )}>
-        <canvas id='voice-input-record' className='absolute bottom-0 left-0 z-10 h-[45px] w-full' />
+        <canvas id='voice-input-record' className='absolute bottom-0 left-0 z-50 h-[45px] w-full'
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        />
         {
-          !startRecord && <ActionButton
+          !touchStartTimeRef.current && <ActionButton
             className='l-1 absolute z-50'
             size='l'
             onClick={onCancel}
