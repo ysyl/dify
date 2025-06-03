@@ -18,12 +18,87 @@ from extensions.ext_database import db
 from factories import file_factory
 from models.model import AppMode, Conversation, Message, MessageFile
 from models.workflow import WorkflowRun
+from bs4 import BeautifulSoup, Comment
+import bleach
+from bleach.sanitizer import Cleaner
 
+class AllowedHTMLElements:
+    @staticmethod
+    def get_allowed_tags():
+        """返回允许的HTML标签列表"""
+        return [
+            'a', 'abbr', 'acronym', 'b', 'blockquote', 'br', 'code', 'dd', 'del', 'div', 
+            'dl', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 
+            'ins', 'kbd', 'li', 'ol', 'p', 'pre', 'q', 'samp', 'small', 'span', 'strike', 
+            'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 
+            'tt', 'u', 'ul', 'var'
+        ]
+
+    @staticmethod
+    def get_allowed_attributes():
+        """返回允许的HTML属性列表"""
+        return {
+            'a': ['href', 'title', 'target', 'rel'],
+            'img': ['src', 'alt', 'title', 'width', 'height', 'loading'],
+            'div': ['class', 'style'],
+            'span': ['class', 'style'],
+            'p': ['class', 'style'],
+            'pre': ['class'],
+            'blockquote': ['cite'],
+            'table': ['border', 'cellpadding', 'cellspacing'],
+            '*': ['class', 'id', 'style']  # 允许所有标签的class和id属性
+        }
 
 class TokenBufferMemory:
     def __init__(self, conversation: Conversation, model_instance: ModelInstance) -> None:
         self.conversation = conversation
         self.model_instance = model_instance
+
+    def _create_html_cleaner(self) -> Cleaner:
+        """创建安全的HTML清理器配置"""
+        # 定义允许的HTML标签和属性
+        allowed_tags = AllowedHTMLElements.get_allowed_tags()  # 假设这里定义了安全的标签列表
+        allowed_attributes = AllowedHTMLElements.get_allowed_attributes()  # 假设这里定义了安全的属性列表
+        
+        return Cleaner(
+            tags=allowed_tags,
+            attributes=allowed_attributes,
+            protocols=['http', 'https', 'mailto'],
+            strip=True,
+            strip_comments=True
+        )
+
+    def _filter_html_no_memory(self, text: str) -> str:
+        """安全地过滤掉包含no_memory=true属性的HTML标签，并防止XSS"""
+        if not text:
+            return text
+
+        # 转换为字符串进行下一步清理
+        cleaned_soup = str(safe_html)
+        
+        # 第二步：使用bleach进行XSS清理
+        safe_text = self.html_cleaner.clean(cleaned_soup)
+            
+        # 第一步：使用BeautifulSoup移除no_memory标签
+        safe_html = BeautifulSoup(safe_text, 'html.parser')
+        
+        # 移除所有包含no_memory="true"的标签
+        for tag in safe_html.find_all(attrs={"no-memory": "true"}):
+            tag.decompose()
+            
+        # 移除HTML注释，防止注释中隐藏恶意代码
+        for comment in safe_html.find_all(string=lambda text: isinstance(text, Comment)):
+            comment.extract()
+        
+        return safe_html
+
+    def _process_message_content(self, content: str) -> str:
+        """处理消息内容，过滤不需要的HTML标签并防止XSS"""
+        # 处理HTML内容
+        if '<' in content and '>' in content:
+            content = self._filter_html_no_memory(content)
+            
+        return content
 
     def get_history_prompt_messages(
         self, max_token_limit: int = 2000, message_limit: Optional[int] = None
@@ -71,6 +146,8 @@ class TokenBufferMemory:
 
         prompt_messages: list[PromptMessage] = []
         for message in messages:
+            processed_query = self._process_message_content(message.query)
+            message.query = processed_query
             files = db.session.query(MessageFile).filter(MessageFile.message_id == message.id).all()
             if files:
                 file_extra_config = None
