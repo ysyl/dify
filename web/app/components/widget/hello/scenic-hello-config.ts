@@ -40,9 +40,9 @@ export enum ScenicWidgetType {
 const SCENIC_HELLO_CONFIG: Record<ScenicWidgetType, ScenicHelloType> = {
   [ScenicWidgetType.SPT]: {
     'avatar': 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/spt_agent_shasha_avatar.png',
-    'name': '莎莎',
+    'name': '沙沙',
     'multiFigure': [{
-      name: '莎莎',
+      name: '沙沙',
       avatarUrl: 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/spt_agent_shasha_avatar.png',
     }, {
       name: '漠漠',
