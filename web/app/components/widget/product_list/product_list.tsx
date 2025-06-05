@@ -156,7 +156,8 @@ function extraitGroupListFromText(groupText: string): string[] {
     return []
 
   const groupList = groupText.replaceAll('预订偏好\n', '').trim().split('\n')
-    .flatMap(line => line.split(':')[1].trim())
+    .flatMap(line => line.split(':').length >= 2 ? line.split(':')[1].trim() : '')
+    .filter(str => !!str)
     .flatMap(rawGroupTextPerLine => rawGroupTextPerLine.split(','))
   return groupList
 }

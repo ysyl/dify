@@ -53,7 +53,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   }
 }
 
-const ProductRecommand = ({ node }: { node: any }) => {
+const ProductQuote = ({ node }: { node: any }) => {
   const config = getProductRecommandConfig(node)
 
   if (!config?.products || config.products.length === 0) return <></>
@@ -100,4 +100,4 @@ export function isProductRecommand(widgetTagStr?: string) {
   return widgetTagStr.startsWith('<product-recommand') && widgetTagStr.endsWith('</product-recommand>')
 }
 
-export default ProductRecommand
+export default ProductQuote

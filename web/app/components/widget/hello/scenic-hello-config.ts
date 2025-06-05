@@ -1,5 +1,4 @@
-import type { HtmlElement } from '../../tools/widget-tool'
-import { parseHtmlTag, parseHtmlTagRaw } from '../../tools/widget-tool'
+import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
 export type HelloWidgetShortCutItems = {
   title: string
@@ -145,22 +144,15 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
   const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   if (index >= 0) {
     // 融合tag中的自定义配置到预设配置
-    const tagItem = parseHtmlTag(widgetTagStr)
-    const config = SCENIC_HELLO_CONFIG[tagItem?.tagName as ScenicWidgetType]
+    const tagItem = parseHtmlTagRaw(widgetTagStr)?.querySelector('spt-widget')
+    const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
     const mergeConfig: Record<string, any> = {
       ...config,
       ...tagItem?.attributes,
     }
 
-    // tag特殊属性处理
-    Object.keys(tagItem?.attributes || {}).forEach((key) => {
-      if (typeof tagItem?.attributes[key] === 'string') {
-        if (tagItem?.attributes[key]?.startsWith('[') && tagItem?.attributes[key]?.endsWith(']'))
-          mergeConfig[key] = JSON.parse(tagItem?.attributes[key])
-      }
-    })
     // config节点解析
-    const customConfig = tagItem?.children.find(item => item.tagName === 'config')
+    const customConfig = [...(tagItem?.children || [])].find(item => item.tagName === 'config')
     if (customConfig)
       mergeConfig.config = parseConfig(customConfig)
     // shortcutItems节点解析
@@ -169,17 +161,18 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     if (customShortcutItems)
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
     // multi-figue节点解析
-    const multiFigueEl = tagItem?.children.find(item => item.tagName === 'multi-figure')
+    const multiFigueEl = [...(tagItem?.children || [])].find(item => item.tagName === 'multi-figure')
     if (multiFigueEl)
       mergeConfig.multiFigue = parseMultiFigueEl(multiFigueEl)
 
+    console.dir(tagItem)
     return mergeConfig as ScenicHelloType
   }
   throw new Error('illegal parametres')
 }
 
 // 当前仅支持tag attributes
-export function parseConfig(configEle: HtmlElement) {
+export function parseConfig(configEle: Element) {
   return {
     ...configEle.attributes,
   }
@@ -202,11 +195,12 @@ function parseShortcutItems(shortcutItemsEl: Element) {
   return result
 }
 
-function parseMultiFigueEl(multiFigueEl: HtmlElement) {
-  const figueElList = multiFigueEl.children.filter(el => el.tagName === 'figue')
+function parseMultiFigueEl(multiFigueEl: Element) {
+  const figueElList = [...(multiFigueEl.children || [])].filter(el => el.tagName === 'figue')
 
   const result = figueElList.map((el) => {
-    const { name, 'avatar-url': avatarUrl } = el.attributes
+    const name = el.attributes.getNamedItem('name')?.value
+    const avatarUrl = el.attributes.getNamedItem('avatar-url')?.value
     return {
       name,
       avatarUrl,
