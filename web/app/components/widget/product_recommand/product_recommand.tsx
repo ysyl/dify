@@ -57,7 +57,7 @@ const ProductRecommand = ({ node }: { node: any }) => {
   const config = getProductRecommandConfig(node)
 
   if (!config?.products || config.products.length === 0) return <></>
-  return <div className='mb-2'>
+  return <div className='mb-2' no-memory="true">
     <span className='m-2 flex items-center'><span className='mr-2'><TITLE_ICON /></span>{config.title}</span>
     <ul className='flex w-full gap-2 overflow-y-auto' style={{
       listStyle: 'none',
