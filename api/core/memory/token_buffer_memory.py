@@ -1,5 +1,10 @@
+import logging
+import json
 from collections.abc import Sequence
 from typing import Optional
+
+from bleach.sanitizer import Cleaner
+from bs4 import BeautifulSoup, Comment
 
 from core.app.app_config.features.file_upload.manager import FileUploadConfigManager
 from core.file import file_manager
@@ -18,9 +23,8 @@ from extensions.ext_database import db
 from factories import file_factory
 from models.model import AppMode, Conversation, Message, MessageFile
 from models.workflow import WorkflowRun
-from bs4 import BeautifulSoup, Comment
-import bleach
-from bleach.sanitizer import Cleaner
+
+logger = logging.getLogger(__name__)
 
 class AllowedHTMLElements:
     @staticmethod
@@ -53,6 +57,7 @@ class TokenBufferMemory:
     def __init__(self, conversation: Conversation, model_instance: ModelInstance) -> None:
         self.conversation = conversation
         self.model_instance = model_instance
+        self.html_cleaner = self._create_html_cleaner()
 
     def _create_html_cleaner(self) -> Cleaner:
         """创建安全的HTML清理器配置"""
@@ -73,24 +78,23 @@ class TokenBufferMemory:
         if not text:
             return text
 
-        # 转换为字符串进行下一步清理
-        cleaned_soup = str(safe_html)
-        
-        # 第二步：使用bleach进行XSS清理
-        safe_text = self.html_cleaner.clean(cleaned_soup)
-            
         # 第一步：使用BeautifulSoup移除no_memory标签
-        safe_html = BeautifulSoup(safe_text, 'html.parser')
+        soup = BeautifulSoup(text, 'html.parser')
         
         # 移除所有包含no_memory="true"的标签
-        for tag in safe_html.find_all(attrs={"no-memory": "true"}):
+        for tag in soup.find_all(attrs={"no-memory": "true"}):
             tag.decompose()
             
         # 移除HTML注释，防止注释中隐藏恶意代码
-        for comment in safe_html.find_all(string=lambda text: isinstance(text, Comment)):
+        for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
             comment.extract()
         
-        return safe_html
+        # 转换BeautifulSoup对象为字符串
+        cleaned_html = str(soup)
+        
+        # 第二步：使用bleach进行XSS清理
+        safe_text = self.html_cleaner.clean(cleaned_html)
+        return safe_text
 
     def _process_message_content(self, content: str) -> str:
         """处理消息内容，过滤不需要的HTML标签并防止XSS"""
@@ -146,8 +150,8 @@ class TokenBufferMemory:
 
         prompt_messages: list[PromptMessage] = []
         for message in messages:
-            processed_query = self._process_message_content(message.query)
-            message.query = processed_query
+            logger.info(f"消息 JSON 结构: {message._fields}")
+            processed_answer = self._process_message_content(message.answer)
             files = db.session.query(MessageFile).filter(MessageFile.message_id == message.id).all()
             if files:
                 file_extra_config = None
@@ -191,7 +195,7 @@ class TokenBufferMemory:
             else:
                 prompt_messages.append(UserPromptMessage(content=message.query))
 
-            prompt_messages.append(AssistantPromptMessage(content=message.answer))
+            prompt_messages.append(AssistantPromptMessage(content=processed_answer))
 
         if not prompt_messages:
             return []
