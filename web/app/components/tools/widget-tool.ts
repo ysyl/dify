@@ -21,11 +21,11 @@ export function validateXML(xmlString: string) {
   }
 }
 
-export function parseHtmlTagRaw(htmlString: string): Document | null {
+export function parseHtmlTagRaw(htmlString: string): HTMLElement | null {
   try {
     const parser = new DOMParser()
-    const doc = parser.parseFromString(htmlString, 'text/xml')
-    return doc
+    const doc = parser.parseFromString(htmlString, 'text/html')
+    return doc.body
   }
   catch (e) {
     console.error(e)

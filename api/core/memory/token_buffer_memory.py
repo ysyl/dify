@@ -1,5 +1,4 @@
 import logging
-import json
 from collections.abc import Sequence
 from typing import Optional
 

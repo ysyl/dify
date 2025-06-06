@@ -23,7 +23,7 @@ const TITLE_ICON = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="n
 function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
 
-  const productsRawInfosStr = node.children.filter((el: any) => el.tagName === 'product-raw-info')
+  const productsRawInfosStr = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
     .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
 
   try {
@@ -34,7 +34,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       map[cur.id] = cur
       return map
     }, {})
-    const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName === 'recommand-product-ids')
+    const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
       .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
     const recommandProductIds: string[] = recommandProductIdsRaw.split(',')
 

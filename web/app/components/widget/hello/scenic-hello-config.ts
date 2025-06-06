@@ -152,7 +152,7 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     }
 
     // config节点解析
-    const customConfig = [...(tagItem?.children || [])].find(item => item.tagName === 'config')
+    const customConfig = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'config')
     if (customConfig)
       mergeConfig.config = parseConfig(customConfig)
     // shortcutItems节点解析
@@ -161,11 +161,10 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     if (customShortcutItems)
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
     // multi-figue节点解析
-    const multiFigueEl = [...(tagItem?.children || [])].find(item => item.tagName === 'multi-figure')
-    if (multiFigueEl)
-      mergeConfig.multiFigue = parseMultiFigueEl(multiFigueEl)
+    const multiFigureEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'multi-figure')
+    if (multiFigureEl)
+      mergeConfig.multiFigure = parseMultiFigueEl(multiFigureEl)
 
-    console.dir(tagItem)
     return mergeConfig as ScenicHelloType
   }
   throw new Error('illegal parametres')
@@ -196,7 +195,7 @@ function parseShortcutItems(shortcutItemsEl: Element) {
 }
 
 function parseMultiFigueEl(multiFigueEl: Element) {
-  const figueElList = [...(multiFigueEl.children || [])].filter(el => el.tagName === 'figue')
+  const figueElList = [...(multiFigueEl.children || [])].filter(el => el.tagName.toLocaleLowerCase() === 'figure')
 
   const result = figueElList.map((el) => {
     const name = el.attributes.getNamedItem('name')?.value
