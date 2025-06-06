@@ -69,8 +69,9 @@ const ProductRecommand = ({ node }: { node: any }) => {
       color: '#333',
       fontFamily: 'Arial, sans-serif',
       paddingBottom: '4px',
-      pointerEvents: 'none',
-    }}>
+    }}
+    onTouchMove={e => e.stopPropagation()}
+    >
       {
         config.products.map((product, index) => (<li className='list-none' style={{
           margin: '0',
