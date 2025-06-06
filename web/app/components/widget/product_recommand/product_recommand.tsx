@@ -69,6 +69,7 @@ const ProductRecommand = ({ node }: { node: any }) => {
       color: '#333',
       fontFamily: 'Arial, sans-serif',
       paddingBottom: '4px',
+      pointerEvents: 'none',
     }}>
       {
         config.products.map((product, index) => (<li className='list-none' style={{
