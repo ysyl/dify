@@ -144,13 +144,12 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
   const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
   if (index >= 0) {
     // 融合tag中的自定义配置到预设配置
-    const tagItem = parseHtmlTagRaw(widgetTagStr)?.querySelector('spt-widget')
+    const tagItem = parseHtmlTagRaw(widgetTagStr)
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
     const mergeConfig: Record<string, any> = {
       ...config,
       ...tagItem?.attributes,
     }
-
     // config节点解析
     const customConfig = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'config')
     if (customConfig)
@@ -158,9 +157,14 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     // shortcutItems节点解析
     const rawTagItem = parseHtmlTagRaw(widgetTagStr)
     const customShortcutItems = rawTagItem?.querySelector('shortcut-items')
-    if (customShortcutItems)
+    if (customShortcutItems) {
       mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
-    // multi-figue节点解析
+    }
+    else if (rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value) {
+      // 兼容<xj-widget shortcut-items="[]"></xj-widget> 的格式
+      mergeConfig['shortcut-items'] = JSON.parse(rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value || '[]')
+    }
+    // multi-figure节点解析
     const multiFigureEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'multi-figure')
     if (multiFigureEl)
       mergeConfig.multiFigure = parseMultiFigueEl(multiFigureEl)

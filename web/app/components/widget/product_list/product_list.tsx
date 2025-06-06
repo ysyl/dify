@@ -29,8 +29,7 @@ const TITLE_ICON = () => <svg width="18" height="18" viewBox="0 0 13 13" fill="n
 </svg>
 
 function getProductListConfig(widgetTag: string): ProductListConfig | null {
-  const body = parseHtmlTagRaw(widgetTag)
-  const el = body?.children[0]
+  const el = parseHtmlTagRaw(widgetTag)
   if (!el || el.tagName.toLocaleLowerCase() !== 'product-list') return null
 
   const productsRawInfosStr = el.querySelector('product-raw-info')?.textContent
