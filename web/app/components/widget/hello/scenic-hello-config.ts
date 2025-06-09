@@ -148,7 +148,11 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
     const mergeConfig: Record<string, any> = {
       ...config,
-      ...tagItem?.attributes,
+      ...[...(tagItem?.attributes || [])]
+        .reduce((map: Record<string, string>, cur) => {
+          map[cur.name] = cur.value
+          return map
+        }, {}),
     }
     // config节点解析
     const customConfig = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'config')
