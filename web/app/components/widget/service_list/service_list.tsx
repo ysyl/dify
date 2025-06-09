@@ -17,8 +17,7 @@ const ARROW_ICON = () => (
 )
 
 function getServiceListConfig(widgetTag: string): ServiceListConfig | null {
-  const body = parseHtmlTagRaw(widgetTag)
-  const el = body?.children[0]
+  const el = parseHtmlTagRaw(widgetTag)
   if (!el || el.tagName.toLocaleLowerCase() !== 'service-list') return null
 
   const serviceElList = [...el.querySelectorAll('service')]
