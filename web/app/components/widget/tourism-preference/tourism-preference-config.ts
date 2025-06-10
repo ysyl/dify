@@ -1,18 +1,18 @@
 import { parseHtmlTag } from '../../tools/widget-tool'
 
-export type Option = {
+export type option = {
   name: string
   value: string
 }
 
-export type OptionType = {
+export type optionType = {
   key: string
   name: string
-  type: 'Option' | 'OptionWithCnt'
-  value: Option[]
+  type: 'option' | 'option-with-cnt'
+  value: option[]
 }
 
-export type TourismPreferenceConfigType = Record<string, OptionType>
+export type TourismPreferenceConfigType = Record<string, optionType>
 
 export type StyleConfigType = {
   'card-bg'?: string,
@@ -54,25 +54,25 @@ const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigTyp
     destination: {
       key: 'destination',
       name: '行程期待',
-      type: 'Option',
+      type: 'option',
       value: ['北疆-伊犁', '北疆-阿勒泰', '南疆地区'].map(name => ({ name, value: name })),
     },
     days: {
       key: 'days',
       name: '出行天数',
-      type: 'Option',
+      type: 'option',
       value: ['3天', '4天', '5天', '6天', '7天', '8天', '9天', '10天以上'].map(name => ({ name, value: name })),
     },
     months: {
       key: 'months',
       name: '出行时间',
-      type: 'Option',
+      type: 'option',
       value: ['1-3月', '4-6月', '7-8月', '9-12月'].map(name => ({ name, value: name })),
     },
     personCnt: {
       key: 'personCnt',
       name: '出行人数',
-      type: 'OptionWithCnt',
+      type: 'option-with-cnt',
       value: ['成人', '儿童', '老人'].map(name => ({ name, value: name })),
     },
   },
@@ -80,19 +80,19 @@ const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigTyp
     destination: {
       key: 'destination',
       name: '行程期待',
-      type: 'Option',
+      type: 'option',
       value: ['亲子', '情侣', '拍照打卡', '特种兵', '夕阳红'].map(name => ({ name, value: name })),
     },
     play_time: {
       key: 'play_time',
       name: '游玩时间',
-      type: 'Option',
+      type: 'option',
       value: ['上午入园', '下午入园'].map(name => ({ name, value: name })),
     },
     entree_de_zone_touristique: {
       key: 'entree_de_zone_touristique',
       name: '景区入口',
-      type: 'Option',
+      type: 'option',
       value: ['黄河区入口', '沙漠区入口'].map(name => ({ name, value: name })),
     },
   },

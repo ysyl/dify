@@ -54,10 +54,10 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
 
   const initValues: Record<string, SelectorValueType | SelectorValueWithCntType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
     const config = selectorConfigObj[cur as keyof TourismPreferenceConfigType]
-    if (config?.type === 'Option') {
+    if (config?.type === 'option') {
       obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: '' }
     }
-    else if (config?.type === 'OptionWithCnt') {
+    else if (config?.type === 'option-with-cnt') {
       obj[cur as FieldType] = {
         name: selectorConfigObj[cur as FieldType]?.name,
         value: config.value.reduce((obj: Record<string, number>, key) => {
@@ -176,7 +176,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                   }
                 </h1>
                 {
-                  config.type === 'Option'
+                  config.type === 'option'
                   && <ul className={cn('mb-5 grid gap-1', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
                       config.value.map((option) => {
@@ -198,7 +198,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                   </ul>
                 }
                 {
-                  config.type === 'OptionWithCnt'
+                  config.type === 'option-with-cnt'
                   && <div className="mt-[10px] rounded-[20px] bg-white px-4 py-3" style={{
                     boxShadow: '0px 4px 10px 0px #0000001F',
                   }}>
