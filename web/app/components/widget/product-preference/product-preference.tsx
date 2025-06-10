@@ -39,7 +39,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
 
   const initValues: Record<string, SelectorValueType> = Object.keys(selectorConfigObj).reduce((obj: any, cur: any) => {
     const config = selectorConfigObj[cur as keyof ProductPreferenceConfigType]
-    if (config?.type === 'Option')
+    if (config?.type === 'option')
       obj[cur as FieldType] = { name: selectorConfigObj[cur as FieldType]?.name, value: [] }
 
     return obj
@@ -153,10 +153,10 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                   }
                 </h1>
                 {
-                  config.type === 'Option'
+                  config.type === 'option'
                   && <ul className={cn('mb-5 grid gap-2', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
-                      config.value.map((option) => {
+                      config.value.map((option: { name: string, value: string }) => {
                         return (
                           <li key={option.value}>
                             {
