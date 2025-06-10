@@ -179,7 +179,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                   config.type === 'option'
                   && <ul className={cn('mb-5 grid gap-1', `grid-cols-${Math.min(config.value.length, 4)}`)}>
                     {
-                      config.value.map((option) => {
+                      config.value.map((option: { name: string, value: string }) => {
                         return (
                           <li key={option.value}>
                             {
@@ -204,7 +204,7 @@ const TourismPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                   }}>
                     <ul>
                       {
-                        config.value.map((option) => {
+                        config.value.map((option: any) => {
                           const curValue = formValues[config.key].value as Record<string, number>
                           return (<li key={option.name}>
                             <div className="flex w-full justify-between leading-10">

@@ -1,4 +1,4 @@
-import { parseHtmlTag } from '../../tools/widget-tool'
+import { parseHtmlTag, parseHtmlTagRaw } from '../../tools/widget-tool'
 
 export type option = {
   name: string
@@ -29,6 +29,7 @@ export type StyleConfigType = {
 export enum TourismPreferenceTagType {
   XJ = 'xj-tourism-preference',
   SPT = 'spt-tourism-preference',
+  CUSTOME = 'tourism-preference',
 }
 const STYLE_CONFIG: Record<TourismPreferenceTagType, StyleConfigType> = {
   [TourismPreferenceTagType.XJ]: {
@@ -39,6 +40,15 @@ const STYLE_CONFIG: Record<TourismPreferenceTagType, StyleConfigType> = {
     'btn-text-color': 'btn-white',
   },
   [TourismPreferenceTagType.SPT]: {
+    'header-text-color': 'text-white',
+    'body-border': 'border border-white',
+    'body-bg': 'bg-[rgba(235,235,236,0.8)]',
+    'btn-bg-image': 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
+    'card-bg-image': 'linear-gradient(to left, #F7CEA2, #FBC384, #FDB76E)',
+    'btn-text-color': 'btn-white',
+    'active-bg': 'bg-[#FDB76E]',
+  },
+  [TourismPreferenceTagType.CUSTOME]: {
     'header-text-color': 'text-white',
     'body-border': 'border border-white',
     'body-bg': 'bg-[rgba(235,235,236,0.8)]',
@@ -96,24 +106,46 @@ const WIDGET_CONFIG: Record<TourismPreferenceTagType, TourismPreferenceConfigTyp
       value: ['黄河区入口', '沙漠区入口'].map(name => ({ name, value: name })),
     },
   },
+  [TourismPreferenceTagType.CUSTOME]: {},
 }
 
+function parseCustomConfig(widgetTagStr: string) {
+  const tagEl = parseHtmlTagRaw(widgetTagStr)
+  const options = [...(tagEl?.querySelectorAll('option') || [])]
+  const customConfig = options.map(optionEl => ({
+    name: optionEl.attributes.getNamedItem('name')?.value || '',
+    key: optionEl.attributes.getNamedItem('key')?.value || '',
+    type: optionEl.attributes.getNamedItem('type')?.value || '',
+    value: [...(optionEl?.querySelectorAll('value') || [])].map(valueEl =>
+      ({ name: valueEl.textContent?.trim(), value: valueEl.textContent?.trim() })),
+
+  })).reduce((map: Record<string, any>, cur) => {
+    map[cur.key] = cur
+    return map
+  }, {})
+
+  return customConfig
+}
 export function isTourismPreference(widgetTagStr: string) {
-  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.trim().startsWith(`<${name}`))
   return index >= 0
 }
 
 export function getTourismPreferenceConfig(widgetTagStr: string) {
-  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
-  if (index >= 0) {
-    const tagItem = parseHtmlTag(widgetTagStr)
-    return WIDGET_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.trim().startsWith(`<${name}`))
+  if (index < 0) return {}
+  const tagItem = parseHtmlTag(widgetTagStr)
+  const defaultConfig = WIDGET_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
+  const customConfig = parseCustomConfig(widgetTagStr)
+  const mergedConfig = {
+    ...defaultConfig,
+    ...customConfig,
   }
-  throw new Error('illegal parametres')
+  return mergedConfig
 }
 
 export function getStyleConfig(widgetTagStr: string) {
-  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
+  const index = Object.values(TourismPreferenceTagType).findIndex(name => widgetTagStr.trim().startsWith(`<${name}`))
   if (index >= 0) {
     const tagItem = parseHtmlTag(widgetTagStr)
     return STYLE_CONFIG[tagItem?.tagName as TourismPreferenceTagType]
