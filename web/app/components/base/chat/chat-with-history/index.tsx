@@ -313,7 +313,13 @@ type DigitalFigureProps = {
 
 function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
   // 创建一个渲染媒体元素的辅助函数
-  const renderMediaElement = (media: { static?: string; thinking?: string; talking?: string } | undefined, type: 'image' | 'video', state: 'static' | 'thinking' | 'talking') => {
+  const renderMediaElement = (media:
+    {
+      static?: string;
+      thinking?: string;
+      talking?: string
+    } | undefined,
+    type: 'image' | 'video', state: 'static' | 'thinking' | 'talking') => {
     if (!media) return null
 
     const mediaSource = media[state]
@@ -343,7 +349,10 @@ function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
 
   return (
     <div
-      className='-mb-[250px] flex h-[80%] w-full justify-center overflow-hidden'
+      className={cn('-mb-[200px] flex w-full justify-center overflow-hidden',
+        activeDigitalHuman.humanVideo?.static
+          ? 'h-[80%]'
+          : activeDigitalHuman.humanImage?.globalClasses)}
       style={{
         ...(activeDigitalHuman.backgroundImage ? {
           backgroundImage: `url('${activeDigitalHuman.backgroundImage.src}')`,
