@@ -26,6 +26,7 @@ import type { DigitalHuman } from './agent-config'
 import { parseAgentConfig } from './agent-config'
 import { FigureSwitch } from '@/app/components/widget/hello/scenic-hello'
 import type { Figure } from '@/app/components/widget/hello/scenic-hello-config'
+import parse from 'inline-style-parser'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -347,6 +348,13 @@ function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
     )
   }
 
+  const globalStyle = parse(activeDigitalHuman.humanImage?.globalStyles || '{}')
+    .filter(field => field.type === 'declaration')
+    .reduce((map: Record<string, string>, cur) => {
+      map[cur.property] = cur.value
+      return map
+    }, {})
+
   return (
     <div
       className={cn('-mb-[200px] flex w-full justify-center overflow-hidden',
@@ -359,6 +367,7 @@ function DigitalFigure({ activeDigitalHuman, chatState }: DigitalFigureProps) {
           backgroundPositionY: activeDigitalHuman.backgroundImage.positionY,
           backgroundPositionX: activeDigitalHuman.backgroundImage.positionX,
         } : {}),
+        ...globalStyle,
       }}
     >
       {/* 渲染图片状态 */}

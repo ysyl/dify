@@ -5,6 +5,7 @@ export type DigitalHuman = {
   avatar: string
   humanImage?: {
     globalClasses?: string,
+    globalStyles?: string,
     thinking: string
     static: string
     talking: string
@@ -51,6 +52,7 @@ function transformeDigitalHumanConfig(digitalHumanTag: ChildNode | undefined) {
     avatar: digitalHumanAvatar,
     humanImage: {
       globalClasses: humanImageTag?.attributes.getNamedItem('global-classes')?.value || '',
+      globalStyles: humanImageTag?.attributes.getNamedItem('global-styles')?.value || '',
       static: humanImageTag?.attributes.getNamedItem('static')?.value || '',
       thinking: humanImageTag?.attributes.getNamedItem('thinking')?.value || '',
       talking: humanImageTag?.attributes.getNamedItem('talking')?.value || '',
