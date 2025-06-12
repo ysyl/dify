@@ -6,7 +6,7 @@ WORKDIR /app/api
 # Install uv
 ENV UV_VERSION=0.6.14
 
-RUN pip install --no-cache-dir uv==${UV_VERSION}
+RUN pip install --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/ uv==${UV_VERSION}
 
 
 FROM base AS packages
@@ -22,9 +22,9 @@ RUN touch /etc/apt/sources.list \
 
 # Install Python dependencies
 COPY pyproject.toml uv.lock ./
-RUN UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" 
-RUN uv lock
-RUN uv sync --index "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+RUN UV_DEFAULT_INDEX="https://mirrors.aliyun.com/pypi/simple" 
+RUN uv lock --index "https://mirrors.aliyun.com/pypi/simple"
+RUN uv sync --index "https://mirrors.aliyun.com/pypi/simple"
 
 # production stage
 FROM base AS production
