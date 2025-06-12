@@ -93,6 +93,8 @@ class TokenBufferMemory:
         
         # 第二步：使用bleach进行XSS清理
         safe_text = self.html_cleaner.clean(cleaned_html)
+        logger.info(f"过滤前长度：{len(text)}")
+        logger.info(f"过滤后长度：{len(safe_text)}")
         return safe_text
 
     def _process_message_content(self, content: str) -> str:
@@ -149,7 +151,6 @@ class TokenBufferMemory:
 
         prompt_messages: list[PromptMessage] = []
         for message in messages:
-            logger.info(f"消息 JSON 结构: {message._fields}")
             processed_answer = self._process_message_content(message.answer)
             files = db.session.query(MessageFile).filter(MessageFile.message_id == message.id).all()
             if files:
