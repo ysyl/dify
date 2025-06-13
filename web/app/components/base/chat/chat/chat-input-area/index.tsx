@@ -32,23 +32,27 @@ import { useChatWithHistoryContext } from '../../chat-with-history/context'
 import Button from '../../../button'
 import type { TextAreaRef } from 'rc-textarea'
 import SimpleSelect from '../../../select_bar'
+import type { ShortcutBarBtn } from '../../chat-with-history/agent-config'
+
+export type CustomeButtonType = 'number' | 'select' | 'send-msg'
 
 type CustomeButtonProps = {
   input: any
   onClick: MouseEventHandler<HTMLButtonElement>
   onChange?: (option: string) => void
-  type: 'number' | 'select'
-  value: string | number
+  type: CustomeButtonType
+  value?: string | number // 只有模式切换、也就是工作流起始变量按钮input才需要value
   disabled?: boolean
 }
 const CustomeButton = ({ type, input, onClick, onChange, value, disabled }: CustomeButtonProps) => {
+  console.dir(type)
   if (type === 'number') {
     return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '',
       disabled && 'btn-disabled',
     )} size='large'
-    onClick={(e) => {
-      !disabled && onClick(e)
-    }}>{input.label}</Button>
+      onClick={(e) => {
+        !disabled && onClick(e)
+      }}>{input.label}</Button>
   }
   if (type === 'select' && onChange) {
     return <SimpleSelect
@@ -58,6 +62,16 @@ const CustomeButton = ({ type, input, onClick, onChange, value, disabled }: Cust
       onSelect={i => onChange(`${i.value}`)}
       allowSearch={false}
     />
+  }
+  if (type === 'send-msg') {
+    return <Button key={input.name}
+      className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '',
+        disabled && 'btn-disabled',
+      )} size='large'
+
+      onClick={(e) => {
+        !disabled && onClick(e)
+      }}>{input.name}</Button>
   }
   return <div></div>
 }
@@ -77,6 +91,7 @@ type ChatInputAreaProps = {
   isResponding?: boolean
   disabled?: boolean
   onChangeInputs: (a: any) => void
+  shortcutBarBtnList?: ShortcutBarBtn[]
 }
 const ChatInputArea = ({
   showFeatureBar,
@@ -93,6 +108,7 @@ const ChatInputArea = ({
   autofocus = true,
   disabled,
   onChangeInputs,
+  shortcutBarBtnList,
 }: ChatInputAreaProps) => {
   const { t } = useTranslation()
   const { notify } = useToastContext()
@@ -221,6 +237,12 @@ const ChatInputArea = ({
     />
   )
 
+  function handleClickShortcutBarBtn(type: CustomeButtonType, value: string) {
+    if (type === 'send-msg')
+      onSend?.(value)
+  }
+  console.dir(shortcutBarBtnList)
+
   return (
     <>
       <FileListInChatInput fileConfig={visionConfig!} />
@@ -228,12 +250,24 @@ const ChatInputArea = ({
       <div className='my-2 flex gap-1'>
         {
           inputsForms.filter(input => input.variable.startsWith('btn_')).map(input => (
-            <CustomeButton key={input.variable} type={input.type as 'number' | 'select'} input={input}
+            <CustomeButton key={input.variable} type={input.type as CustomeButtonType} input={input}
               onClick={() => handleChange(input.variable)}
               value={inputs?.[input.variable]}
               onChange={(option) => { handleChange(input.variable, option) }}
               // 临时处理：如果btn_assistant的值等于采购助手或者财务助手，则联网按钮禁止
-              disabled={ ['采购助手', '财务助手'].includes(inputs?.btn_assistant) && input.variable === 'btn_online' }
+              disabled={['采购助手', '财务助手'].includes(inputs?.btn_assistant) && input.variable === 'btn_online'}
+            />
+          ))
+        }
+        {/* agent-config定义的按钮显示在后方，这些按钮是功能快捷键，不负责模式切换（如快捷提问、后续增加的AI绘图等） */}
+        {
+          shortcutBarBtnList?.map(btn => (
+            <CustomeButton
+              key={btn.name}
+              type={btn.type as CustomeButtonType}
+              input={btn}
+              onClick={() => handleClickShortcutBarBtn(btn.type, btn.name)}
+              onChange={(option) => { handleChange(btn.type, option) }}
             />
           ))
         }

@@ -22,8 +22,27 @@ export type DigitalHuman = {
   }
 }
 
+export type ShortcutBarBtn = {
+  name: string,
+  type: 'send-msg'
+}
+
 type AgentConfig = {
   digitalHumans?: DigitalHuman[]
+  shortcutBarBtnList?: ShortcutBarBtn[]
+}
+
+function parseShortcutBarBtnConfig(agentConfigTagRaw: Element | null): ShortcutBarBtn[] {
+  const barBtnElList = [...(agentConfigTagRaw?.querySelectorAll('shortcut-bar-btn-list>shortcut-bar-btn') || [])]
+  const barBtnConfigList = barBtnElList.map(digitalHumanEl => transformeShortcutBarBtnConfig(digitalHumanEl))
+    .filter(t => !!t)
+  return barBtnConfigList
+}
+
+function parseDigitalHumanConfig(agentConfigTagRaw: Element | null) {
+  const digitalHumanElementList = [...(agentConfigTagRaw?.querySelectorAll('digital-human') || [])]
+  const digitalHumans = digitalHumanElementList.map(digitalHumanEl => transformeDigitalHumanConfig(digitalHumanEl))
+  return digitalHumans
 }
 
 export function parseAgentConfig(description?: string): AgentConfig | null {
@@ -33,11 +52,26 @@ export function parseAgentConfig(description?: string): AgentConfig | null {
 
   const agentConfigTagRaw = parseHtmlTagRaw(description)
 
-  const digitalHumanElementList = [...(agentConfigTagRaw?.querySelectorAll('digital-human') || [])]
+  const digitalHumans = parseDigitalHumanConfig(agentConfigTagRaw)
+  const shortcutBarBtnList = parseShortcutBarBtnConfig(agentConfigTagRaw)
+
   return {
-    digitalHumans: digitalHumanElementList.map(digitalHumanEl => transformeDigitalHumanConfig(digitalHumanEl)),
+    digitalHumans,
+    shortcutBarBtnList,
   }
 }
+
+function transformeShortcutBarBtnConfig(shortcutBarBtnEl: Element | undefined): ShortcutBarBtn | undefined {
+  if (!shortcutBarBtnEl) return
+  const name = shortcutBarBtnEl.textContent?.trim() || ''
+  const type = (shortcutBarBtnEl.attributes.getNamedItem('type')?.value || 'send-msg') as 'send-msg'
+
+  return {
+    name,
+    type,
+  }
+}
+
 function transformeDigitalHumanConfig(digitalHumanTag: ChildNode | undefined) {
   const childs = digitalHumanTag ? [...digitalHumanTag?.childNodes] : []
 

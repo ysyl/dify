@@ -26,14 +26,15 @@ import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-
 import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 import type { FileEntity } from '../../file-uploader/types'
-import type { DigitalHuman } from './agent-config'
+import type { DigitalHuman, ShortcutBarBtn } from './agent-config'
 
 type Props = {
   chatState: 'static' | 'thinking' | 'talking'
   setChatState: (state: 'static' | 'thinking' | 'talking') => void
   activeDigitalHuman?: DigitalHuman
+  shortcutBarBtnList?: ShortcutBarBtn[]
 }
-const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman }: Props) => {
+const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarBtnList }: Props) => {
   const {
     appParams,
     appPrevChatTree,
@@ -341,12 +342,13 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman }: Props) => 
         suggestedQuestions={suggestedQuestions}
         answerIcon={answerIcon}
         hideProcessDetail
-        activeDigitalHuman={activeDigitalHuman}
         themeBuilder={themeBuilder}
         switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
         inputDisabled={inputDisabled}
         isMobile={isMobile}
         sidebarCollapseState={sidebarCollapseState}
+        activeDigitalHuman={activeDigitalHuman}
+        shortcutBarBtnList={shortcutBarBtnList}
       />
     </div>
   )

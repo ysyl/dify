@@ -42,7 +42,7 @@ import { isProductPreference } from '@/app/components/widget/product-preference/
 import ProductPreference from '@/app/components/widget/product-preference/product-preference'
 import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 import ServiceList, { isServiceList } from '@/app/components/widget/service_list/service_list'
-import type { DigitalHuman } from '../chat-with-history/agent-config'
+import type { DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
 
 export type ChatProps = {
   appData?: AppData
@@ -84,6 +84,7 @@ export type ChatProps = {
   sidebarCollapseState?: boolean
   onChangeInputs: (a: any) => void
   activeDigitalHuman?: DigitalHuman
+  shortcutBarBtnList?: ShortcutBarBtn[]
 }
 
 const Chat: FC<ChatProps> = ({
@@ -125,6 +126,7 @@ const Chat: FC<ChatProps> = ({
   sidebarCollapseState,
   onChangeInputs,
   activeDigitalHuman,
+  shortcutBarBtnList,
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -377,6 +379,7 @@ const Chat: FC<ChatProps> = ({
                   theme={themeBuilder?.theme}
                   isResponding={isResponding}
                   onChangeInputs={onChangeInputs}
+                  shortcutBarBtnList={shortcutBarBtnList}
                 />
               )
             }

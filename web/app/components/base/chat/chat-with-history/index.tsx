@@ -49,7 +49,6 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   const customConfig = appData?.custom_config
   const site = appData?.site
   const agentConfig = parseAgentConfig(site?.description)
-
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
   const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
@@ -155,7 +154,12 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
           }
           {!appChatListDataLoading && (
             <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
-              <ChatWrapper key={chatShouldReloadKey} chatState={chatState} setChatState={setChatState} activeDigitalHuman={activeDigitalHuman} />
+              <ChatWrapper key={chatShouldReloadKey}
+                chatState={chatState}
+                setChatState={setChatState}
+                activeDigitalHuman={activeDigitalHuman}
+                shortcutBarBtnList={agentConfig?.shortcutBarBtnList}
+              />
             </DndContext>
           )}
         </div>
