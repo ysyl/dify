@@ -32,7 +32,9 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   const el = parseHtmlTagRaw(widgetTag)
   if (!el || el.tagName.toLocaleLowerCase() !== 'product-list') return null
 
-  const productsRawInfosStr = el.querySelector('product-raw-info')?.textContent
+  const priEl = el.querySelector('product-raw-info')
+  let productsRawInfosStr = priEl?.attributes.getNamedItem('value')?.value || priEl?.textContent
+  productsRawInfosStr = productsRawInfosStr?.trim().replaceAll('```', '').replaceAll('```json', '')
   const moreProductUrl = el.attributes.getNamedItem('more-product-url')?.value
 
   if (!productsRawInfosStr) {
