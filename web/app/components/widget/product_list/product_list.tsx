@@ -35,6 +35,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   const priEl = el.querySelector('product-raw-info')
   let productsRawInfosStr = priEl?.attributes.getNamedItem('value')?.value || priEl?.textContent
   productsRawInfosStr = productsRawInfosStr?.trim().replaceAll('```', '').replaceAll('```json', '')
+  console.log(`productsRawInfosStr: ${productsRawInfosStr}`)
   const moreProductUrl = el.attributes.getNamedItem('more-product-url')?.value
 
   if (!productsRawInfosStr) {
