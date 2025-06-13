@@ -63,18 +63,47 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
         map[cur.group] = [...(map[cur.group] || []), cur]
         return map
       }, {})
+      // 指定分组
       const groupText = el.querySelector('group-text')?.textContent?.trim()
-      if (!groupText) return null
-      const groupList = extraitGroupListFromText(groupText)
+      // AI生成分组和产品ID
+      const groupJsonByLLM = el.querySelector('group-json-by-llm')?.textContent?.trim()
 
-      console.info('groupList')
-      console.dir(groupList)
-      const groupProductConfigMap = groupList.flatMap(group => groupProductInfosMap[group]).filter(t => t)
+      if (groupText) {
+        const groupList = extraitGroupListFromText(groupText)
+        console.info('groupList')
+        console.dir(groupList)
+        const groupProductConfigMap = groupList.flatMap(group => groupProductInfosMap[group]).filter(t => t)
 
-      return {
-        title: '产品推荐',
-        products: groupProductConfigMap,
-        moreProductUrl,
+        return {
+          title: '产品推荐',
+          products: groupProductConfigMap,
+          moreProductUrl,
+        }
+      }
+ else if (groupJsonByLLM) {
+        // AI生成分组和产品信息，需要转换成ProductInfo groupInfo: 键名是分组名，值是产品id数组
+        const groupInfo: Record<string, string[]> = JSON.parse(groupJsonByLLM)
+        const productIdMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
+          map[cur.id] = cur
+          return map
+        }, {})
+
+        const groupProductConfigMap = Object.keys(groupInfo).flatMap((groupName) => {
+          const pids = groupInfo[groupName]
+          const productList = pids.map(pid => productIdMap[pid])
+          productList.forEach(product => product.group = groupName)
+          return productList
+        })
+
+        return {
+          title: '产品推荐',
+          products: groupProductConfigMap,
+          moreProductUrl,
+        }
+      }
+ else {
+        // 无分组信息
+        return null
       }
     }
     catch (ex) {
