@@ -143,7 +143,6 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
           if (e.target instanceof HTMLElement && e.target.id === 'sidebar_wrap')
             handleSidebarCollapse(true)
         }}
-      // onClick={() => handleSidebarCollapse(true)}
       >
         <div className='flex h-full w-[calc(100vw_-_120px)] '>
           <DndContext onDragEnd={onDragEnd} modifiers={[restrictToLeft]} onDragCancel={onDragEnd} sensors={sensors}>

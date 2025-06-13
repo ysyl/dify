@@ -20,8 +20,6 @@ import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import { checkOrSetAccessToken } from '@/app/components/share/utils'
 import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
-import type { Modifier } from '@dnd-kit/core'
-import { DndContext, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DigitalHuman } from './agent-config'
 import { parseAgentConfig } from './agent-config'
 import { FigureSwitch } from '@/app/components/widget/hello/scenic-hello'
@@ -65,28 +63,8 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       document.title = `${site.title}`
   }, [site, customConfig, themeBuilder])
 
-  const sensors = useSensors(
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-  )
-
   function onSwitchFigure(figure: Figure) {
     setActiveDigitalHuman(agentConfig?.digitalHumans?.find(dh => dh.name === figure.name))
-  }
-
-  const restrictToRight: Modifier = ({ transform }) => {
-    // 当X轴偏移量不超过40，且Y轴偏移量超过20时强制归零
-    let x = 0
-    if (!(transform.x < 40 || Math.abs(transform.y) > 20))
-      x = transform.x
-
-    return {
-      ...transform,
-      x,
-    }
   }
 
   if (appInfoLoading) {
@@ -153,14 +131,12 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             && <DigitalFigure activeDigitalHuman={activeDigitalHuman} chatState={chatState} />
           }
           {!appChatListDataLoading && (
-            <DndContext onDragMove={e => setSideOffsetX(e.delta.x)} modifiers={[restrictToRight]} sensors={sensors}>
-              <ChatWrapper key={chatShouldReloadKey}
-                chatState={chatState}
-                setChatState={setChatState}
-                activeDigitalHuman={activeDigitalHuman}
-                shortcutBarBtnList={agentConfig?.shortcutBarBtnList}
-              />
-            </DndContext>
+            <ChatWrapper key={chatShouldReloadKey}
+              chatState={chatState}
+              setChatState={setChatState}
+              activeDigitalHuman={activeDigitalHuman}
+              shortcutBarBtnList={agentConfig?.shortcutBarBtnList}
+            />
           )}
         </div>
       </div>
