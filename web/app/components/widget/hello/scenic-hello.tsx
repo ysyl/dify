@@ -119,7 +119,7 @@ const HelloWidget = ({
   } = getScenicHelloConfig(widgetTag)
   const { locale } = useContext(I18n)
   const [selectedShortcut, setSelecedShortcut] = useState('')
-  const shortcutSize = shortcutItems.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
+  const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
   const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
 
   function handleSend(msg: string) {
