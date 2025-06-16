@@ -1,5 +1,7 @@
+'use client'
 import type { FC } from 'react'
 import {
+  useCallback,
   useEffect,
   useState,
 } from 'react'
@@ -17,7 +19,7 @@ import ChatWrapper from './chat-wrapper'
 import type { InstalledApp } from '@/models/explore'
 import Loading from '@/app/components/base/loading'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
-import { checkOrSetAccessToken } from '@/app/components/share/utils'
+import { checkOrSetAccessToken, removeAccessToken } from '@/app/components/share/utils'
 import AppUnavailable from '@/app/components/base/app-unavailable'
 import cn from '@/utils/classnames'
 import type { DigitalHuman } from './agent-config'
@@ -25,6 +27,9 @@ import { parseAgentConfig } from './agent-config'
 import { FigureSwitch } from '@/app/components/widget/hello/scenic-hello'
 import type { Figure } from '@/app/components/widget/hello/scenic-hello-config'
 import parse from 'inline-style-parser'
+import useDocumentTitle from '@/hooks/use-document-title'
+import { useTranslation } from 'react-i18next'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type ChatWithHistoryProps = {
   className?: string
@@ -33,6 +38,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
   className,
 }) => {
   const {
+    userCanAccess,
     appInfoError,
     appData,
     appInfoLoading,
@@ -42,6 +48,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     themeBuilder,
     sidebarCollapseState,
     handleSidebarCollapse,
+    isInstalledApp,
   } = useChatWithHistoryContext()
   const isSidebarCollapsed = sidebarCollapseState
   const customConfig = appData?.custom_config
@@ -67,10 +74,35 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     setActiveDigitalHuman(agentConfig?.digitalHumans?.find(dh => dh.name === figure.name))
   }
 
+  useDocumentTitle(site?.title || 'Chat')
+
+  const { t } = useTranslation()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  const getSigninUrl = useCallback(() => {
+    const params = new URLSearchParams(searchParams)
+    params.delete('message')
+    params.set('redirect_url', pathname)
+    return `/webapp-signin?${params.toString()}`
+  }, [searchParams, pathname])
+
+  const backToHome = useCallback(() => {
+    removeAccessToken()
+    const url = getSigninUrl()
+    router.replace(url)
+  }, [getSigninUrl, router])
+
   if (appInfoLoading) {
     return (
       <Loading type='app' />
     )
+  }
+  if (!userCanAccess) {
+    return <div className='flex h-full flex-col items-center justify-center gap-y-2'>
+      <AppUnavailable className='h-auto w-auto' code={403} unknownReason='no permission.' />
+      {!isInstalledApp && <span className='system-sm-regular cursor-pointer text-text-tertiary' onClick={backToHome}>{t('common.userProfile.logout')}</span>}
+    </div>
   }
 
   if (appInfoError) {
@@ -159,6 +191,7 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
   const {
     appInfoError,
     appInfoLoading,
+    userCanAccess,
     appData,
     appParams,
     appMeta,
@@ -194,6 +227,7 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
     setIsResponding,
     currentConversationInputs,
     setCurrentConversationInputs,
+    allInputsHidden,
   } = useChatWithHistory(installedAppInfo)
 
   return (
@@ -201,6 +235,7 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
       appInfoError,
       appInfoLoading,
       appData,
+      userCanAccess,
       appParams,
       appMeta,
       appChatListDataLoading,
@@ -237,6 +272,7 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
       setIsResponding,
       currentConversationInputs,
       setCurrentConversationInputs,
+      allInputsHidden,
     }}>
       <ChatWithHistory className={className} />
     </ChatWithHistoryContext.Provider>

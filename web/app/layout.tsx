@@ -1,5 +1,5 @@
-import type { Viewport } from 'next'
 import RoutePrefixHandle from './routePrefixHandle'
+import type { Viewport } from 'next'
 import I18nServer from './components/i18n-server'
 import BrowserInitor from './components/browser-initor'
 import SentryInitor from './components/sentry-initor'
@@ -10,6 +10,7 @@ import './styles/globals.css'
 import './styles/markdown.scss'
 import cn from '@/utils/classnames'
 import GlobalErrorHandler from './global_error_handle'
+import GlobalPublicStoreProvider from '@/context/global-public-context'
 
 export const metadata = {
   title: '中旅国际智能体平台',
@@ -41,9 +42,7 @@ const LocaleLayout = async ({
       <body
         className={cn('color-scheme h-full select-auto bg-background-default-burn')}
         data-api-prefix={process.env.NEXT_PUBLIC_API_PREFIX}
-        data-web-prefix={process.env.NEXT_PUBLIC_WEB_PREFIX}
         data-pubic-api-prefix={process.env.NEXT_PUBLIC_PUBLIC_API_PREFIX}
-        data-pubic-web-prefix={process.env.NEXT_PUBLIC_PUBLIC_WEB_PREFIX}
         data-marketplace-api-prefix={process.env.NEXT_PUBLIC_MARKETPLACE_API_PREFIX}
         data-marketplace-url-prefix={process.env.NEXT_PUBLIC_MARKETPLACE_URL_PREFIX}
         data-public-edition={process.env.NEXT_PUBLIC_EDITION}
@@ -76,7 +75,9 @@ const LocaleLayout = async ({
                 disableTransitionOnChange
               >
                 <I18nServer>
-                  {children}
+                  <GlobalPublicStoreProvider>
+                    {children}
+                  </GlobalPublicStoreProvider>
                 </I18nServer>
               </ThemeProvider>
             </TanstackQueryIniter>

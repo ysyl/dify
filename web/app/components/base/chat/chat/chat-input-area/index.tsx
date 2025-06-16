@@ -77,6 +77,7 @@ const CustomeButton = ({ type, input, onClick, onChange, value, disabled }: Cust
 }
 
 type ChatInputAreaProps = {
+  botName?: string
   showFeatureBar?: boolean
   showFileUpload?: boolean
   featureBarDisabled?: boolean
@@ -94,6 +95,7 @@ type ChatInputAreaProps = {
   shortcutBarBtnList?: ShortcutBarBtn[]
 }
 const ChatInputArea = ({
+  botName,
   showFeatureBar,
   showFileUpload,
   featureBarDisabled,
@@ -294,10 +296,10 @@ const ChatInputArea = ({
               <Textarea
                 ref={(ref: TextAreaRef) => textareaRef.current = ref as any}
                 className={cn(
-                  'body-lg-regular w-full resize-none bg-transparent p-1 leading-6 text-text-tertiary outline-none',
+                  'body-lg-regular w-full resize-none bg-transparent p-1 leading-6 text-text-primary outline-none',
                 )}
-                placeholder={t('common.chat.inputPlaceholder') || ''}
                 autoFocus={autofocus}
+                placeholder={t('common.chat.inputPlaceholder', { botName }) || ''}
                 minRows={1}
                 onResize={handleTextareaResize}
                 value={query}

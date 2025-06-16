@@ -59,6 +59,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     clearChatList,
     setClearChatList,
     setIsResponding,
+    allInputsHidden,
   } = useChatWithHistoryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -93,6 +94,9 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
   )
   const inputsFormValue = currentConversationId ? currentConversationInputs : newConversationInputsRef?.current
   const inputDisabled = useMemo(() => {
+    if (allInputsHidden)
+      return false
+
     let hasEmptyInput = ''
     let fileIsUploading = false
     // 过滤掉特殊变量（btn_开头的以输入框上方按钮组
@@ -124,7 +128,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     if (fileIsUploading)
       return true
     return false
-  }, [inputsFormValue, inputsForms])
+  }, [inputsFormValue, inputsForms, allInputsHidden])
   const [barInputs, setBarInputs] = useState<Record<string, any>>({})
 
   useEffect(() => {
@@ -195,7 +199,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
   const [collapsed, setCollapsed] = useState(!!currentConversationId)
 
   const chatNode = useMemo(() => {
-    if (!inputsForms.length)
+    if (allInputsHidden || !inputsForms.length)
       return null
     // 去掉特殊变量（btn_开头的变量以对话框上按钮组的形式展现，如「深度思考」)
     if (!inputsForms.filter(input => !input.variable.startsWith('btn_')).length)
@@ -208,7 +212,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     else {
       return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
     }
-  }, [inputsForms.length, isMobile, currentConversationId, collapsed])
+  }, [inputsForms.length, isMobile, currentConversationId, collapsed, allInputsHidden])
 
   useEffect(() => {
     const markdownBodyList = document.querySelectorAll('.answer .markdown-body')
@@ -229,7 +233,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       return null
     if (!welcomeMessage)
       return null
-    if (!collapsed && inputsForms.filter(input => !input.variable.startsWith('btn_')).length > 0)
+    if (!collapsed && inputsForms.filter(input => !input.variable.startsWith('btn_')).length > 0 && !allInputsHidden)
       return null
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
@@ -287,7 +291,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         </div>
       </div>
     )
-  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, doSend])
+  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, doSend, respondingState, allInputsHidden])
 
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon

@@ -265,6 +265,4 @@ const Answer: FC<AnswerProps> = ({
   )
 }
 
-export default memo(Answer, (prevProps, nextProps) =>
-  prevProps.responding === false && nextProps.responding === false,
-)
+export default memo(Answer)
