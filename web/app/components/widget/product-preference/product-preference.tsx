@@ -97,7 +97,6 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
     Object.keys(formValues).forEach((key) => {
       const valueItem = formValues[key]
       const value = valueItem.value
-      console.log()
       if (typeof value === 'object') {
         if (!value)
           alert[key] = `请填写${selectorConfigObj[key as keyof ProductPreferenceConfigType]?.name}`

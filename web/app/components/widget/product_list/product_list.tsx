@@ -73,8 +73,6 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 
       if (groupText) {
         const groupList = extraitGroupListFromText(groupText)
-        console.info('groupList')
-        console.dir(groupList)
         const groupProductConfigMap = groupList.flatMap(group => groupProductInfosMap[group]).filter(t => t)
 
         return {

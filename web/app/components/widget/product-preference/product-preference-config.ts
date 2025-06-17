@@ -109,8 +109,6 @@ export function getProductPreferenceConfig(widgetTagStr: string): Record<string,
     ...defaultConfig,
     ...customConfig,
   }
-  console.log('spt')
-  console.dir(WIDGET_CONFIG[ProductPreferenceTagType.SPT])
   return mergedConfig
 }
 

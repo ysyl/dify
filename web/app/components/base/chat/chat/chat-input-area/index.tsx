@@ -45,7 +45,6 @@ type CustomeButtonProps = {
   disabled?: boolean
 }
 const CustomeButton = ({ type, input, onClick, onChange, value, disabled }: CustomeButtonProps) => {
-  console.dir(type)
   if (type === 'number') {
     return <Button key={input.variable} className={cn('btn-primary rounded-xl uppercase text-text-tertiary', value === 1 ? 'btn-active ' : '',
       disabled && 'btn-disabled',
@@ -243,7 +242,6 @@ const ChatInputArea = ({
     if (type === 'send-msg')
       onSend?.(value)
   }
-  console.dir(shortcutBarBtnList)
 
   return (
     <>

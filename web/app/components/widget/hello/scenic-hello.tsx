@@ -40,8 +40,6 @@ export const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) =
     width: '32px',
     overflow: 'hidden',
   }
-  console.log('figures')
-  console.dir(figures)
   return <ul className='flex gap-3'>
     {
       figures.length > 1 && figures.map(figure => (<li key={figure.name} className='flex cursor-pointer items-center rounded-3xl p-1' style={{
