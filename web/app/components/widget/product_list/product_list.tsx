@@ -23,6 +23,7 @@ type ProductListConfig = {
   productsRawInfos?: string
   groupText?: string[]
   moreProductUrl?: string
+  hasNotProductTips: string
   groupFilterType: GroupFilterType
 }
 
@@ -55,6 +56,8 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   const moreProductUrl = el.attributes.getNamedItem('more-product-url')?.value
   //  跨组条件过滤类型
   const groupFilterType = (el.attributes.getNamedItem('group-filter-type')?.value) as GroupFilterType || 'cross_group_or'
+  //  无产品提示
+  const hasNotProductTips = el.attributes.getNamedItem('has-not-products-tips')?.value || '暂无相关产品'
 
   if (!productsRawInfosStr) {
     const productsConfigEl = el.querySelector('products')
@@ -74,6 +77,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       products: productConfigList,
       moreProductUrl,
       groupFilterType,
+      hasNotProductTips,
     }
   }
   else {
@@ -118,6 +122,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           products: groupProductConfigMap,
           moreProductUrl,
           groupFilterType,
+          hasNotProductTips,
         }
       }
       else if (groupJsonByLLM) {
@@ -140,6 +145,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           products: groupProductConfigMap,
           moreProductUrl,
           groupFilterType,
+          hasNotProductTips,
         }
       }
       else {
@@ -162,7 +168,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
     return map
   }, {}) || {}
 
-  if (!config?.products || config.products.length === 0) return <></>
+  if (!config?.products || config.products.length === 0) return <div>{config?.hasNotProductTips}</div>
   return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
     <section className='text-[#7C879B]'>
       我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
