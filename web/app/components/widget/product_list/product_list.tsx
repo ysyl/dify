@@ -103,7 +103,10 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           groupProductConfigMap = groupList.flatMap(array => array)
             .flatMap(group => groupProductInfosMap[group]).filter(t => t)
         }
- else if (groupFilterType === 'cross_group_and') {
+        else {
+          // 此时type = cross_group_and
+          console.log('productsInfos')
+          console.dir(productsInfos)
           groupProductConfigMap = groupList.reduce((productList: ProductInfo[], curGroupList) => {
             if (productList.length === 0) return []
             // 分组有两个字段: group, parkName
