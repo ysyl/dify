@@ -199,6 +199,11 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
         </div>
       ))
     }
+    {/* 无产品列表时展示 */}
+    {
+      Object.values(productsGroupByProductGroup).flatMap(g => g).length === 0
+      && <div>暂无相关产品</div>
+    }
     {
       config.moreProductUrl
       && <button className={'btn text-md mt-2 h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white'}
