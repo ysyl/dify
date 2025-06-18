@@ -93,6 +93,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       // AI生成分组和产品ID
       const groupJsonByLLM = el.querySelector('group-json-by-llm')?.textContent?.trim()
 
+      console.log('groupFilterType: ', groupFilterType)
       if (groupText) {
         const groupList = extraitGroupListFromText(groupText)
         // 根据跨组过滤类型取产品
@@ -107,6 +108,10 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
             if (productList.length === 0) return []
             // 分组有两个字段: group, parkName
             productList = productList.filter(p => curGroupList.includes(p.group) || curGroupList.includes(p.parkName || ''))
+            console.log('过滤后, curGroupList: ')
+            console.dir(curGroupList)
+            console.log('过滤后, productList: ')
+            console.dir(productList)
             return productList
           }, productsInfos)
         }
