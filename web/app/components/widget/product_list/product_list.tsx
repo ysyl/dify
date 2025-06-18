@@ -4,12 +4,26 @@ type ProductListProps = {
   widgetTag: string
 }
 
+/**
+ * 分组查询产品过滤类型
+ * 参数案例:
+ * 预订偏好
+    门票类型: 三日票,景区门票,特惠套票,年卡
+    游玩景区: 阿尔卑斯滑冰场,深圳世界之窗
+ * 概念解释：组: 一行内的条件算一组，不在同一行跨组；上面的案例内，门票类型算一组，游玩景区算一组;
+   默认情况下，组内都是or条件拼接
+ * cross_group_or: 跨组条件采用或逻辑过滤，即满足其中一个条件就列出产品；
+ * cross_group_and: 跨组条件采用与逻辑过滤, 即既满足门票类型任一条件的同时，又满足游玩景区的任一条件
+**/
+type GroupFilterType = 'cross_group_or' | 'cross_group_and'
+
 type ProductListConfig = {
   title: string
   products: ProductInfo[]
   productsRawInfos?: string
   groupText?: string[]
   moreProductUrl?: string
+  groupFilterType: GroupFilterType
 }
 
 type ProductInfo = {
@@ -35,9 +49,12 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 
   const priEl = el.querySelector('product-raw-info')
   let productsRawInfosStr = priEl?.attributes.getNamedItem('value')?.value || priEl?.textContent
+  // 产品原始信息，JSON字符串
   productsRawInfosStr = productsRawInfosStr?.trim().replaceAll('```', '').replaceAll('```json', '')
-  console.log(`productsRawInfosStr: ${productsRawInfosStr}`)
+  // 「更多产品」落地页
   const moreProductUrl = el.attributes.getNamedItem('more-product-url')?.value
+  //  跨组条件过滤类型
+  const groupFilterType = (el.attributes.getNamedItem('group-filter-type')?.value) as GroupFilterType || 'cross_group_or'
 
   if (!productsRawInfosStr) {
     const productsConfigEl = el.querySelector('products')
@@ -56,6 +73,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       title: productsConfigEl.attributes.getNamedItem('title')?.value || '产品推荐',
       products: productConfigList,
       moreProductUrl,
+      groupFilterType,
     }
   }
   else {
@@ -77,12 +95,27 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 
       if (groupText) {
         const groupList = extraitGroupListFromText(groupText)
-        const groupProductConfigMap = groupList.flatMap(group => groupProductInfosMap[group]).filter(t => t)
+        // 根据跨组过滤类型取产品
+        // cross_group_or：满足任一分组条件的产品即可列出
+        let groupProductConfigMap: ProductInfo[] = []
+        if (groupFilterType === 'cross_group_or') {
+          groupProductConfigMap = groupList.flatMap(array => array)
+            .flatMap(group => groupProductInfosMap[group]).filter(t => t)
+        }
+ else if (groupFilterType === 'cross_group_and') {
+          groupProductConfigMap = groupList.reduce((productList: ProductInfo[], curGroupList) => {
+            if (productList.length === 0) return []
+            // 分组有两个字段: group, parkName
+            productList = productList.filter(p => curGroupList.includes(p.group) || curGroupList.includes(p.parkName || ''))
+            return productList
+          }, [])
+        }
 
         return {
           title: '产品推荐',
           products: groupProductConfigMap,
           moreProductUrl,
+          groupFilterType,
         }
       }
       else if (groupJsonByLLM) {
@@ -104,6 +137,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           title: '产品推荐',
           products: groupProductConfigMap,
           moreProductUrl,
+          groupFilterType,
         }
       }
       else {
@@ -184,13 +218,21 @@ export function isProductList(widgetTagStr?: string) {
 
 export default ProductList
 
-function extraitGroupListFromText(groupText: string): string[] {
+/**
+ * 参数案例：
+ * 预订偏好
+门票类型: 三日票,景区门票,特惠套票,年卡
+游玩景区: 阿尔卑斯滑冰场,深圳世界之窗
+ * @param groupTextk
+ * @returns
+ */
+function extraitGroupListFromText(groupText: string): string[][] {
   if (!groupText || !groupText.startsWith('预订偏好'))
     return []
 
   const groupList = groupText.replaceAll('预订偏好\n', '').trim().split('\n')
-    .flatMap(line => line.split(':').length >= 2 ? line.split(':')[1].trim() : '')
+    .map(line => line.split(':').length >= 2 ? line.split(':')[1].trim() : '')
     .filter(str => !!str)
-    .flatMap(rawGroupTextPerLine => rawGroupTextPerLine.split(','))
+    .map(rawGroupTextPerLine => rawGroupTextPerLine.split(','))
   return groupList
 }
