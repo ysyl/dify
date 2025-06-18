@@ -108,7 +108,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
             // 分组有两个字段: group, parkName
             productList = productList.filter(p => curGroupList.includes(p.group) || curGroupList.includes(p.parkName || ''))
             return productList
-          }, [])
+          }, productsInfos)
         }
 
         return {
