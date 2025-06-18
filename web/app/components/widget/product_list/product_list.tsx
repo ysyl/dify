@@ -105,16 +105,10 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
         }
         else {
           // 此时type = cross_group_and
-          console.log('productsInfos')
-          console.dir(productsInfos)
           groupProductConfigMap = groupList.reduce((productList: ProductInfo[], curGroupList) => {
             if (productList.length === 0) return []
             // 分组有两个字段: group, parkName
             productList = productList.filter(p => curGroupList.includes(p.group) || curGroupList.includes(p.parkName || ''))
-            console.log('过滤后, curGroupList: ')
-            console.dir(curGroupList)
-            console.log('过滤后, productList: ')
-            console.dir(productList)
             return productList
           }, productsInfos)
         }
@@ -209,7 +203,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
     }
     {/* 无产品列表时展示 */}
     {
-      Object.values(productsGroupByProductGroup).flatMap(g => g).length === 0
+      config.products.length === 0
       && <div>暂无相关产品</div>
     }
     {
