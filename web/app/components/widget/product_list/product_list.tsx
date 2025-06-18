@@ -17,7 +17,7 @@ type ProductInfo = {
   group: string,
   coverImg: string,
   productName: string,
-  parkName: string,
+  parkName?: string,
   salePrice: string,
   productPageUrl: string,
 }
