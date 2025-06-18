@@ -17,6 +17,7 @@ type ProductInfo = {
   group: string,
   coverImg: string,
   productName: string,
+  parkName: string,
   salePrice: string,
   productPageUrl: string,
 }
@@ -64,6 +65,9 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       )
       const groupProductInfosMap = productsInfos.reduce((map: Record<string, ProductInfo[]>, cur) => {
         map[cur.group] = [...(map[cur.group] || []), cur]
+        if (cur.parkName)
+          map[cur.parkName] = [...(map[cur.parkName] || []), cur]
+
         return map
       }, {})
       // 指定分组
@@ -81,7 +85,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           moreProductUrl,
         }
       }
- else if (groupJsonByLLM) {
+      else if (groupJsonByLLM) {
         // AI生成分组和产品信息，需要转换成ProductInfo groupInfo: 键名是分组名，值是产品id数组
         const groupInfo: Record<string, string[]> = JSON.parse(groupJsonByLLM)
         const productIdMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
@@ -102,7 +106,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           moreProductUrl,
         }
       }
- else {
+      else {
         // 无分组信息
         return null
       }
