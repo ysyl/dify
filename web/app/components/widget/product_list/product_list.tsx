@@ -168,7 +168,13 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
     return map
   }, {}) || {}
 
-  if (!config?.products || config.products.length === 0) return <div>{config?.hasNotProductTips}</div>
+  if (!config?.products || config.products.length === 0) {
+    return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
+      <section className='text-[#7C879B]'>
+        {config?.hasNotProductTips}
+      </section>
+    </div>
+  }
   return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
     <section className='text-[#7C879B]'>
       我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
