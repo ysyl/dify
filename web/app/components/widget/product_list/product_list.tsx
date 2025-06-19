@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
 type ProductListProps = {
@@ -21,7 +22,7 @@ type ProductListConfig = {
   title: string
   products: ProductInfo[]
   groupText?: string[]
-  groups: string[][]
+  groups: string[]
   productsRawInfos: ProductInfo[]
   moreProductUrl?: string
   hasNotProductTips: string
@@ -81,7 +82,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       groupFilterType,
       hasNotProductTips,
       productsRawInfos: productConfigList,
-      groups: [productConfigList.map(p => p.group)],
+      groups: [...new Set(productConfigList.map(p => p.group))],
     }
   }
   else {
@@ -128,7 +129,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           groupFilterType,
           hasNotProductTips,
           productsRawInfos: productsInfos,
-          groups: groupList,
+          groups: [...new Set(productsInfos.map(p => p.group))],
         }
       }
       else if (groupJsonByLLM) {
@@ -153,7 +154,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           groupFilterType,
           hasNotProductTips,
           productsRawInfos: productsInfos,
-          groups: [Object.keys(groupInfo)],
+          groups: [...new Set(productsInfos.map(p => p.group))],
         }
       }
       else {
@@ -170,23 +171,29 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 
 const ProductList = ({ widgetTag }: ProductListProps) => {
   const config = getProductListConfig(widgetTag)
+  const [productsGroupByProductGroup, setProductsGroupByProductGroup] = useState<Record<string, ProductInfo[]>>()
 
   // 根据选中的产品进行分组，如果没有选择产品，则随机选取两组进行展示
-  let productsGroupByProductGroup = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
-    map[cur.group] = [...(map[cur.group] || []), cur]
-    return map
-  }, {})
-  if (!productsGroupByProductGroup) {
-    // 随机选择两组进行展示
-    const randomSelectedGroups = [...(config?.groups || [])][0]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.min(config?.groups.length || 0, 2))
-    productsGroupByProductGroup = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
-      if (randomSelectedGroups.includes(cur.group))
+  useEffect(() => {
+    setProductsGroupByProductGroup((pre) => {
+      let products = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
         map[cur.group] = [...(map[cur.group] || []), cur]
-      return map
-    }, {})
-  }
+        return map
+      }, {})
+      if (!products || Object.values(products).length === 0) {
+        // 随机选择两组进行展示
+        const randomSelectedGroups = [...(config?.groups || [])]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, Math.min(config?.groups.length || 0, 2))
+        products = config?.productsRawInfos.reduce((map: Record<string, ProductInfo[]>, cur) => {
+          if (randomSelectedGroups.includes(cur.group))
+            map[cur.group] = [...(map[cur.group] || []), cur]
+          return map
+        }, {})
+      }
+      return products || {}
+    })
+  }, [])
 
   return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
     {
