@@ -20,8 +20,9 @@ type GroupFilterType = 'cross_group_or' | 'cross_group_and'
 type ProductListConfig = {
   title: string
   products: ProductInfo[]
-  productsRawInfos?: string
   groupText?: string[]
+  groups: string[][]
+  productsRawInfos: ProductInfo[]
   moreProductUrl?: string
   hasNotProductTips: string
   groupFilterType: GroupFilterType
@@ -57,7 +58,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   //  跨组条件过滤类型
   const groupFilterType = (el.attributes.getNamedItem('group-filter-type')?.value) as GroupFilterType || 'cross_group_or'
   //  无产品提示
-  const hasNotProductTips = el.attributes.getNamedItem('has-not-products-tips')?.value || '暂无相关产品'
+  const hasNotProductTips = el.attributes.getNamedItem('has-not-products-tips')?.value || '暂无相关产品, 以下是其他产品推荐'
 
   if (!productsRawInfosStr) {
     const productsConfigEl = el.querySelector('products')
@@ -68,6 +69,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       coverImg: el?.querySelector('cover-img')?.attributes.getNamedItem('value')?.value || '',
       productName: el?.querySelector('product-name')?.attributes.getNamedItem('value')?.value || '',
       salePrice: el?.querySelector('sale-price')?.attributes.getNamedItem('value')?.value || '',
+      parkName: el?.querySelector('park-name')?.attributes.getNamedItem('value')?.value || '',
       productPageUrl: el?.querySelector('product-page-url')?.attributes.getNamedItem('value')?.value || '',
       id: el?.querySelector('id')?.attributes.getNamedItem('value')?.value || '',
     }))
@@ -78,6 +80,8 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       moreProductUrl,
       groupFilterType,
       hasNotProductTips,
+      productsRawInfos: productConfigList,
+      groups: [productConfigList.map(p => p.group)],
     }
   }
   else {
@@ -123,6 +127,8 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           moreProductUrl,
           groupFilterType,
           hasNotProductTips,
+          productsRawInfos: productsInfos,
+          groups: groupList,
         }
       }
       else if (groupJsonByLLM) {
@@ -146,6 +152,8 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
           moreProductUrl,
           groupFilterType,
           hasNotProductTips,
+          productsRawInfos: productsInfos,
+          groups: [Object.keys(groupInfo)],
         }
       }
       else {
@@ -163,63 +171,72 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 const ProductList = ({ widgetTag }: ProductListProps) => {
   const config = getProductListConfig(widgetTag)
 
-  const productsGroupByProductGroup = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
+  // 根据选中的产品进行分组，如果没有选择产品，则随机选取两组进行展示
+  let productsGroupByProductGroup = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
     map[cur.group] = [...(map[cur.group] || []), cur]
     return map
-  }, {}) || {}
-
-  if (!config?.products || config.products.length === 0) {
-    return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
-      <section className='text-[#7C879B]'>
-        {config?.hasNotProductTips}
-      </section>
-    </div>
+  }, {})
+  if (!productsGroupByProductGroup) {
+    // 随机选择两组进行展示
+    const randomSelectedGroups = [...(config?.groups || [])][0]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, Math.min(config?.groups.length || 0, 2))
+    productsGroupByProductGroup = config?.products.reduce((map: Record<string, ProductInfo[]>, cur) => {
+      if (randomSelectedGroups.includes(cur.group))
+        map[cur.group] = [...(map[cur.group] || []), cur]
+      return map
+    }, {})
   }
+
   return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
-    <section className='text-[#7C879B]'>
-      我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
-    </section>
+    {
+      (!config?.products || config.products.length === 0)
+        // 没有产品则随机推几个产品,并展示「更多产品」按钮
+        ? <section className='text-[#7C879B]'>
+          {config?.hasNotProductTips}
+        </section>
+        : <section className='text-[#7C879B]'>
+          我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
+        </section>
+    }
     <span className='my-2 flex items-center'>
       <span className='mr-2'><TITLE_ICON /></span>
-      <span>{config.title}</span>
+      <span>{config?.title || '产品推荐'}</span>
     </span>
     {
-      Object.keys(productsGroupByProductGroup).map(group => (
-        <div>
-          <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
-            <span>{group}</span>
-          </h1>
-          <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
-            {
-              productsGroupByProductGroup[group].slice(0, Math.min(productsGroupByProductGroup[group].length, 3)).map((product, index) => (<li>
-                <a href={product.productPageUrl} target='_blank'>
-                  <div key={index} className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white'>
-                    <div>
-                      {product.coverImg && <img className='max-w-[110px] object-cover' src={product.coverImg} />}
-                    </div>
-                    <div className='relative mt-1 px-2 py-1'>
-                      <h1 className='mb-1 text-sm'>{product.productName}</h1>
-                      <div className='absolute bottom-0 left-2'>
-                        <span className='text-xs text-gray-400'>￥</span>
-                        <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
-                        <span className='ml-1 text-xs text-gray-400'>起</span>
+      Object.entries(productsGroupByProductGroup || {}).map((groupEntry) => {
+        const [key, value] = groupEntry
+        return (
+          <div>
+            <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
+              <span>{key}</span>
+            </h1>
+            <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
+              {
+                value.slice(0, Math.min(value.length, 3)).map((product, index) => (<li>
+                  <a href={product.productPageUrl} target='_blank'>
+                    <div key={index} className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white'>
+                      <div>
+                        {product.coverImg && <img className='max-w-[110px] object-cover' src={product.coverImg} />}
+                      </div>
+                      <div className='relative mt-1 px-2 py-1'>
+                        <h1 className='mb-1 text-sm'>{product.productName}</h1>
+                        <div className='absolute bottom-0 left-2'>
+                          <span className='text-xs text-gray-400'>￥</span>
+                          <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
+                          <span className='ml-1 text-xs text-gray-400'>起</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </a>
-              </li>))
-            }
-          </ul>
-        </div>
-      ))
-    }
-    {/* 无产品列表时展示 */}
+                  </a>
+                </li>))
+              }
+            </ul>
+          </div>
+        )
+      })}
     {
-      config.products.length === 0
-      && <div>暂无相关产品</div>
-    }
-    {
-      config.moreProductUrl
+      config?.moreProductUrl
       && <button className={'btn text-md mt-2 h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white'}
         style={{
           backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
@@ -227,7 +244,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
         onClick={() => window.open(config.moreProductUrl, '_blank')}
       >更多推荐</button>
     }
-  </div>
+  </div >
 }
 
 export function isProductList(widgetTagStr?: string) {
