@@ -20,6 +20,16 @@ const TITLE_ICON = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="n
   <path d="M5.26027 4.68627C5.12637 4.68627 4.99572 4.61737 4.92292 4.49322L4.80137 4.28522C4.69282 4.09932 4.75522 3.86012 4.94112 3.75157C5.12702 3.64302 5.36622 3.70542 5.47477 3.89132L5.59632 4.09932C5.70487 4.28522 5.64247 4.52442 5.45657 4.63297C5.39482 4.66937 5.32722 4.68627 5.26027 4.68627Z" fill="#5866D2" />
 </svg>
 
+function transformProductInfo(raw: any): ProductInfo {
+  return {
+    id: raw.ticket_id || raw.id || raw.product_id || '',
+    coverImg: raw.thumbnail_url || raw.wap_thumbnail_url || '',
+    productName: raw.nick_name || '',
+    salePrice: (raw.price || raw.start_sale_price || raw.price_settle || 0).toString(),
+    productPageUrl: raw.product_page_url || '',
+  }
+}
+
 function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
 
@@ -29,7 +39,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   try {
     const productsInfos: ProductInfo[] = JSON.parse(
       Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
-    )
+    ).map(transformProductInfo)
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
       map[cur.id] = cur
       return map

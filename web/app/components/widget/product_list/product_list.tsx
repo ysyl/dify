@@ -60,6 +60,8 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   const groupFilterType = (el.attributes.getNamedItem('group-filter-type')?.value) as GroupFilterType || 'cross_group_or'
   //  无产品提示
   const hasNotProductTips = el.attributes.getNamedItem('has-not-products-tips')?.value || '暂无相关产品, 以下是其他产品推荐'
+  //  组件版本 2.0版本的需要对接新版产品信息（含详情）
+  const version = el.attributes.getNamedItem('version')?.value || '1.0'
 
   if (!productsRawInfosStr) {
     const productsConfigEl = el.querySelector('products')
@@ -87,9 +89,12 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
   }
   else {
     try {
-      const productsInfos: ProductInfo[] = JSON.parse(
+      let productsInfos: ProductInfo[] = JSON.parse(
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
       )
+      if (version === '2.0')
+        productsInfos = productsInfos.map(pi => transformProductInfo(pi))
+
       const groupProductInfosMap = productsInfos.reduce((map: Record<string, ProductInfo[]>, cur) => {
         map[cur.group] = [...(map[cur.group] || []), cur]
         if (cur.parkName)
@@ -278,4 +283,17 @@ function extraitGroupListFromText(groupText: string): string[][] {
     .filter(str => !!str)
     .map(rawGroupTextPerLine => rawGroupTextPerLine.split(','))
   return groupList
+}
+
+// 新增：转换原始对象为ProductInfo
+function transformProductInfo(raw: any): ProductInfo {
+  return {
+    id: raw.ticket_id || raw.id || raw.product_id || '',
+    group: raw.category || '',
+    coverImg: raw.thumbnail_url || raw.wap_thumbnail_url || '',
+    productName: raw.nick_name || '',
+    parkName: raw.merchant_park_name || raw.belong_name || '',
+    salePrice: (raw.price || raw.start_sale_price || raw.price_settle || 0).toString(),
+    productPageUrl: raw.product_page_url || '',
+  }
 }
