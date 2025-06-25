@@ -11,6 +11,7 @@ type ProductInfo = {
   productName: string,
   salePrice: string,
   productPageUrl: string,
+  ticketId: string,
 }
 
 const TITLE_ICON = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,11 +23,12 @@ const TITLE_ICON = () => <svg width="13" height="13" viewBox="0 0 13 13" fill="n
 
 function transformProductInfo(raw: any): ProductInfo {
   return {
-    id: raw.ticket_id || raw.id || raw.product_id || '',
+    id: raw.id || raw.product_id || '',
     coverImg: raw.thumbnail_url || raw.wap_thumbnail_url || '',
     productName: raw.nick_name || '',
     salePrice: (raw.price || raw.start_sale_price || raw.price_settle || 0).toString(),
     productPageUrl: raw.product_page_url || '',
+    ticketId: raw.ticket_id || '',
   }
 }
 
@@ -44,8 +46,10 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
     )
     console.log('productsInfos after base64 decode:', productsInfos)
-    if (version === '2.0')
+    if (version === '2.0') {
       productsInfos = productsInfos.map(transformProductInfo)
+      console.log('productsInfos after transform:', productsInfos)
+    }
 
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
       map[cur.id] = cur
@@ -57,7 +61,8 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
 
     if (!recommandProductIds) return null
 
-    const productConfigList = recommandProductIds.map(id => productIdInfoMap[id]).filter(t => t)
+    let productConfigList = recommandProductIds.map(id => productIdInfoMap[id]).filter(t => t)
+    productConfigList = productConfigList.slice(0, 10)
 
     return {
       title: '产品推荐',
