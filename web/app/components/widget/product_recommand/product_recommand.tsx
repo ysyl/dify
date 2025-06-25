@@ -36,10 +36,16 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   const productsRawInfosStr = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
     .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
 
+  // 获取version属性，默认为1.0
+  const version = node.attributes?.find((attr: any) => attr.name === 'version')?.value || '1.0'
+
   try {
-    const productsInfos: ProductInfo[] = JSON.parse(
+    let productsInfos: ProductInfo[] = JSON.parse(
       Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
-    ).map(transformProductInfo)
+    )
+    if (version === '2.0')
+      productsInfos = productsInfos.map(transformProductInfo)
+
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
       map[cur.id] = cur
       return map
