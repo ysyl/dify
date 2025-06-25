@@ -45,7 +45,6 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     let productsInfos: ProductInfo[] = JSON.parse(
       Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
     )
-    console.log('productsInfos after base64 decode:', productsInfos)
     if (version === '2.0') {
       productsInfos = productsInfos.map(transformProductInfo)
       console.log('productsInfos after transform:', productsInfos)
