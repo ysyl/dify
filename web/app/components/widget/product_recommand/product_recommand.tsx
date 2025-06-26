@@ -33,9 +33,16 @@ function transformProductInfo(raw: any): ProductInfo {
 }
 
 function getProductRawInfo(node: any): string {
-  const rawInfoStr = node.properties.value
-  if (!rawInfoStr) return rawInfoStr
-  return node.children.map((el: any) => el.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0)?.value).filter(Boolean).join('')
+  const rawInfoStr = node.properties?.value
+  if (rawInfoStr) {
+    return rawInfoStr
+  }
+  else {
+    return node.children
+      .map((el: any) =>
+        el.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0)?.value)
+      .filter(Boolean).join('') || ''
+  }
 }
 
 function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
