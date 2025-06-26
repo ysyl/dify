@@ -40,6 +40,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
 
   // 获取version属性，默认为1.0
   const version = node.attributes?.find((attr: any) => attr.name === 'version')?.value || '1.0'
+  console.log('node: ', node)
 
   try {
     let productsInfos: ProductInfo[] = JSON.parse(
