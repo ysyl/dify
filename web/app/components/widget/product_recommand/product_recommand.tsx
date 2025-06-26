@@ -32,11 +32,21 @@ function transformProductInfo(raw: any): ProductInfo {
   }
 }
 
+function getProductRawInfo(node: any): string {
+  const rawInfoStr = node.properties.value
+  if (!rawInfoStr) return rawInfoStr
+  return node.children.map((el: any) => el.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0)?.value).filter(Boolean).join('')
+}
+
 function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
   if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
 
-  const productsRawInfosStr = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
-    .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
+  // 只从所有product-raw-info子元素中收集文本内容，拼接后统一解码
+  const productsRawInfosStr = node.children
+    .filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
+    .map((riEl: any) => getProductRawInfo(riEl))
+    .filter(Boolean)
+    .join('')
 
   // 获取version属性，默认为1.0
   const version = node.properties.version || '1.0'
@@ -93,7 +103,7 @@ const ProductRecommand = ({ node }: { node: any }) => {
       fontFamily: 'Arial, sans-serif',
       paddingBottom: '4px',
     }}
-    onTouchMove={e => e.stopPropagation()}
+      onTouchMove={e => e.stopPropagation()}
     >
       {
         config.products.map((product, index) => (<li className='list-none' style={{
