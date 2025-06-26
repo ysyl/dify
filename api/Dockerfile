@@ -1,5 +1,5 @@
 # base image
-FROM python:3.12-slim-bookworm AS base
+FROM docker.xuanyuan.me/python:3.12-slim-bookworm AS base
 
 WORKDIR /app/api
 
@@ -44,8 +44,10 @@ ENV TZ=UTC
 
 WORKDIR /app/api
 
-RUN \
-    apt-get update \
+# if you located in China, you can use aliyun mirror to speed up
+RUN sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
+
+RUN apt-get update \
     # Install dependencies
     && apt-get install -y --no-install-recommends \
         # basic environment

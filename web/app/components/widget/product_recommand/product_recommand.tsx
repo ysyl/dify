@@ -53,6 +53,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
 
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
       map[cur.id] = cur
+      map[cur.ticketId] = cur
       return map
     }, {})
     const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
