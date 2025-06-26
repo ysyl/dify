@@ -39,8 +39,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
 
   // 获取version属性，默认为1.0
-  const version = node.attributes?.find((attr: any) => attr.name === 'version')?.value || '1.0'
-  console.log('node: ', node)
+  const version = node.properties.version || '1.0'
 
   try {
     let productsInfos: ProductInfo[] = JSON.parse(
