@@ -71,6 +71,7 @@ const VoiceInput = ({
 
   // 触摸移动
   const handleTouchMove = (e: TouchEvent<any>) => {
+    e.preventDefault()
     const touch = e.touches[0]
     const currentInside = isTouchInside(touch.clientX, touch.clientY)
 
@@ -185,6 +186,7 @@ const VoiceInput = ({
   }
   // 触摸开始
   const handleTouchStart = (e: TouchEvent<any>) => {
+    e.preventDefault()
     setButtonText('录音启动中')
     touchStartTimeRef.current = e.timeStamp
     handleStartRecord(() => {
@@ -199,6 +201,7 @@ const VoiceInput = ({
   }
   // 触摸结束
   const handleTouchEnd = (e: TouchEvent<any>) => {
+    e.preventDefault()
     console.log('handleTouchEnd')
     // 判断触摸终止时间，如果触摸持续时间小于一秒, 则不启动录音
     if (touchStartTimeRef.current && (e.timeStamp - touchStartTimeRef.current <= 1000) && !isInside) {
@@ -271,12 +274,22 @@ const VoiceInput = ({
   }
 
   return (
-    <div className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')} ref={buttonRef}
+    <div
+      className={cn(s.wrapper, 'absolute inset-0 rounded-xl', show ? '' : 'hidden')}
+      ref={buttonRef}
+      style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
-      <div className={cn('absolute inset-[1.5px] flex items-center overflow-hidden rounded-xl py-[14px] pl-[14.5px] pr-[6.5px]',
-        getBtnBg(),
-      )}>
-        <canvas id='voice-input-record' className='absolute bottom-0 left-0 z-50 h-[45px] w-full'
+      <div
+        className={cn(
+          'absolute inset-[1.5px] flex items-center overflow-hidden rounded-xl py-[14px] pl-[14.5px] pr-[6.5px]',
+          getBtnBg(),
+        )}
+        style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+      >
+        <canvas
+          id='voice-input-record'
+          className='absolute bottom-0 left-0 z-50 h-[45px] w-full'
+          style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
