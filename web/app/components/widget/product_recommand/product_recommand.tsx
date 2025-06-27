@@ -40,7 +40,7 @@ function getProductRawInfo(node: any): string {
   else {
     return node.children
       .map((el: any) =>
-        el.type === 'text' && el.value.trim().length > 0)?.value
+        el.type === 'text' && el.value.trim().length > 0 ? el.value.trim() : '')
       .filter(Boolean).join('') || ''
   }
 }
