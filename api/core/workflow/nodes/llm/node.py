@@ -138,6 +138,10 @@ class LLMNode(BaseNode[LLMNodeData]):
             )
         self._llm_file_saver = llm_file_saver
 
+    @classmethod
+    def version(cls) -> str:
+        return "1"
+
     def _run(self) -> Generator[NodeEvent | InNodeEvent, None, None]:
         def process_structured_output(text: str) -> Optional[dict[str, Any]]:
             """Process structured output if enabled"""
@@ -255,7 +259,7 @@ class LLMNode(BaseNode[LLMNodeData]):
             if structured_output:
                 outputs["structured_output"] = structured_output
             if self._file_outputs is not None:
-                outputs["files"] = self._file_outputs
+                outputs["files"] = ArrayFileSegment(value=self._file_outputs)
 
             yield RunCompletedEvent(
                 run_result=NodeRunResult(
@@ -525,6 +529,8 @@ class LLMNode(BaseNode[LLMNodeData]):
                 # Set appropriate response format based on model capabilities
                 self._set_response_format(completion_params, model_schema.parameter_rules)
         model_config_with_cred.parameters = completion_params
+        # NOTE(-LAN-): This line modify the `self.node_data.model`, which is used in `_invoke_llm()`.
+        node_data_model.completion_params = completion_params
         return model, model_config_with_cred
 
     def _fetch_prompt_messages(

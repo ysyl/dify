@@ -27,6 +27,7 @@ import cn from '@/utils/classnames'
 import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import type { FileEntity } from '../../file-uploader/types'
+import Avatar from '../../avatar'
 
 const ChatWrapper = () => {
   const {
@@ -51,6 +52,7 @@ const ChatWrapper = () => {
     setClearChatList,
     setIsResponding,
     allInputsHidden,
+    initUserVariables,
   } = useEmbeddedChatbotContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -281,6 +283,14 @@ const ChatWrapper = () => {
       switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
       inputDisabled={inputDisabled}
       isMobile={isMobile}
+      questionIcon={
+        initUserVariables?.avatar_url
+          ? <Avatar
+            avatar={initUserVariables.avatar_url}
+            name={initUserVariables.name || 'user'}
+            size={40}
+          /> : undefined
+      }
     />
   )
 }
