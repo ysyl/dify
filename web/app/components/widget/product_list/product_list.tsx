@@ -92,6 +92,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       let productsInfos: ProductInfo[] = JSON.parse(
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
       )
+      console.log('productsInfos: ', productsInfos)
       if (version === '2.0')
         productsInfos = productsInfos.map(pi => transformProductInfo(pi))
 
@@ -107,7 +108,6 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       // AI生成分组和产品ID
       const groupJsonByLLM = el.querySelector('group-json-by-llm')?.textContent?.trim()
 
-      console.log('groupFilterType: ', groupFilterType)
       if (groupText) {
         const groupList = extraitGroupListFromText(groupText)
         // 根据跨组过滤类型取产品

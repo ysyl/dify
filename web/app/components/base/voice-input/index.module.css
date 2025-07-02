@@ -8,3 +8,8 @@
   background-clip: text;
   color: transparent;
 }
+
+.noselect {
+  user-select: none;
+  -webkit-user-select: none;
+}

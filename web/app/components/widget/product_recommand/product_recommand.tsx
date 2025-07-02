@@ -62,11 +62,8 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     let productsInfos: ProductInfo[] = JSON.parse(
       Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
     )
-    console.log('version: ', version)
-    if (version === '2.0') {
+    if (version === '2.0')
       productsInfos = productsInfos.map(transformProductInfo)
-      console.log('productsInfos after transform:', productsInfos)
-    }
 
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
       map[cur.id] = cur
@@ -75,7 +72,10 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     }, {})
     const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
       .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
-    const recommandProductIds: string[] = recommandProductIdsRaw.split(',')
+    console.log('node: ', node)
+    console.log('recommandProductIdsRaw: ', recommandProductIdsRaw)
+
+    const recommandProductIds: string[] = recommandProductIdsRaw?.split(',')
 
     if (!recommandProductIds) return null
 
@@ -95,6 +95,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
 
 const ProductRecommand = ({ node }: { node: any }) => {
   const config = getProductRecommandConfig(node)
+  if (!config) return <></>
 
   if (!config?.products || config.products.length === 0) return <></>
   return <div className='mb-2' no-memory="true">
