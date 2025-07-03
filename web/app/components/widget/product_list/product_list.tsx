@@ -93,7 +93,6 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
       )
       console.log('productsInfos: ', productsInfos)
-      console.log('version === 2.0: ', version === '2.0')
       if (version === '2.0')
         productsInfos = productsInfos.map(pi => transformProductInfo(pi))
 
@@ -295,7 +294,7 @@ function transformProductInfo(raw: any): ProductInfo {
     group: raw.category || '',
     coverImg: raw.thumbnail_url || raw.wap_thumbnail_url || '',
     productName: raw.nick_name || '',
-    parkName: raw.merchant_park_name || raw.belong_name || '',
+    parkName: raw.park_name || raw.park_nick_name || '',
     salePrice: (raw.price || raw.start_sale_price || raw.price_settle || 0).toString(),
     productPageUrl: raw.product_page_url || '',
   }
