@@ -93,7 +93,7 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
       )
       console.log('productsInfos: ', productsInfos)
-      console.log('version: ', version)
+      console.log('version === 2.0: ', version === '2.0')
       if (version === '2.0')
         productsInfos = productsInfos.map(pi => transformProductInfo(pi))
 
