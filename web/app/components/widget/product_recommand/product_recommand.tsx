@@ -72,8 +72,6 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     }, {})
     const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
       .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
-    console.log('node: ', node)
-    console.log('recommandProductIdsRaw: ', recommandProductIdsRaw)
 
     const recommandProductIds: string[] = recommandProductIdsRaw?.split(',')
 

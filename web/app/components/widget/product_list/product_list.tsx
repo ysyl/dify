@@ -92,7 +92,6 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
       let productsInfos: ProductInfo[] = JSON.parse(
         Buffer.from(productsRawInfosStr, 'base64').toString('utf-8'),
       )
-      console.log('productsInfos: ', productsInfos)
       if (version === '2.0')
         productsInfos = productsInfos.map(pi => transformProductInfo(pi))
 
@@ -110,8 +109,6 @@ function getProductListConfig(widgetTag: string): ProductListConfig | null {
 
       if (groupText) {
         const groupList = extraitGroupListFromText(groupText)
-        console.log('groupList: ', groupList)
-        console.log('groupText: ', groupText)
         // 根据跨组过滤类型取产品
         // cross_group_or：满足任一分组条件的产品即可列出
         let groupProductConfigMap: ProductInfo[] = []
