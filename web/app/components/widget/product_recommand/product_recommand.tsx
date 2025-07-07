@@ -54,6 +54,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     .map((riEl: any) => getProductRawInfo(riEl))
     .filter(Boolean)
     .join('')
+  if (productsRawInfosStr.length === 0) return null
 
   // 获取version属性，默认为1.0
   const version = node.properties.version || '1.0'
@@ -95,7 +96,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
 
 const ProductRecommand = ({ node }: { node: any }) => {
   const config = getProductRecommandConfig(node)
-  if (!config) return <></>
+  if (!config) return <div></div>
 
   if (!config?.products || config.products.length === 0) return <></>
   return <div className='mb-2' no-memory="true">
