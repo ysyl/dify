@@ -69,8 +69,17 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       productsInfos = productsInfos.map(transformProductInfo)
 
     const productIdInfoMap = productsInfos.reduce((map: Record<string, ProductInfo>, cur) => {
-      map[cur.id] = cur
-      map[cur.ticketId] = cur
+      if (!cur.productPageUrl) return map
+
+      try {
+        const url = new URL(cur.productPageUrl)
+        const ticketId = url.searchParams.get('ticketId')
+        if (ticketId)
+          map[ticketId] = cur
+      }
+ catch (e) {
+        console.error('Invalid productPageUrl:', cur.productPageUrl, e)
+      }
       return map
     }, {})
     const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
