@@ -74,6 +74,8 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       try {
         const url = new URL(cur.productPageUrl)
         const ticketId = url.searchParams.get('ticketId')
+        console.log('url: ', url)
+        console.log('ticketId: ', ticketId)
         if (ticketId)
           map[ticketId] = cur
       }
