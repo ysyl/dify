@@ -23,6 +23,8 @@ type ScenicHelloType = {
   'guide'?: string,
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
+  // 新增：获取定位的可选参数
+  'get-user-location'?: boolean
 }
 
 type AgentCustomeConfig = {

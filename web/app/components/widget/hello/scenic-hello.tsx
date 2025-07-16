@@ -17,8 +17,6 @@ type HelloWidgetProps = {
       smooth: boolean
     }
   ) => void
-  // 新增：是否获取用户定位
-  getUserLocation?: boolean
 }
 
 const ARROW_ICON = () => (
@@ -107,7 +105,6 @@ const HelloWidget = ({
   activeFigure: activeFigureInput,
   suggestedQuestions,
   handleScrollToBottom,
-  getUserLocation, // 新增参数接收
 }: HelloWidgetProps) => {
   const {
     introduction: introduce,
@@ -117,6 +114,7 @@ const HelloWidget = ({
     'shortcut-items': shortcutItems,
     guide,
     multiFigure: multiFigue,
+    'get-user-location': getUserLocation,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
