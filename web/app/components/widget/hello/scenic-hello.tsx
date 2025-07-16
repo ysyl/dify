@@ -141,7 +141,7 @@ const HelloWidget = ({
   useEffect(() => {
     if (!getUserLocation) return
     // 判断是否为微信环境
-    const isWeChat = /MicroMessenger/i.test(navigator.userAgent)
+    const isWeChat = !!window.wx
 
     if (isWeChat) {
       // 微信环境：调用微信JSSDK定位API
