@@ -202,11 +202,6 @@ class FunctionCallAgentRunner(BaseAgentRunner):
                 assistant_message.content = response
 
             self._current_thoughts.append(assistant_message)
-            
-            add_think = (response.rstrip('\n') + '</think>'
-                         if '</think>' in response and response.count('</think>') == 0
-                         else response)
-            logger.info(f'response with think: {add_think}')
             # save thought
             self.save_agent_thought(
                 agent_thought=agent_thought,
