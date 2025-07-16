@@ -119,6 +119,9 @@ const HelloWidget = ({
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
   const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
+  // 添加经纬度状态存储
+  const [latitude, setLatitude] = useState<number | null>(null)
+  const [longitude, setLongitude] = useState<number | null>(null)
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
@@ -153,6 +156,9 @@ const HelloWidget = ({
               latitude: res.latitude,
               longitude: res.longitude,
             })
+            // 保存经纬度到状态
+            setLatitude(res.latitude)
+            setLongitude(res.longitude)
           },
           fail: (err) => {
             console.error('微信定位失败', err)
@@ -173,6 +179,9 @@ const HelloWidget = ({
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
             })
+            // 保存经纬度到状态
+            setLatitude(position.coords.latitude)
+            setLongitude(position.coords.longitude)
           },
           (error) => {
             console.error('H5定位失败', error)
@@ -241,6 +250,11 @@ const HelloWidget = ({
           </section>
         }
       </div>
+      {
+        latitude && longitude && <div>
+          <p>当前位置：纬度 {latitude}, 经度 {longitude}</p>
+        </div>
+      }
     </div>
   )
 }
