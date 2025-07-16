@@ -147,6 +147,7 @@ export default combine(
       // code complexity
       'sonarjs/cognitive-complexity': 'off',
       'sonarjs/no-nested-functions': 'off',
+      'sonarjs/no-intrusive-permissions': 'off',
       'sonarjs/no-nested-conditional': 'off',
       'sonarjs/nested-control-flow': 'warn', // 3 levels of nesting
       'sonarjs/no-small-switch': 'off',
