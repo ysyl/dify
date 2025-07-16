@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useContext } from 'use-context-selector'
 import type { Figure, HelloWidgetShortCutItems } from './scenic-hello-config'
 import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
-import I18n from '@/context/i18n'
 
 type HelloWidgetProps = {
   widgetTag: string
@@ -13,10 +11,14 @@ type HelloWidgetProps = {
   suggestedQuestions?: string[]
   // 有值则说明有数字人形象，卡片中的静态形象和切换按钮不展示
   activeFigure?: Figure
-  handleScrollToBottom?: (args: {
-    forceScroll: boolean,
-    smooth: boolean
-  }) => void
+  handleScrollToBottom?: (
+    args: {
+      forceScroll: boolean,
+      smooth: boolean
+    }
+  ) => void
+  // 新增：是否获取用户定位
+  getUserLocation?: boolean
 }
 
 const ARROW_ICON = () => (
@@ -105,6 +107,7 @@ const HelloWidget = ({
   activeFigure: activeFigureInput,
   suggestedQuestions,
   handleScrollToBottom,
+  getUserLocation, // 新增参数接收
 }: HelloWidgetProps) => {
   const {
     introduction: introduce,
@@ -115,7 +118,6 @@ const HelloWidget = ({
     guide,
     multiFigure: multiFigue,
   } = getScenicHelloConfig(widgetTag)
-  const { locale } = useContext(I18n)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
   const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
@@ -136,6 +138,54 @@ const HelloWidget = ({
   function onSwitchFigure(figure: Figure) {
     setActiveFigure(figure)
   }
+
+  // 新增：定位逻辑实现
+  useEffect(() => {
+    if (!getUserLocation) return
+    // 判断是否为微信环境
+    const isWeChat = /MicroMessenger/i.test(navigator.userAgent)
+
+    if (isWeChat) {
+      // 微信环境：调用微信JSSDK定位API
+      if (window.wx) {
+        wx.getLocation({
+          type: 'wgs84',
+          success: (res) => {
+            console.log('微信定位成功', {
+              latitude: res.latitude,
+              longitude: res.longitude,
+            })
+          },
+          fail: (err) => {
+            console.error('微信定位失败', err)
+          },
+        })
+      }
+ else {
+        console.error('微信JSSDK未加载')
+      }
+    }
+ else {
+      // H5环境：调用浏览器原生定位API
+      if (navigator.geolocation) {
+        // 业务需求：需要获取用户位置以提供附近景点推荐功能
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('H5定位成功', {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            })
+          },
+          (error) => {
+            console.error('H5定位失败', error)
+          },
+        )
+      }
+ else {
+        console.error('浏览器不支持地理定位')
+      }
+    }
+  }, [getUserLocation])
 
   return (
     <div style={{ cursor: 'default' }}>
