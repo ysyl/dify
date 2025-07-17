@@ -120,7 +120,7 @@ class FeatureModel(BaseModel):
     docs_processing: str = "standard"
     can_replace_logo: bool = False
     model_load_balancing_enabled: bool = False
-    dataset_operator_enabled: bool = False
+    dataset_operator_enabled: bool = True
     webapp_copyright_enabled: bool = False
     workspace_members: LicenseLimitationModel = LicenseLimitationModel(enabled=False, size=0, limit=0)
 

@@ -85,7 +85,7 @@ const ProviderContext = createContext<ProviderContextState>({
   onPlanInfoChanged: noop,
   enableReplaceWebAppLogo: false,
   modelLoadBalancingEnabled: false,
-  datasetOperatorEnabled: false,
+  datasetOperatorEnabled: true,
   enableEducationPlan: false,
   isEducationWorkspace: false,
   isEducationAccount: false,

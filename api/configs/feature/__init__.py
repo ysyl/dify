@@ -719,7 +719,7 @@ class DataSetConfig(BaseSettings):
 
     DATASET_OPERATOR_ENABLED: bool = Field(
         description="Enable or disable dataset operator functionality",
-        default=False,
+        default=True,
     )
 
     TIDB_SERVERLESS_NUMBER: PositiveInt = Field(
