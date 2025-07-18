@@ -23,6 +23,9 @@ server {
     location /m6DxqUlG8i.txt {
       return 200 'ce7a1226d35fd26e134cc17662eca01e';
     }
+    location /mN7WRyiu3G.txt{
+      return 200 '4737b11df0cdbb8bc74bc7aa51932ad2';
+    }
     # 配置静态文件访问
     location /upload_pics/ {
         alias /var/www/images_store/23d42193-e769-4628-9f5d-bf5428994d3d/;  # 指定实际文件路径
