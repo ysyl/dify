@@ -85,13 +85,18 @@ def validate_app_token(view: Optional[Callable] = None, *, fetch_user_arg: Optio
             if fetch_user_arg:
                 if fetch_user_arg.fetch_from == WhereisUserArg.QUERY:
                     user_id = request.args.get("user")
+                    user_type = request.args.get("user_type")
                 elif fetch_user_arg.fetch_from == WhereisUserArg.JSON:
-                    user_id = request.get_json().get("user")
+                    user_json = request.get_json()
+                    user_id = user_json.get("user")
+                    user_type = user_json.get("user_type")
                 elif fetch_user_arg.fetch_from == WhereisUserArg.FORM:
                     user_id = request.form.get("user")
+                    user_type = request.form.get("user_type")
                 else:
                     # use default-user
                     user_id = None
+                    user_type = None
 
                 if not user_id and fetch_user_arg.required:
                     raise ValueError("Arg user must be provided.")
@@ -99,8 +104,9 @@ def validate_app_token(view: Optional[Callable] = None, *, fetch_user_arg: Optio
                 if user_id:
                     user_id = str(user_id)
 
-                end_user = create_or_update_end_user_for_user_id(app_model, user_id)
+                end_user = create_or_update_end_user_for_user_id(app_model, user_id, user_type)
                 kwargs["end_user"] = end_user
+                kwargs["user_type"] = user_type
 
                 # Set EndUser as current logged-in user for flask_login.current_user
                 current_app.login_manager._update_request_context_with_user(end_user)  # type: ignore
@@ -283,7 +289,10 @@ def validate_and_get_api_token(scope: str | None = None):
     return api_token
 
 
-def create_or_update_end_user_for_user_id(app_model: App, user_id: Optional[str] = None) -> EndUser:
+def create_or_update_end_user_for_user_id(
+    app_model: App, 
+    user_id: Optional[str] = None,
+    user_type: Optional[str] = None) -> EndUser:
     """
     Create or update session terminal based on user ID.
     """
@@ -296,7 +305,7 @@ def create_or_update_end_user_for_user_id(app_model: App, user_id: Optional[str]
             EndUser.tenant_id == app_model.tenant_id,
             EndUser.app_id == app_model.id,
             EndUser.session_id == user_id,
-            EndUser.type == "service_api",
+            EndUser.type == "service_api" if user_type == None else user_type,
         )
         .first()
     )

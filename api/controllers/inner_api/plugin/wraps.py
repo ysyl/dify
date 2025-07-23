@@ -15,7 +15,7 @@ from models.model import EndUser
 from services.account_service import AccountService
 
 
-def get_user(tenant_id: str, user_id: str | None) -> Account | EndUser:
+def get_user(tenant_id: str, user_id: str | None, user_type: 'browser' | 'service_api' | None) -> Account | EndUser:
     try:
         with Session(db.engine) as session:
             if not user_id:
@@ -26,7 +26,7 @@ def get_user(tenant_id: str, user_id: str | None) -> Account | EndUser:
                 if not user_model:
                     user_model = EndUser(
                         tenant_id=tenant_id,
-                        type="service_api",
+                        type="service_api" if user_type == None else user_type,
                         is_anonymous=True if user_id == "DEFAULT-USER" else False,
                         session_id=user_id,
                     )
@@ -57,6 +57,7 @@ def get_user_tenant(view: Optional[Callable] = None):
             kwargs = parser.parse_args()
 
             user_id = kwargs.get("user_id")
+            user_type = kwargs.get("user_type")
             tenant_id = kwargs.get("tenant_id")
 
             if not tenant_id:
@@ -84,7 +85,7 @@ def get_user_tenant(view: Optional[Callable] = None):
 
             kwargs["tenant_model"] = tenant_model
 
-            user = get_user(tenant_id, user_id)
+            user = get_user(tenant_id, user_id, user_type)
             kwargs["user_model"] = user
 
             current_app.login_manager._update_request_context_with_user(user)  # type: ignore
