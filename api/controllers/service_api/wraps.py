@@ -106,7 +106,7 @@ def validate_app_token(view: Optional[Callable] = None, *, fetch_user_arg: Optio
 
                 end_user = create_or_update_end_user_for_user_id(app_model, user_id, user_type)
                 kwargs["end_user"] = end_user
-                kwargs["user_type"] = user_type
+                # kwargs["user_type"] = user_type
 
                 # Set EndUser as current logged-in user for flask_login.current_user
                 current_app.login_manager._update_request_context_with_user(end_user)  # type: ignore
