@@ -505,6 +505,11 @@ services:
     build:
       context: ../api
       dockerfile: Dockerfile
+      args:
+        http_proxy: "http://172.17.0.1:7890"
+        https_proxy: "http://172.17.0.1:7890"
+        HTTP_PROXY: "http://172.17.0.1:7890"
+        HTTPS_PROXY: "http://172.17.0.1:7890"
     restart: always
     environment:
       # Use the shared environment variables.
@@ -526,6 +531,7 @@ services:
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
+      - ~/.cache/uv:/root/.cache/uv
     networks:
       - ssrf_proxy_network
       - default
