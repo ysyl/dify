@@ -305,7 +305,7 @@ def create_or_update_end_user_for_user_id(
             EndUser.tenant_id == app_model.tenant_id,
             EndUser.app_id == app_model.id,
             EndUser.session_id == user_id,
-            EndUser.type == "service_api" if user_type == None else user_type,
+            EndUser.type == ("service_api" if user_type is None else user_type),
         )
         .first()
     )
