@@ -15,7 +15,7 @@ from models.model import EndUser
 from services.account_service import AccountService
 
 
-def get_user(tenant_id: str, user_id: str | None, user_type: 'browser' | 'service_api' | None) -> Account | EndUser:
+def get_user(tenant_id: str, user_id: str | None, user_type: str | None) -> Account | EndUser:
     try:
         with Session(db.engine) as session:
             if not user_id:
