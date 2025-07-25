@@ -65,5 +65,7 @@ const nextConfig = {
   },
   output: 'standalone',
 }
-
-module.exports = withMDX(nextConfig)
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true', // 仅在指定环境启用
+})
+module.exports = withBundleAnalyzer(withMDX(nextConfig))
