@@ -4,45 +4,47 @@ import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
 // 定义地点数据类型接口
 export type LocationItem = {
-    name: string;
-    latitude: number;
-    longitude: number;
+  name: string;
+  latitude: number;
+  longitude: number;
 }
 
 // 定义组件属性接口
 export type LocationSelectorProps = {
-    label: string; // 选择器label
-    type: string;
-    locations: LocationItem[];
-    value: string;
-    onChange: (value: string) => void;
-    placeholder: string;
-    recommendLabel?: string; // 热门推荐文本
+  label: string; // 选择器label
+  type: string;
+  locations: LocationItem[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  recommendLabel?: string; // 热门推荐文本
 }
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
-    label, type, locations, value, onChange, placeholder, recommendLabel,
+  label, type, locations, value, onChange, placeholder, recommendLabel,
 }) => {
-    return (
-        <div className="space-y-2">
-            {/* 选择器label */}
-            <label className="text-sm font-medium text-gray-500">{label}</label>
+  return (
+    <div className="space-y-2">
+      {/* 选择器label */}
+      <div className='flex justify-between'>
+        <label className="w-14 text-sm font-medium text-gray-500">{label}</label>
 
-            <Select
-                key={type}
-                className='w-full'
-                defaultValue={value}
-                onSelect={i => onChange(i.value as string)}
-                items={locations.map(loc => ({ name: loc.name, value: loc.name }))}
-                allowSearch={false}
-            />
+        <Select
+          key={type}
+          className='w-full'
+          defaultValue={value}
+          onSelect={i => onChange(i.value as string)}
+          items={locations.map(loc => ({ name: loc.name, value: loc.name }))}
+          allowSearch={false}
+        />
+      </div>
 
-            {/* 自定义热门推荐文本 */}
-            {recommendLabel && (
-                <p className="mt-1 text-xs text-gray-500">{recommendLabel}</p>
-            )}
-        </div>
-    )
+      {/* 自定义热门推荐文本 */}
+      {recommendLabel && (
+        <p className="ml-14 mt-1 text-xs text-gray-500">{recommendLabel}</p>
+      )}
+    </div>
+  )
 }
 export function isLocationSelector(widgetTagStr?: string) {
   if (!widgetTagStr) return false
