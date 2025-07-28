@@ -40,7 +40,7 @@ import { isTourismPreference } from '@/app/components/widget/tourism-preference/
 import TourismPreference from '@/app/components/widget/tourism-preference/tourism-preference'
 import { isProductPreference } from '@/app/components/widget/product-preference/product-preference-config'
 import ProductPreference from '@/app/components/widget/product-preference/product-preference'
-import LocationSelectors, { isLocationSelectorsTag } from '@/app/components/widget/location-selectors/location-selectors'
+import LocationPanel, { isLocationPanelTag } from '@/app/components/widget/location-panel/location-panel'
 import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 import ServiceList, { isServiceList } from '@/app/components/widget/service_list/service_list'
 import type { DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
@@ -301,9 +301,9 @@ const Chat: FC<ChatProps> = ({
                   else if (isProductList(item.content)) {
                     return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
                   }
-                  else if (isLocationSelectorsTag(item.content)) {
-                    return <LocationSelectors
-                      key={`location-selectors-${index}`}
+                  else if (isLocationPanelTag(item.content)) {
+                    return <LocationPanel
+                      key={`location-panel-${index}`}
                       widgetTagStr={item.content}
                       onSend={onSend}
                     />
