@@ -97,7 +97,6 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     return { name, key, selectors }
   })
 
-  console.log('LocationPanel', groups)
   // 保持向后兼容：如果没有groups，使用selectors创建一个默认group
   if (groups.length === 0) {
     const selectorEls = [...(tagEl?.querySelectorAll('location-selector') || [])]
