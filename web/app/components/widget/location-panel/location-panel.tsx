@@ -11,6 +11,7 @@ type LocationSelectorGroup = {
   name: string; // 组名称
   key: string; // 组唯一标识
   selectors: LocationSelectorProps[]; // 组内选择器配置数组
+  template?: string; // 新增组模板字段
 }
 
 // 定义多选择器配置接口
@@ -20,7 +21,6 @@ export type LocationPanelProps = {
   groupSwitchName?: string;
   getUserLocation?: boolean;
   widgetTag?: string;
-  template?: string; // 新增自定义模板属性
 }
 
 /**
@@ -85,6 +85,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
   const groups = groupEls.map((groupEl) => {
     // 获取group的name和key属性
     const name = groupEl.attributes.getNamedItem('name')?.value || ''
+    const template = groupEl.attributes.getNamedItem('template')?.value || ''
     const key = groupEl.attributes.getNamedItem('key_name')?.value || name || ''
 
     // 解析group内的location-selector子元素
@@ -96,7 +97,12 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
       })
     })
 
-    return { name, key, selectors }
+    return {
+      name,
+      key,
+      selectors,
+      template, // 添加组级template
+    }
   })
 
   // 保持向后兼容：如果没有groups，使用selectors创建一个默认group
@@ -108,7 +114,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
         console.log(value)
       })
     })
-    groups.push({ name: 'default', key: 'default', selectors })
+    groups.push({ name: 'default', key: 'default', selectors, template })
   }
 
   return {
@@ -116,7 +122,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     groups,
     groupSwitchName,
     getUserLocation,
-    template, // 添加到返回配置
+    // 移除panel级别的template
   }
 }
 /**
@@ -127,7 +133,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
 const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelProps, onSend?: (values: string) => void }> = ({ widgetTagStr, config, onSend }) => {
   // 解析HTML配置为实际参数
   if (!config && widgetTagStr) config = parseLocationPanelConfig(widgetTagStr)
-  const { header, groups, template, groupSwitchName, getUserLocation } = config || {}
+  const { header, groups, groupSwitchName, getUserLocation } = config || {}
   const styleConfig = getStyleConfig('')
   const [activeGroupKey, setActiveGroupKey] = useState<string>(groups?.[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
@@ -233,7 +239,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
     }
     // 使用提取的格式化方法
     const formattedValues = formatSelectorValues(activeGroup, selectorValues)
-    const formattedValuesStr = formatToStr(formattedValues, template)
+    const formattedValuesStr = formatToStr(formattedValues, groups?.find(group => group.key === activeGroupKey)?.template)
 
     // 调用提交回调
     onSend?.(formattedValuesStr)
