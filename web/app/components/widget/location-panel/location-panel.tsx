@@ -15,12 +15,12 @@ type LocationSelectorGroup = {
 
 // 定义多选择器配置接口
 export type LocationPanelProps = {
-  header: string; // 整体header标题
-  groups: LocationSelectorGroup[]; // 选择器组数组
-  groupSwitchName?: string; // 切换单选框标签
-  // 新增：获取定位的可选参数
+  header: string;
+  groups: LocationSelectorGroup[];
+  groupSwitchName?: string;
   getUserLocation?: boolean;
-  widgetTag?: string; // 样式配置标签
+  widgetTag?: string;
+  template?: string; // 新增自定义模板属性
 }
 
 /**
@@ -74,19 +74,18 @@ export function isLocationPanelTag(widgetTagStr: string): boolean {
 export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelProps {
   const tagEl = parseHtmlTagRaw(widgetTagStr)
 
-  // 提取整体header标题
   const header = tagEl?.attributes.getNamedItem('header')?.value || ''
-  // 提取group切换名称
   const groupSwitchName = tagEl?.attributes.getNamedItem('group-switch-name')?.value || ''
-  // 新增：解析get-user-location属性
   const getUserLocation = tagEl?.attributes.getNamedItem('get-user-location')?.value === 'true'
+  // 新增：解析template属性
+  const template = tagEl?.attributes.getNamedItem('template')?.value || ''
 
   // 解析多个location-selector-group子元素
   const groupEls = [...(tagEl?.querySelectorAll('location-selector-group') || [])]
   const groups = groupEls.map((groupEl) => {
     // 获取group的name和key属性
     const name = groupEl.attributes.getNamedItem('name')?.value || ''
-    const key = groupEl.attributes.getNamedItem('key_name')?.value || ''
+    const key = groupEl.attributes.getNamedItem('key_name')?.value || name || ''
 
     // 解析group内的location-selector子元素
     const selectorEls = [...(groupEl.querySelectorAll('location-selector') || [])]
@@ -116,7 +115,8 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     header,
     groups,
     groupSwitchName,
-    getUserLocation, // 新增getUserLocation配置
+    getUserLocation,
+    template, // 添加到返回配置
   }
 }
 /**
@@ -126,7 +126,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
  */
 const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) => void }> = ({ widgetTagStr, onSend }) => {
   // 解析HTML配置为实际参数
-  const { header, groups, groupSwitchName, getUserLocation } = parseLocationPanelConfig(widgetTagStr)
+  const { header, groups, template, groupSwitchName, getUserLocation } = parseLocationPanelConfig(widgetTagStr)
   const styleConfig = getStyleConfig('')
   const [activeGroupKey, setActiveGroupKey] = useState<string>(groups[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
@@ -185,7 +185,33 @@ const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) 
     })
     setSelectorValues(newValues)
   }
-
+  const formatSelectorValues = (
+    activeGroup: LocationSelectorGroup,
+    selectorValues: Record<string, string>,
+  ): Record<string, string> => {
+    return activeGroup.selectors.reduce((result, selector, index) => {
+      const selectorKey = `${activeGroup.key}_${index}`
+      const key = selector.label || `位置选择${index + 1}`
+      return {
+        ...result,
+        [key]: selectorValues[selectorKey],
+      }
+    }, {})
+  }
+  const formatToStr = (formattedValues: Record<string, string>, template?: string): string => {
+    if (template) {
+        // 修复：支持中文占位符匹配
+        return template.replace(/\{([\p{L}\d_]+)\}/gu, (match, key) => {
+            // 调试信息：帮助确认键值对应关系
+            console.log(`替换占位符: ${key} = ${formattedValues[key] || '未找到'}`)
+            return formattedValues[key] || match
+        })
+    }
+    // 默认格式化逻辑：key:value 形式用逗号连接
+    return Object.entries(formattedValues)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(',')
+  }
   // 提交处理函数
   const handleSubmit = () => {
     // 验证当前group的所有选择器是否已选择
@@ -203,21 +229,9 @@ const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) 
       setFormAlert('请完成所有位置的选择后再提交')
       return
     }
-
-    // 格式化提交数据 { 选择器标题: 值 }
-    const formattedValues: Record<string, string> = activeGroup.selectors.reduce((result, selector, index) => {
-      const selectorKey = `${activeGroupKey}_${index}`
-      const key = selector.label || `位置选择${index + 1}`
-      return {
-        ...result,
-        [key]: selectorValues[selectorKey],
-      }
-    }, {})
-
-    // 添加group名称到提交数据
-    formattedValues.group = activeGroup.name
-
-    const formattedValuesStr = Object.entries(formattedValues).map(([key, value]) => `${key}:${value}`).join(',')
+    // 使用提取的格式化方法
+    const formattedValues = formatSelectorValues(activeGroup, selectorValues)
+    const formattedValuesStr = formatToStr(formattedValues, template)
 
     // 调用提交回调
     onSend?.(formattedValuesStr)
