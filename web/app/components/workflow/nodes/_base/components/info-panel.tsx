@@ -1,14 +1,17 @@
 'use client'
 import type { FC, ReactNode } from 'react'
 import React from 'react'
+import cn from '@/utils/classnames'
 
 type Props = {
   title: string
+  limitHeight?: boolean
   content: ReactNode
 }
 
 const InfoPanel: FC<Props> = ({
   title,
+  limitHeight,
   content,
 }) => {
   return (
@@ -17,7 +20,7 @@ const InfoPanel: FC<Props> = ({
         <div className='system-2xs-semibold-uppercase uppercase text-text-secondary'>
           {title}
         </div>
-        <div className='system-xs-regular break-words text-text-tertiary'>
+        <div className={cn('system-xs-regular break-words text-text-tertiary', limitHeight ? 'max-h-[200px] overflow-y-auto' : '')}>
           {content}
         </div>
       </div>

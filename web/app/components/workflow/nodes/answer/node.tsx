@@ -18,7 +18,7 @@ const Node: FC<NodeProps<AnswerNodeType>> = ({
           value={data.answer}
           nodeId={id}
         />
-      } />
+      } limitHeight={true} />
     </div>
   )
 }
