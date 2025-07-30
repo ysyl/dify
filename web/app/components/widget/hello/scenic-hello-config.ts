@@ -1,4 +1,6 @@
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
+import { parseLocationPanelConfig } from '../location-panel/location-panel'
+import type { LocationPanelProps } from '../location-panel/location-panel'
 
 export type HelloWidgetShortCutItems = {
   title: string
@@ -23,8 +25,7 @@ type ScenicHelloType = {
   'guide'?: string,
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
-  // 新增：获取定位的可选参数
-  'get-user-location'?: boolean
+  'location-panel'?: LocationPanelProps;
 }
 
 type AgentCustomeConfig = {
@@ -148,6 +149,7 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     // 融合tag中的自定义配置到预设配置
     const tagItem = parseHtmlTagRaw(widgetTagStr)
     const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
+    // 自动合并html同名属性到配置中
     const mergeConfig: Record<string, any> = {
       ...config,
       ...[...(tagItem?.attributes || [])]
@@ -174,6 +176,11 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     const multiFigureEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'multi-figure')
     if (multiFigureEl)
       mergeConfig.multiFigure = parseMultiFigueEl(multiFigureEl)
+
+    // 新增：location-panel节点解析
+    const locationPanelEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'location-panel')
+    if (locationPanelEl)
+      mergeConfig['location-panel'] = parseLocationPanelConfig(locationPanelEl.outerHTML)
 
     return mergeConfig as ScenicHelloType
   }

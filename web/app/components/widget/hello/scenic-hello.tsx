@@ -114,14 +114,10 @@ const HelloWidget = ({
     'shortcut-items': shortcutItems,
     guide,
     multiFigure: multiFigue,
-    'get-user-location': getUserLocation,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
   const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
-  // 添加经纬度状态存储
-  const [latitude, setLatitude] = useState<number | null>(null)
-  const [longitude, setLongitude] = useState<number | null>(null)
 
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
@@ -139,60 +135,6 @@ const HelloWidget = ({
   function onSwitchFigure(figure: Figure) {
     setActiveFigure(figure)
   }
-
-  // 新增：定位逻辑实现
-  useEffect(() => {
-    if (!getUserLocation) return
-    // 判断是否为微信环境
-    const isWeChat = !!window.wx
-
-    if (isWeChat) {
-      // 微信环境：调用微信JSSDK定位API
-      if (window.wx) {
-        wx.getLocation({
-          type: 'wgs84',
-          success: (res) => {
-            console.log('微信定位成功', {
-              latitude: res.latitude,
-              longitude: res.longitude,
-            })
-            // 保存经纬度到状态
-            setLatitude(res.latitude)
-            setLongitude(res.longitude)
-          },
-          fail: (err) => {
-            console.error('微信定位失败', err)
-          },
-        })
-      }
- else {
-        console.error('微信JSSDK未加载')
-      }
-    }
- else {
-      // H5环境：调用浏览器原生定位API
-      if (navigator.geolocation) {
-        // 业务需求：需要获取用户位置以提供附近景点推荐功能
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('H5定位成功', {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            })
-            // 保存经纬度到状态
-            setLatitude(position.coords.latitude)
-            setLongitude(position.coords.longitude)
-          },
-          (error) => {
-            console.error('H5定位失败', error)
-          },
-        )
-      }
- else {
-        console.error('浏览器不支持地理定位')
-      }
-    }
-  }, [getUserLocation])
 
   return (
     <div style={{ cursor: 'default' }}>
@@ -250,11 +192,6 @@ const HelloWidget = ({
           </section>
         }
       </div>
-      {
-        latitude && longitude && <div>
-          <p>当前位置：纬度 {latitude}, 经度 {longitude}</p>
-        </div>
-      }
     </div>
   )
 }
