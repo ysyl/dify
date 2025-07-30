@@ -239,7 +239,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
     }
     // 使用提取的格式化方法
     const formattedValues = formatSelectorValues(activeGroup, selectorValues)
-    const formattedValuesStr = formatToStr(formattedValues, groups?.find(group => group.key === activeGroupKey)?.template)
+    const formattedValuesStr = formatToStr(formattedValues, activeGroup.template)
 
     // 调用提交回调
     onSend?.(formattedValuesStr)
