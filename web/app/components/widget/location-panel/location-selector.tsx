@@ -1,5 +1,5 @@
 import React from 'react'
-import Select from '@/app/components/base/select'
+import { SimpleSelect } from '@/app/components/base/select'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
 // 定义地点数据类型接口
@@ -26,10 +26,11 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   return (
     <div className="w-full">
       {/* 选择器label */}
-      <Select
+      <SimpleSelect
         key={type}
         className='w-full'
         defaultValue={value}
+        placeholder={placeholder}
         onSelect={i => onChange(i.value as string)}
         items={locations.map(loc => ({ name: loc.name, value: loc.name }))}
         allowSearch={false}
