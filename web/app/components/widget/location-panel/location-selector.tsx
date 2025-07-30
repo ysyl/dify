@@ -8,7 +8,12 @@ export type LocationItem = {
   latitude: number;
   longitude: number;
 }
-
+// 定义LocationItems的Props接口
+export type LocationItemsProps = {
+  id: string;
+  refs?: React.RefObject<HTMLDivElement>;
+  locationItems: LocationItem[];
+}
 // 定义组件属性接口
 export type LocationSelectorProps = {
   label: string; // 选择器label
@@ -74,7 +79,9 @@ export function isLocationSelector(widgetTagStr?: string) {
  *   onChange: () => {}
  * }
  */
-export function parseLocationSelectorConfig(selectorHtml: string, onChange: (value: string) => void): LocationSelectorProps {
+export function parseLocationSelectorConfig(selectorHtml: string,
+  locationItemsList: LocationItemsProps[],
+  onChange: (value: string) => void): LocationSelectorProps {
   const tagEl = parseHtmlTagRaw(selectorHtml)
 
   // 提取单个selector的属性
@@ -85,12 +92,23 @@ export function parseLocationSelectorConfig(selectorHtml: string, onChange: (val
   const value = tagEl?.attributes.getNamedItem('value')?.value || ''
 
   // 解析location-items下的location-item元素
-  const locationItems = [...(tagEl?.querySelector('location-items')?.querySelectorAll('location-item') || [])]
-  const locations = locationItems.map(itemEl => ({
-    name: itemEl.attributes.getNamedItem('name')?.value || '',
-    latitude: Number(itemEl.attributes.getNamedItem('latitude')?.value) || 0,
-    longitude: Number(itemEl.attributes.getNamedItem('longitude')?.value) || 0,
-  })).filter(item => item.name && !isNaN(item.latitude) && !isNaN(item.longitude))
+  const locationItemsEl = tagEl?.querySelector('location-items')
+  const ref = locationItemsEl?.attributes.getNamedItem('ref')?.value
+
+  let locations: LocationItem[] = []
+  if (ref) {
+    locations = locationItemsList.find(item => item.id === ref)?.locationItems || []
+  }
+ else {
+    const locationItems = [...(locationItemsEl?.querySelectorAll('location-item') || [])]
+    locations = locationItems.map((itemEl) => {
+      return ({
+        name: itemEl.attributes.getNamedItem('name')?.value || '',
+        latitude: Number(itemEl.attributes.getNamedItem('latitude')?.value) || 0,
+        longitude: Number(itemEl.attributes.getNamedItem('longitude')?.value) || 0,
+      })
+    }).filter(item => item.name && !isNaN(item.latitude) && !isNaN(item.longitude))
+  }
 
   return {
     label,

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import type { LocationSelectorProps } from './location-selector'
+import type { LocationItemsProps, LocationSelectorProps } from './location-selector'
 import LocationSelector, { parseLocationSelectorConfig } from './location-selector'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
 import { useState } from 'react'
@@ -21,6 +21,7 @@ export type LocationPanelProps = {
   groupSwitchName?: string;
   getUserLocation?: boolean;
   widgetTag?: string;
+  locationItemsList: LocationItemsProps[];
 }
 
 /**
@@ -80,6 +81,23 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
   // 新增：解析template属性
   const template = tagEl?.attributes.getNamedItem('template')?.value || ''
 
+  // 解析location-items元素
+  const locationItemsEls = [...(tagEl?.querySelectorAll('location-items') || [])]
+  const locationItemsList: LocationItemsProps[] = locationItemsEls.map((itemEl) => {
+    // 如果有id，则该location-items定义了可被引用的location-item列表
+    // 如果有ref, 则是引用之前已定义好的location-items，使用id关联；此处是panel下第一层，只有id，没有ref
+    const id = itemEl.attributes.getNamedItem('id')?.value || ''
+
+    const locationItems = [...(itemEl?.querySelectorAll('location-item') || [])]
+    const locations = locationItems.map(itemEl => ({
+      name: itemEl.attributes.getNamedItem('name')?.value || '',
+      latitude: Number(itemEl.attributes.getNamedItem('latitude')?.value) || 0,
+      longitude: Number(itemEl.attributes.getNamedItem('longitude')?.value) || 0,
+    })).filter(item => item.name && !isNaN(item.latitude) && !isNaN(item.longitude))
+
+    return { id, locationItems: locations }
+  })
+
   // 解析多个location-selector-group子元素
   const groupEls = [...(tagEl?.querySelectorAll('location-selector-group') || [])]
   const groups = groupEls.map((groupEl) => {
@@ -92,7 +110,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     const selectorEls = [...(groupEl.querySelectorAll('location-selector') || [])]
     const selectors = selectorEls.map((selEl) => {
       const selectorHtml = selEl.outerHTML
-      return parseLocationSelectorConfig(selectorHtml, (value) => {
+      return parseLocationSelectorConfig(selectorHtml, locationItemsList, (value) => {
         console.log(value)
       })
     })
@@ -110,7 +128,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     const selectorEls = [...(tagEl?.querySelectorAll('location-selector') || [])]
     const selectors = selectorEls.map((selEl) => {
       const selectorHtml = selEl.outerHTML
-      return parseLocationSelectorConfig(selectorHtml, (value) => {
+      return parseLocationSelectorConfig(selectorHtml, locationItemsList, (value) => {
         console.log(value)
       })
     })
@@ -122,7 +140,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     groups,
     groupSwitchName,
     getUserLocation,
-    // 移除panel级别的template
+    locationItemsList, // 添加新属性
   }
 }
 /**
@@ -208,12 +226,12 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
   }
   const formatToStr = (formattedValues: Record<string, string>, template?: string): string => {
     if (template) {
-        // 修复：支持中文占位符匹配
-        return template.replace(/\{([\p{L}\d_]+)\}/gu, (match, key) => {
-            // 调试信息：帮助确认键值对应关系
-            console.log(`替换占位符: ${key} = ${formattedValues[key] || '未找到'}`)
-            return formattedValues[key] || match
-        })
+      // 修复：支持中文占位符匹配
+      return template.replace(/\{([\p{L}\d_]+)\}/gu, (match, key) => {
+        // 调试信息：帮助确认键值对应关系
+        console.log(`替换占位符: ${key} = ${formattedValues[key] || '未找到'}`)
+        return formattedValues[key] || match
+      })
     }
     // 默认格式化逻辑：key:value 形式用逗号连接
     return Object.entries(formattedValues)
