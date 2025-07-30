@@ -24,24 +24,20 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   label, type, locations, value, onChange, placeholder, recommendLabel,
 }) => {
   return (
-    <div className="space-y-2">
+    <div className="w-full">
       {/* 选择器label */}
-      <div className='flex justify-between'>
-        <label className="w-14 text-sm font-medium text-gray-500">{label}</label>
-
-        <Select
-          key={type}
-          className='w-full'
-          defaultValue={value}
-          onSelect={i => onChange(i.value as string)}
-          items={locations.map(loc => ({ name: loc.name, value: loc.name }))}
-          allowSearch={false}
-        />
-      </div>
+      <Select
+        key={type}
+        className='w-full'
+        defaultValue={value}
+        onSelect={i => onChange(i.value as string)}
+        items={locations.map(loc => ({ name: loc.name, value: loc.name }))}
+        allowSearch={false}
+      />
 
       {/* 自定义热门推荐文本 */}
       {recommendLabel && (
-        <p className="ml-14 mt-1 text-xs text-gray-500">{recommendLabel}</p>
+        <p className="mt-1 text-xs text-gray-500">{recommendLabel}</p>
       )}
     </div>
   )
