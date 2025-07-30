@@ -124,11 +124,12 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
  * 支持包含多个地点选择器，并可自定义整体标题
  * @param widgetTagStr HTML格式的配置字符串
  */
-const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) => void }> = ({ widgetTagStr, onSend }) => {
+const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelProps, onSend?: (values: string) => void }> = ({ widgetTagStr, config, onSend }) => {
   // 解析HTML配置为实际参数
-  const { header, groups, template, groupSwitchName, getUserLocation } = parseLocationPanelConfig(widgetTagStr)
+  if (!config && widgetTagStr) config = parseLocationPanelConfig(widgetTagStr)
+  const { header, groups, template, groupSwitchName, getUserLocation } = config || {}
   const styleConfig = getStyleConfig('')
-  const [activeGroupKey, setActiveGroupKey] = useState<string>(groups[0]?.key || '')
+  const [activeGroupKey, setActiveGroupKey] = useState<string>(groups?.[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
   const [formAlert, setFormAlert] = useState('')
   // 添加经纬度状态存储
@@ -160,8 +161,9 @@ const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) 
       console.error('浏览器不支持地理定位')
     }
   }, [getUserLocation])
+
   // 获取当前激活的group
-  const activeGroup = groups.find(group => group.key === activeGroupKey) || groups[0]
+  const activeGroup = groups?.find(group => group.key === activeGroupKey) || groups?.[0]
 
   // 处理单个选择器值变化
   const handleSelectorChange = (index: number, value: string) => {
@@ -251,11 +253,11 @@ const LocationPanel: React.FC<{ widgetTagStr: string, onSend?: (values: string) 
       )}
 
       {/* Group切换单选框 - 修改为蓝色切换样式 */}
-      {groups.length > 1 && (
+      {(groups?.length || 0) > 1 && (
         <div className="flex items-center space-x-2 border-b p-4">
           {groupSwitchName && <span className="w-16 text-sm text-gray-600">{groupSwitchName}</span>}
           <div className='flex w-full justify-between gap-2'>
-            {groups.map((group, index) => (
+            {groups?.map((group, index) => (
               <button
                 key={group.key}
                 className={

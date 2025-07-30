@@ -25,7 +25,7 @@ type ScenicHelloType = {
   'guide'?: string,
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
-  'location-panel'?: LocationPanelProps;
+  'locationPanel'?: LocationPanelProps;
 }
 
 type AgentCustomeConfig = {
@@ -180,7 +180,7 @@ export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
     // 新增：location-panel节点解析
     const locationPanelEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'location-panel')
     if (locationPanelEl)
-      mergeConfig['location-panel'] = parseLocationPanelConfig(locationPanelEl.outerHTML)
+      mergeConfig.locationPanel = parseLocationPanelConfig(locationPanelEl.outerHTML)
 
     return mergeConfig as ScenicHelloType
   }

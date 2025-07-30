@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Figure, HelloWidgetShortCutItems } from './scenic-hello-config'
 import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
+import LocationPanel from '../location-panel/location-panel'
 
 type HelloWidgetProps = {
   widgetTag: string
@@ -113,6 +114,7 @@ const HelloWidget = ({
     avatar,
     'shortcut-items': shortcutItems,
     guide,
+    locationPanel,
     multiFigure: multiFigue,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
@@ -178,6 +180,11 @@ const HelloWidget = ({
               }
             </ul>
           </section>
+        }
+        {
+          locationPanel && <div className='mt-2'>
+            <LocationPanel config={locationPanel} onSend={onSend} />
+          </div>
         }
         {
           guide && <section className='mt-9'>
