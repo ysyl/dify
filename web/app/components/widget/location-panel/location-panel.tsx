@@ -22,6 +22,7 @@ export type LocationPanelProps = {
   groupSwitchName?: string;
   widgetTag?: string;
   locationItemsList: LocationItemsProps[];
+  mapSrc?: string; // 新增地图图片地址属性
 }
 
 /**
@@ -80,6 +81,8 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
   const getUserLocation = tagEl?.attributes.getNamedItem('get-user-location')?.value === 'true'
   // 新增：解析template属性
   const template = tagEl?.attributes.getNamedItem('template')?.value || ''
+  // 新增：解析map-src属性
+  const mapSrc = tagEl?.attributes.getNamedItem('map-src')?.value || ''
 
   // 解析location-items元素
   const locationItemsEls = [...(tagEl?.querySelectorAll('location-items') || [])]
@@ -151,7 +154,8 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     header,
     groups,
     groupSwitchName,
-    locationItemsList, // 添加新属性
+    locationItemsList,
+    mapSrc, // 添加mapSrc属性
   }
 }
 /**
@@ -162,11 +166,12 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
 const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelProps, onSend?: (values: string) => void }> = ({ widgetTagStr, config, onSend }) => {
   // 解析HTML配置为实际参数
   if (!config && widgetTagStr) config = parseLocationPanelConfig(widgetTagStr)
-  const { header, groups, groupSwitchName } = config || {}
+  const { header, groups, groupSwitchName, mapSrc } = config || {} // 解构出mapSrc
   const styleConfig = getStyleConfig('')
   const [activeGroupKey, setActiveGroupKey] = useState<string>(groups?.[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
   const [formAlert, setFormAlert] = useState('')
+  const [showMap, setShowMap] = useState(false) // 新增控制路线图显示的状态
 
   // 获取当前激活的group
   const activeGroup = groups?.find(group => group.key === activeGroupKey) || groups?.[0]
@@ -269,6 +274,11 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
     onSend?.(formattedValuesStr)
   }
 
+  // 新增切换路线图显示状态的函数
+  const toggleMap = () => {
+    setShowMap(!showMap)
+  }
+
   return (
     <div className="rounded-[20.8px] border p-0 shadow-sm">
       {/* 自定义header标题 - 添加蓝色背景和图标 */}
@@ -328,7 +338,31 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       {/* 错误提示 */}
       {formAlert && <p className="mt-1 text-center text-xs text-red-500">{formAlert}</p>}
 
-      {/* 确认提交按钮 - 修改为纯蓝色背景 */}
+      {/* 查看路线图按钮 */}
+      {mapSrc && (
+        <div className="mb-2 px-4">
+          <button
+            className="w-full rounded-[20.8px] border border-gray-300 bg-white px-5 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            onClick={toggleMap}
+          >
+            {showMap ? '收起路线图' : '查看路线图'}
+          </button>
+        </div>
+      )}
+
+      {/* 路线图图片 */}
+      {showMap && mapSrc && (
+        <div className="mb-4 px-4">
+          <img
+            src={mapSrc}
+            alt="路线图"
+            className="w-full rounded-[20.8px] border border-gray-200"
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
+      )}
+
+      {/* 确认提交按钮 */}
       <div className="mb-4 px-4">
         <button
           className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-[20.8px] px-5 py-1 leading-[44px] text-white',
