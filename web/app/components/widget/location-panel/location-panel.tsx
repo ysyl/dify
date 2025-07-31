@@ -5,7 +5,8 @@ import { parseHtmlTagRaw } from '../../tools/widget-tool'
 import { useState } from 'react'
 import cn from '@/utils/classnames'
 import getStyleConfig from '../product-preference/product-preference-config'
-import ImagePreview from '../../base/image-uploader/image-preview'
+import { PhotoProvider, PhotoView } from 'react-photo-view'
+import 'react-photo-view/dist/react-photo-view.css'
 
 // 定义选择器组接口
 type LocationSelectorGroup = {
@@ -117,7 +118,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     try {
       templateMap = JSON.parse(templateMapStr)
     }
- catch (e) {
+    catch (e) {
       console.error('解析template-map失败', e)
     }
 
@@ -355,25 +356,19 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       {/* 路线图图片 */}
       {showMap && mapSrc && (
         <div className="mb-4 px-4">
-          <img
-            src={mapSrc}
-            alt="路线图"
-            className="w-full rounded-[20.8px] border border-gray-200"
-            style={{ objectFit: 'contain' }}
-            onClick={() => setImagePreviewUrl(mapSrc)}
-          />
+          <PhotoProvider>
+            <PhotoView src={mapSrc}>
+              <img
+                src={mapSrc}
+                alt="路线图"
+                className="w-full rounded-[20.8px] border border-gray-200"
+                style={{ objectFit: 'contain' }}
+                onClick={() => setImagePreviewUrl(mapSrc)}
+              />
+            </PhotoView>
+          </PhotoProvider>
         </div>
       )}
-      {/* 路线图全屏预览 */}
-      {
-        imagePreviewUrl && (
-          <ImagePreview
-            url={imagePreviewUrl}
-            title={imagePreviewUrl}
-            onCancel={() => setImagePreviewUrl('')}
-          />
-        )
-      }
       {/* 确认提交按钮 */}
       <div className="mb-4 px-4">
         <button
