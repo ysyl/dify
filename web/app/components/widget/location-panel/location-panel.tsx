@@ -311,7 +311,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       <div className="space-y-6 p-4">
         {activeGroup?.selectors.map((selector, index) => (
           <div key={index} className="space-y-1">
-            <div className="flex items-center justify-between">
+            <div className="mb-6 flex items-center justify-between">
               <label className="w-16 text-sm text-gray-700">{selector.label}</label>
               <div className="flex-1">
                 <LocationSelector
