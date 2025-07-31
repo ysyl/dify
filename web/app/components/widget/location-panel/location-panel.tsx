@@ -11,7 +11,8 @@ type LocationSelectorGroup = {
   name: string; // 组名称
   key: string; // 组唯一标识
   selectors: LocationSelectorProps[]; // 组内选择器配置数组
-  template?: string; // 新增组模板字段
+  template?: string; // 组模板字段
+  templateMap?: Record<string, string>; // 新增：模板映射，根据选择器标签组合选择模板
 }
 
 // 定义多选择器配置接口
@@ -105,7 +106,17 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     // 获取group的name和key属性
     const name = groupEl.attributes.getNamedItem('name')?.value || ''
     const template = groupEl.attributes.getNamedItem('template')?.value || ''
+    const templateMapStr = groupEl.attributes.getNamedItem('template-map')?.value || '{}'
     const key = groupEl.attributes.getNamedItem('key_name')?.value || name || ''
+
+    // 解析模板映射字符串为对象
+    let templateMap: Record<string, string> = {}
+    try {
+      templateMap = JSON.parse(templateMapStr)
+    }
+ catch (e) {
+      console.error('解析template-map失败', e)
+    }
 
     // 解析group内的location-selector子元素
     const selectorEls = [...(groupEl.querySelectorAll('location-selector') || [])]
@@ -120,7 +131,8 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
       name,
       key,
       selectors,
-      template, // 添加组级template
+      template,
+      templateMap, // 添加模板映射
     }
   })
 
@@ -133,7 +145,7 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
         console.log(value)
       })
     })
-    groups.push({ name: 'default', key: 'default', selectors, template })
+    groups.push({ name: 'default', key: 'default', selectors, template, templateMap: {} })
   }
 
   return {
@@ -225,10 +237,29 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       }
     }, {})
   }
-  const formatToStr = (formattedValues: Record<string, string>, template?: string): string => {
-    if (template) {
+  const formatToStr = (formattedValues: Record<string, string>, template?: string, templateMap?: Record<string, string>): string => {
+    // 确定要使用的模板
+    let finalTemplate = template
+
+    // 如果有模板映射且选择器数量匹配某个映射键
+    if (templateMap) {
+      // 获取所有非空值的键
+      const nonEmptyKeys = Object.keys(formattedValues).filter(key => !!formattedValues[key])
+      const keyCount = nonEmptyKeys.length
+      const keyNames = nonEmptyKeys.join(',')
+
+      // 优先匹配键名组合
+      if (templateMap[keyNames])
+        finalTemplate = templateMap[keyNames]
+
+      // 其次匹配键数量
+      else if (templateMap[keyCount.toString()])
+        finalTemplate = templateMap[keyCount.toString()]
+    }
+
+    if (finalTemplate) {
       // 修复：支持中文占位符匹配
-      return template.replace(/\{([\p{L}\d_]+)\}/gu, (match, key) => {
+      return finalTemplate.replace(/\{([\p{L}\d_]+)\}/gu, (match, key) => {
         // 调试信息：帮助确认键值对应关系
         console.log(`替换占位符: ${key} = ${formattedValues[key] || '未找到'}`)
         return formattedValues[key] || match
@@ -263,7 +294,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
     }
     // 使用提取的格式化方法
     const formattedValues = formatSelectorValues(activeGroup, selectorValues)
-    const formattedValuesStr = formatToStr(formattedValues, activeGroup.template)
+    const formattedValuesStr = formatToStr(formattedValues, activeGroup.template, activeGroup.templateMap)
 
     // 调用提交回调
     onSend?.(formattedValuesStr)
@@ -278,7 +309,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <h3 className="text-lg font-semibold">{header} { getUserLocation && <span>经纬度：{latitude}, {longitude}</span> }</h3>
+          <h3 className="text-lg font-semibold">{header} {getUserLocation && <span>经纬度：{latitude}, {longitude}</span>}</h3>
         </div>
       )}
 
