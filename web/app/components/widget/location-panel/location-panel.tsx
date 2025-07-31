@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import type { LocationItemsProps, LocationSelectorProps } from './location-selector'
 import LocationSelector, { parseLocationSelectorConfig } from './location-selector'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
@@ -20,7 +20,6 @@ export type LocationPanelProps = {
   header: string;
   groups: LocationSelectorGroup[];
   groupSwitchName?: string;
-  getUserLocation?: boolean;
   widgetTag?: string;
   locationItemsList: LocationItemsProps[];
 }
@@ -152,7 +151,6 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
     header,
     groups,
     groupSwitchName,
-    getUserLocation,
     locationItemsList, // 添加新属性
   }
 }
@@ -164,40 +162,11 @@ export function parseLocationPanelConfig(widgetTagStr: string): LocationPanelPro
 const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelProps, onSend?: (values: string) => void }> = ({ widgetTagStr, config, onSend }) => {
   // 解析HTML配置为实际参数
   if (!config && widgetTagStr) config = parseLocationPanelConfig(widgetTagStr)
-  const { header, groups, groupSwitchName, getUserLocation } = config || {}
+  const { header, groups, groupSwitchName } = config || {}
   const styleConfig = getStyleConfig('')
   const [activeGroupKey, setActiveGroupKey] = useState<string>(groups?.[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
   const [formAlert, setFormAlert] = useState('')
-  // 添加经纬度状态存储
-  const [latitude, setLatitude] = useState<number | null>(null)
-  const [longitude, setLongitude] = useState<number | null>(null)
-
-  // 新增：定位逻辑实现
-  useEffect(() => {
-    if (!getUserLocation) return
-    // H5环境：调用浏览器原生定位API
-    if (navigator.geolocation) {
-      // 业务需求：需要获取用户位置以提供附近景点推荐功能
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('H5定位成功', {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          })
-          // 保存经纬度到状态
-          setLatitude(position.coords.latitude)
-          setLongitude(position.coords.longitude)
-        },
-        (error) => {
-          console.error('H5定位失败', error)
-        },
-      )
-    }
-    else {
-      console.error('浏览器不支持地理定位')
-    }
-  }, [getUserLocation])
 
   // 获取当前激活的group
   const activeGroup = groups?.find(group => group.key === activeGroupKey) || groups?.[0]
@@ -309,7 +278,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <h3 className="text-lg font-semibold">{header} {getUserLocation && <span>经纬度：{latitude}, {longitude}</span>}</h3>
+          <h3 className="text-lg font-semibold">{header}</h3>
         </div>
       )}
 
