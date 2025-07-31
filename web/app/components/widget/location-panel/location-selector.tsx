@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { SimpleSelect } from '@/app/components/base/select'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
@@ -7,6 +7,7 @@ export type LocationItem = {
   name: string;
   latitude: number;
   longitude: number;
+  recommendLabel?: string; // 新增推荐标签属性
 }
 // 定义LocationItems的Props接口
 export type LocationItemsProps = {
@@ -22,12 +23,15 @@ export type LocationSelectorProps = {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-  recommendLabel?: string; // 热门推荐文本
 }
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
-  label, type, locations, value, onChange, placeholder, recommendLabel,
+  label, type, locations, value, onChange, placeholder,
 }) => {
+  // 新增：根据当前选中值找到对应的location-item
+  const selectedLocation = useMemo(() => {
+    return locations.find(loc => loc.name === value)
+  }, [locations, value])
   return (
     <div className="w-full">
       {/* 选择器label */}
@@ -42,8 +46,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       />
 
       {/* 自定义热门推荐文本 */}
-      {recommendLabel && (
-        <p className="mt-1 text-xs text-gray-500">{recommendLabel}</p>
+      {selectedLocation?.recommendLabel && (
+        <p className="absolute mt-1 text-xs text-gray-500">热门推荐：{selectedLocation.recommendLabel}</p>
       )}
     </div>
   )
@@ -116,7 +120,7 @@ export function parseLocationSelectorConfig(selectorHtml: string,
     locations,
     value,
     placeholder,
-    recommendLabel,
+    // recommendLabel, // 移除全局推荐标签
     onChange,
   }
 }
