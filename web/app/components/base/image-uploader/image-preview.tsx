@@ -204,7 +204,10 @@ const ImagePreview: FC<ImagePreviewProps> = ({
 
   return createPortal(
     <div className='image-preview-container fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 p-8'
-      onClick={e => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation()
+        onCancel()
+      }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -221,6 +224,7 @@ const ImagePreview: FC<ImagePreviewProps> = ({
           transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
           transition: isDragging ? 'none' : 'transform 0.2s ease-in-out',
         }}
+        onClick={e => e.stopPropagation()}
       />
       <Tooltip popupContent={t('common.operation.copyImage')}>
         <div className='absolute right-48 top-6 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg'

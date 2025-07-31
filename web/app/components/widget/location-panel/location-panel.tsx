@@ -5,6 +5,7 @@ import { parseHtmlTagRaw } from '../../tools/widget-tool'
 import { useState } from 'react'
 import cn from '@/utils/classnames'
 import getStyleConfig from '../product-preference/product-preference-config'
+import ImagePreview from '../../base/image-uploader/image-preview'
 
 // 定义选择器组接口
 type LocationSelectorGroup = {
@@ -171,6 +172,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
   const [activeGroupKey, setActiveGroupKey] = useState<string>(groups?.[0]?.key || '')
   const [selectorValues, setSelectorValues] = useState<Record<string, string>>({})
   const [formAlert, setFormAlert] = useState('')
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('')
   const [showMap, setShowMap] = useState(false) // 新增控制路线图显示的状态
 
   // 获取当前激活的group
@@ -358,10 +360,20 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
             alt="路线图"
             className="w-full rounded-[20.8px] border border-gray-200"
             style={{ objectFit: 'contain' }}
+            onClick={() => setImagePreviewUrl(mapSrc)}
           />
         </div>
       )}
-
+      {/* 路线图全屏预览 */}
+      {
+        imagePreviewUrl && (
+          <ImagePreview
+            url={imagePreviewUrl}
+            title={imagePreviewUrl}
+            onCancel={() => setImagePreviewUrl('')}
+          />
+        )
+      }
       {/* 确认提交按钮 */}
       <div className="mb-4 px-4">
         <button
