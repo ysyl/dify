@@ -270,10 +270,10 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
   }
 
   return (
-    <div className="rounded-lg border p-0 shadow-sm">
+    <div className="rounded-[20.8px] border p-0 shadow-sm">
       {/* 自定义header标题 - 添加蓝色背景和图标 */}
       {header && (
-        <div className="flex items-center bg-[#1E88E5] p-4 text-white">
+        <div className="flex items-center rounded-t-[20.8px] bg-[#1E88E5] p-4 text-white">
           <svg className="mr-2 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -284,18 +284,18 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
 
       {/* Group切换单选框 - 修改为蓝色切换样式 */}
       {(groups?.length || 0) > 1 && (
-        <div className="flex items-center space-x-2 border-b p-4">
+        <div className="mt-4 flex items-center space-x-2 border-b px-4">
           {groupSwitchName && <span className="w-16 text-sm text-gray-600">{groupSwitchName}</span>}
           <div className='flex w-full justify-between gap-2'>
             {groups?.map((group, index) => (
               <button
                 key={group.key}
                 className={
-                  cn('rounded-md px-6 py-2 text-sm font-medium transition-colors duration-200',
+                  cn('rounded-lg px-6 py-2 text-sm font-medium transition-colors duration-200',
                     activeGroupKey === group.key
                       ? 'bg-[#1E88E5] text-white'
-                      : 'border border-blue-500 bg-white text-blue-500 hover:bg-blue-50',
-                    index === 0 ? 'rounded-l-md' : index === groups.length - 1 ? 'rounded-r-md' : '',
+                      : 'border border-blue-500 bg-white text-gray-500 hover:bg-blue-50',
+                    index === 0 ? 'rounded-l-lg' : index === groups.length - 1 ? 'rounded-r-lg' : '',
                     'w-[47%]',
                   )}
                 onClick={() => handleGroupChange(group.key)}
@@ -329,9 +329,9 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       {formAlert && <p className="mt-1 text-center text-xs text-red-500">{formAlert}</p>}
 
       {/* 确认提交按钮 - 修改为纯蓝色背景 */}
-      <div className="mb-4 mt-2 p-4">
+      <div className="mb-4 px-4">
         <button
-          className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white',
+          className={cn('btn text-md h-[44px] w-full cursor-pointer rounded-[20.8px] px-5 py-1 leading-[44px] text-white',
             styleConfig['btn-text-color'])}
           style={{
             backgroundColor: '#1E88E5',
