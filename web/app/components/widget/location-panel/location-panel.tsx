@@ -247,9 +247,14 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
       return
     }
 
-    const allSelected = activeGroup.selectors.every((_, index) => {
+    const allSelected = activeGroup.selectors.every((selector, index) => {
       const selectorKey = `${activeGroupKey}_${index}`
-      return !!selectorValues[selectorKey]
+      // 仅对required=true的选择器进行校验
+      if (selector.required !== false)
+        return !!selectorValues[selectorKey]
+
+      // required=false时不校验
+      return true
     })
 
     if (!allSelected) {

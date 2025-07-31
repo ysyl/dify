@@ -23,6 +23,7 @@ export type LocationSelectorProps = {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  required?: boolean; // 新增必填校验属性，默认true
 }
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
@@ -92,7 +93,7 @@ export function parseLocationSelectorConfig(selectorHtml: string,
   const label = tagEl?.attributes.getNamedItem('label')?.value || ''
   const type = tagEl?.attributes.getNamedItem('type')?.value || ''
   const placeholder = tagEl?.attributes.getNamedItem('placeholder')?.value || ''
-  const recommendLabel = tagEl?.attributes.getNamedItem('recommend-label')?.value
+  const required = tagEl?.attributes.getNamedItem('required')?.value !== 'false'
   const value = tagEl?.attributes.getNamedItem('value')?.value || ''
 
   // 解析location-items下的location-item元素
@@ -120,7 +121,7 @@ export function parseLocationSelectorConfig(selectorHtml: string,
     locations,
     value,
     placeholder,
-    // recommendLabel, // 移除全局推荐标签
+    required,
     onChange,
   }
 }
