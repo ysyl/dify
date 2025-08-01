@@ -1,7 +1,7 @@
 import React from 'react'
 
 export type ProductInfo = {
-  id: string;
+  id?: string;
   group?: string;
   coverImg: string;
   productName: string;
