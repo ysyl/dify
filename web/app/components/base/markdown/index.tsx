@@ -20,8 +20,9 @@ import {
   ThinkBlock,
   VideoBlock,
 } from '@/app/components/base/markdown-blocks'
-import ProductRecommand from '../../widget/product_recommand/product_recommand'
 import type { Components } from 'react-markdown'
+import ProductRecommand from '../../widget/product_recommand/product_recommand'
+import ProductCardPlatForMarkdown from '../../widget/product_card/product_card_plat_for_markdown'
 
 /**
  * @fileoverview Main Markdown rendering component.
@@ -81,6 +82,7 @@ export function Markdown(props: { content: string; className?: string; customDis
           'script': ScriptBlock as any,
           'details': ThinkBlock,
           'product-recommand': ProductRecommand,
+          'pic': ProductCardPlatForMarkdown,
         } as Partial<Components>}
       >
         {/* Markdown detect has problem. */}

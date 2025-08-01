@@ -228,7 +228,9 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
                 {value
                   .slice(0, Math.min(value.length, 3))
                   .map((product, index) => (
-                    <ProductCardPlat key={index} product={product} index={index} />
+                    <li>
+                      <ProductCardPlat product={product} key={index} />
+                    </li>
                   ))}
               </ul>
             </div>

@@ -80,7 +80,7 @@ function getProductRecommandConfig(node: Node): ProductRecommandConfig | null {
         if (ticketId)
           map[ticketId] = cur
       }
- catch (e) {
+      catch (e) {
         console.error('Invalid productPageUrl:', cur.productPageUrl, e)
       }
       return map
@@ -131,7 +131,9 @@ const ProductRecommand: React.FC<ProductRecommandProps> = ({ node }) => {
       onTouchMove={e => e.stopPropagation()}
     >
       {config.products.map((product, index) => (
-        <ProductCard key={index} product={product} index={index} />
+        <li className='list-none' style={{ margin: '0' }}>
+          <ProductCard key={index} product={product} />
+        </li>
       ))}
     </ul>
   </div>
