@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
+import { ProductCardPlat } from '../product_card/product_card'
 
 type ProductListProps = {
   widgetTag: string
@@ -199,63 +200,52 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
     })
   }, [])
 
-  return <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
-    {
-      (!config?.products || config.products.length === 0)
-        // 没有产品则随机推几个产品,并展示「更多产品」按钮
-        ? <section className='text-[#7C879B]'>
-          {config?.hasNotProductTips}
-        </section>
-        : <section className='text-[#7C879B]'>
-          我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
-        </section>
-    }
-    <span className='my-2 flex items-center'>
-      <span className='mr-2'><TITLE_ICON /></span>
-      <span>{config?.title || '产品推荐'}</span>
-    </span>
-    {
-      Object.entries(productsGroupByProductGroup || {}).map((groupEntry) => {
-        const [key, value] = groupEntry
-        return (
-          <div>
-            <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
-              <span>{key}</span>
-            </h1>
-            <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
-              {
-                value.slice(0, Math.min(value.length, 3)).map((product, index) => (<li>
-                  <a href={product.productPageUrl} target='_blank'>
-                    <div key={index} className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white'>
-                      <div>
-                        {product.coverImg && <img className='max-w-[110px] object-cover' src={product.coverImg} />}
-                      </div>
-                      <div className='relative mt-1 px-2 py-1'>
-                        <h1 className='mb-1 text-sm'>{product.productName}</h1>
-                        <div className='absolute bottom-0 left-2'>
-                          <span className='text-xs text-gray-400'>￥</span>
-                          <span className='text-md font-bold text-red-500'>{product.salePrice}</span>
-                          <span className='ml-1 text-xs text-gray-400'>起</span>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </li>))
-              }
-            </ul>
-          </div>
-        )
-      })}
-    {
-      config?.moreProductUrl
-      && <button className={'btn text-md mt-2 h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white'}
-        style={{
-          backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
-        }}
-        onClick={() => window.open(config.moreProductUrl, '_blank')}
-      >更多推荐</button>
-    }
-  </div >
+  return (
+    <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
+      {
+        (!config?.products || config.products.length === 0)
+          // 没有产品则随机推几个产品,并展示「更多产品」按钮
+          ? <section className='text-[#7C879B]'>
+            {config?.hasNotProductTips}
+          </section>
+          : <section className='text-[#7C879B]'>
+            我是你的AI伴游智能助手，很高兴能遇见你!我会热心解答你的每一个问题。下面是我为您精心挑选的产品
+          </section>
+      }
+      <span className='my-2 flex items-center'>
+        <span className='mr-2'><TITLE_ICON /></span>
+        <span>{config?.title || '产品推荐'}</span>
+      </span>
+      {
+        Object.entries(productsGroupByProductGroup || {}).map((groupEntry) => {
+          const [key, value] = groupEntry
+          return (
+            <div key={key}>
+              <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
+                <span>{key}</span>
+              </h1>
+              <ul className='mb-1 flex w-full flex-col gap-2 overflow-y-auto pb-1'>
+                {value
+                  .slice(0, Math.min(value.length, 3))
+                  .map((product, index) => (
+                    <ProductCardPlat key={index} product={product} index={index} />
+                  ))}
+              </ul>
+            </div>
+          )
+        })
+      }
+      {
+        config?.moreProductUrl
+        && <button className={'btn text-md mt-2 h-[44px] w-full cursor-pointer rounded-md px-5 py-1 leading-[44px] text-white'}
+          style={{
+            backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
+          }}
+          onClick={() => window.open(config.moreProductUrl, '_blank')}
+        >更多推荐</button>
+      }
+    </div>
+  )
 }
 
 export function isProductList(widgetTagStr?: string) {

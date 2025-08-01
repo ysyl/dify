@@ -1,4 +1,5 @@
-import ProductCard from '../product_card/product_card'
+import type { Node } from '@/types/node'
+import { ProductCard } from '../product_card/product_card'
 
 type ProductRecommandConfig = {
   title: string
@@ -47,19 +48,19 @@ function getProductRawInfo(node: any): string {
   }
 }
 
-function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
+function getProductRecommandConfig(node: Node): ProductRecommandConfig | null {
   if (!node || node.tagName.toLocaleLowerCase() !== 'product-recommand') return null
 
   // 只从所有product-raw-info子元素中收集文本内容，拼接后统一解码
   const productsRawInfosStr = node.children
-    .filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
+    ?.filter((el: any) => el.tagName?.toLowerCase() === 'product-raw-info')
     .map((riEl: any) => getProductRawInfo(riEl))
     .filter(Boolean)
-    .join('')
+    .join('') || ''
   if (productsRawInfosStr.length === 0) return null
 
   // 获取version属性，默认为1.0
-  const version = node.properties.version || '1.0'
+  const version = node?.properties?.version || '1.0'
 
   try {
     const jsonStr = Buffer.from(productsRawInfosStr, 'base64').toString('utf-8')
@@ -76,8 +77,6 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       try {
         const url = new URL(cur.productPageUrl)
         const ticketId = url.searchParams.get('ticketId')
-        console.log('url: ', url)
-        console.log('ticketId: ', ticketId)
         if (ticketId)
           map[ticketId] = cur
       }
@@ -86,7 +85,7 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
       }
       return map
     }, {})
-    const recommandProductIdsRaw = node.children.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
+    const recommandProductIdsRaw = node.children?.filter((el: any) => el.tagName?.toLowerCase() === 'recommand-product-ids')
       .map((riEl: any) => riEl.children.find((el: any) => el.type === 'text' && el.value.trim().length > 0))?.[0]?.value
 
     const recommandProductIds: string[] = recommandProductIdsRaw?.split(',')
@@ -106,8 +105,12 @@ function getProductRecommandConfig(node: any): ProductRecommandConfig | null {
     return null
   }
 }
-
-const ProductRecommand = ({ node }: { node: any }) => {
+type ProductRecommandProps = {
+  node: Node
+}
+// 在组件中使用
+const ProductRecommand: React.FC<ProductRecommandProps> = ({ node }) => {
+  console.log('node: ', node)
   const config = getProductRecommandConfig(node)
   if (!config) return <div></div>
 
