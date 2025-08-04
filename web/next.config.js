@@ -29,8 +29,11 @@ const nextConfig = {
   },
   webpack: (config, { dev, isServer }) => {
     config.plugins.push(codeInspectorPlugin({ bundler: 'webpack' }))
+    config.resolve.alias['mdast-util-gfm-autolink-literal']
+      = require.resolve('./patches/mdast-util-gfm-autolink-literal')
     return config
   },
+  transpilePackages: ['@tanstack/query-core', 'mermaid', 'marked', 'next/dist/client', 'mdast-util-gfm-autolink-literal', 'ky', 'react-i18next', 'tailwind-merge', 'emoji-mart', '@tanstack/virtual-core', '@reactflow/core', 'hast-util-from-html-isomorphic', 'mime', '@tanstack/react-query', 'hast-util-to-text', 'rehype-katex', 'zundo', '@svgdotjs/svg.js', '@monaco-editor/react', 'micromark-util-decode-numeric-character-reference', 'micromark-util-sanitize-uri'],
   productionBrowserSourceMaps: false, // enable browser source map generation during the production build
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
