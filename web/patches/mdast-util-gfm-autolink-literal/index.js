@@ -1,4 +1,4 @@
 export {
   gfmAutolinkLiteralFromMarkdown,
   gfmAutolinkLiteralToMarkdown,
-} from './lib/index.js'
+} from './libs/index.js'
