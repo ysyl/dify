@@ -266,7 +266,7 @@ const LocationPanel: React.FC<{ widgetTagStr?: string, config?: LocationPanelPro
     })
 
     if (!allSelected) {
-      setFormAlert('请完成所有位置的选择后再提交')
+      setFormAlert('请完成必选位置的选择后再提交')
       return
     }
     // 使用提取的格式化方法
