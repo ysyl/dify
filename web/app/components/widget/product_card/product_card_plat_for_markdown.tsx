@@ -14,13 +14,13 @@ function getProductInfoFromNode(node: Node): ProductInfo | null {
         'sale-price': salePrice,
         'product-page-url': productPageUrl,
     } = node.properties
-    if (!coverImg || !productName || !salePrice || !productPageUrl) {
+    if (!productName || !salePrice || !productPageUrl) {
         console.error('缺少产品信息必填字段')
         return null
     }
 
     return {
-        coverImg,
+        coverImg: coverImg || 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/lebustourisque1.png',
         productName,
         salePrice,
         productPageUrl,
