@@ -76,8 +76,8 @@ const LocaleLayout = async ({
             <TanstackQueryIniter>
               <ThemeProvider
                 attribute='data-theme'
-                defaultTheme='system'
-                enableSystem
+                defaultTheme='light'
+                enableSystem={false}
                 disableTransitionOnChange
               >
                 <I18nServer>
