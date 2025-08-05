@@ -129,7 +129,7 @@ const Answer: FC<AnswerProps> = ({
         <div className={cn('group relative', chatAnswerContainerInner)}>
           <div
             ref={contentRef}
-            className={cn('answer body-lg-regular relative inline-block max-w-full rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary', workflowProcess && 'w-full',
+            className={cn('answer body-lg-regular relative inline-block w-full rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary', workflowProcess && 'w-full',
               !responding && 'mb-10',
             )}
           >

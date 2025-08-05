@@ -115,7 +115,7 @@ const Question: FC<QuestionProps> = ({
           </div>
         </div>
         <div
-          className='bg-background-gradient-bg-fill-chat-bubble-bg-3 w-full rounded-2xl rounded-br-none px-4 py-3 text-sm text-text-primary'
+          className='w-full rounded-2xl rounded-br-none bg-background-gradient-bg-fill-chat-bubble-bg-2 px-4 py-3 text-sm text-text-primary'
           ref={contentRef}
           style={theme?.chatBubbleColorStyle ? CssTransform(theme.chatBubbleColorStyle) : {}}
         >

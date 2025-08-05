@@ -201,7 +201,7 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
   }, [])
 
   return (
-    <div no-memory="true" className='mt-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
+    <div no-memory="true" className='my-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]'>
       {
         (!config?.products || config.products.length === 0)
           // 没有产品则随机推几个产品,并展示「更多产品」按钮

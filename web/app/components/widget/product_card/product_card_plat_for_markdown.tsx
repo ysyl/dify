@@ -34,7 +34,7 @@ const ProductCardPlatForMarkdown = ({ node }: { node: Node }) => {
     if (!productInfo)
         return null
 
-    return <ProductCardPlat product={productInfo} key={node.properties?.key || productInfo.productPageUrl} />
+    return <ProductCardPlat shadow={true} product={productInfo} key={node.properties?.key || productInfo.productPageUrl} />
 }
 
 export default ProductCardPlatForMarkdown
