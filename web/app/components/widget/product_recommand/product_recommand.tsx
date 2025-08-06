@@ -64,7 +64,6 @@ function getProductRecommandConfig(node: Node): ProductRecommandConfig | null {
 
   try {
     const jsonStr = Buffer.from(productsRawInfosStr, 'base64').toString('utf-8')
-    console.log('jsonStr: ', jsonStr)
     let productsInfos: ProductInfo[] = JSON.parse(
       jsonStr,
     )
