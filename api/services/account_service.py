@@ -19,7 +19,7 @@ from extensions.ext_database import db
 from extensions.ext_redis import redis_client, redis_fallback
 from libs.helper import RateLimiter, TokenManager
 from libs.passport import PassportService
-from libs.password import compare_password, hash_password, valid_password
+from libs.password import compare_password, compare_password_base64, hash_password, valid_password
 from libs.rsa import generate_key_pair
 from models.account import (
     Account,
@@ -164,7 +164,7 @@ class AccountService:
             account.password = base64_password_hashed
             account.password_salt = base64_salt
 
-        if account.password is None or not compare_password(password, account.password, account.password_salt):
+        if account.password is None or not compare_password_base64(password, account.password, account.password_salt):
             raise AccountPasswordError("Invalid email or password.")
 
         if account.status == AccountStatus.PENDING.value:
