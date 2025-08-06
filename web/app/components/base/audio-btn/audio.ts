@@ -1,4 +1,3 @@
-import Toast from '@/app/components/base/toast'
 import { textToAudioStream } from '@/service/share'
 
 declare global {
@@ -34,12 +33,12 @@ export default class AudioPlayer {
 
     // Compatible with iphone ios17 ManagedMediaSource
     const MediaSource = window.ManagedMediaSource || window.MediaSource
-    if (!MediaSource) {
-      Toast.notify({
-        message: 'Your browser does not support audio streaming, if you are using an iPhone, please update to iOS 17.1 or later.',
-        type: 'error',
-      })
-    }
+    // if (!MediaSource) {
+    //   Toast.notify({
+    //     message: 'Your browser does not support audio streaming, if you are using an iPhone, please update to iOS 17.1 or later.',
+    //     type: 'error',
+    //   })
+    // }
     this.mediaSource = MediaSource ? new MediaSource() : null
     this.audio = new Audio()
     this.setCallback(callback)

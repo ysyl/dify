@@ -32,27 +32,25 @@ import ProductCardPlatForMarkdown from '../../widget/product_card/product_card_p
  * are noted in their respective files if applicable.
  */
 
-export function Markdown(props: { content: string; className?: string; customDisallowedElements?: string[] }) {
+export function Markdown(props: {
+  content: string;
+  className?: string;
+  customDisallowedElements?: string[];
+  // 可配置的未闭合元素检查列表
+  unclosedElements?: string[];
+}) {
   const latexContent = flow([
     preprocessThinkTag,
     preprocessLaTeX,
   ])(props.content)
 
-  // 新增: 处理 <pic 元素的逻辑
-  let processedContent = latexContent
-  if (latexContent.includes('<pic') && typeof window !== 'undefined') {
-    // 检查是否在浏览器环境中
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(latexContent, 'text/html')
-    const picElements = doc.querySelectorAll('pic')
+  // 定义默认的未闭合元素检查列表
+  const defaultUnclosedElements = ['pic', 'product-recommand']
+  // 使用用户提供的列表或默认列表
+  const elementsToCheck = props.unclosedElements || defaultUnclosedElements
 
-    // 如果没有找到 pic 元素，说明元素未闭合
-    if (picElements.length === 0) {
-      // 只保留 <pic 之前的内容
-      const picIndex = latexContent.indexOf('<pic')
-      processedContent = latexContent.substring(0, picIndex)
-    }
-  }
+  // 调用独立函数处理未闭合元素
+  const processedContent = processUnclosedElements(latexContent, elementsToCheck)
 
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
@@ -101,9 +99,49 @@ export function Markdown(props: { content: string; className?: string; customDis
           'pic': ProductCardPlatForMarkdown,
         } as Partial<Components>}
       >
-        {/* 使用处理后的内容 */}
         {processedContent}
       </ReactMarkdown>
     </div>
   )
+}
+
+/**
+ * 处理未闭合元素的函数
+ * @param content - 要处理的内容
+ * @param elementsToCheck - 需要检查的元素列表
+ * @returns 处理后的内容
+ */
+function processUnclosedElements(content: string, elementsToCheck: string[]): string {
+  // 只在浏览器环境中处理
+  if (typeof window === 'undefined')
+    return content
+
+  let processedContent = content
+  let earliestIndex = -1
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(content, 'text/html')
+
+  // 对每个需要检查的元素进行处理
+  elementsToCheck.forEach((element) => {
+    const elementTag = `<${element}`
+    if (content.includes(elementTag)) {
+      // 查找解析后的元素
+      const elements = doc.querySelectorAll(element)
+
+      // 如果没有找到元素，说明元素未闭合
+      if (elements.length === 0) {
+        // 找到元素第一次出现的位置
+        const index = content.indexOf(elementTag)
+        // 记录最早出现的未闭合元素位置
+        if (earliestIndex === -1 || index < earliestIndex)
+          earliestIndex = index
+      }
+    }
+  })
+
+  // 如果找到未闭合元素，截取内容
+  if (earliestIndex !== -1)
+    processedContent = content.substring(0, earliestIndex)
+
+  return processedContent
 }
