@@ -9,7 +9,7 @@ from configs import dify_config
 from extensions.ext_database import db
 from libs.helper import TokenManager
 from libs.passport import PassportService
-from libs.password import compare_password, compare_password_base64
+from libs.password import compare_password_base64
 from models.account import Account, AccountStatus
 from models.model import App, EndUser, Site
 from services.app_service import AppService
