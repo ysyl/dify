@@ -38,6 +38,22 @@ export function Markdown(props: { content: string; className?: string; customDis
     preprocessLaTeX,
   ])(props.content)
 
+  // 新增: 处理 <pic 元素的逻辑
+  let processedContent = latexContent
+  if (latexContent.includes('<pic') && typeof window !== 'undefined') {
+    // 检查是否在浏览器环境中
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(latexContent, 'text/html')
+    const picElements = doc.querySelectorAll('pic')
+
+    // 如果没有找到 pic 元素，说明元素未闭合
+    if (picElements.length === 0) {
+      // 只保留 <pic 之前的内容
+      const picIndex = latexContent.indexOf('<pic')
+      processedContent = latexContent.substring(0, picIndex)
+    }
+  }
+
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
       <ReactMarkdown
@@ -85,8 +101,8 @@ export function Markdown(props: { content: string; className?: string; customDis
           'pic': ProductCardPlatForMarkdown,
         } as Partial<Components>}
       >
-        {/* Markdown detect has problem. */}
-        {latexContent}
+        {/* 使用处理后的内容 */}
+        {processedContent}
       </ReactMarkdown>
     </div>
   )

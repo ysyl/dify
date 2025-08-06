@@ -64,7 +64,7 @@ const ProductCardPlat = ({ product, key, shadow = false }: { product: ProductInf
               style={{
                 borderWidth: '0px',
               }}
-              src={product.coverImg || 'https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/agent_asset/lebustourisque1.png'}
+              src={product.coverImg || ''}
               alt={product.productName}
             />
           )}
