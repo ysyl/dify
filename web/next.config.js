@@ -26,10 +26,6 @@ const remoteImageURLs = [hasSetWebPrefix ? new URL(`${process.env.NEXT_PUBLIC_WE
 const nextConfig = {
   basePath,
   assetPrefix,
-  // 添加Babel配置
-  babel: {
-    plugins: ['@babel/plugin-transform-named-capturing-groups-regex'],
-  },
   webpack: (config, { dev, isServer }) => {
     config.plugins.push(codeInspectorPlugin({ bundler: 'webpack' }))
     config.resolve.alias['mdast-util-gfm-autolink-literal']
