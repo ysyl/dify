@@ -4,6 +4,7 @@ from typing import Optional
 
 from bleach.sanitizer import Cleaner
 from bs4 import BeautifulSoup, Comment
+from sqlalchemy import select
 
 from core.app.app_config.features.file_upload.manager import FileUploadConfigManager
 from core.file import file_manager
@@ -21,7 +22,7 @@ from core.prompt.utils.extract_thread_messages import extract_thread_messages
 from extensions.ext_database import db
 from factories import file_factory
 from models.model import AppMode, Conversation, Message, MessageFile
-from models.workflow import WorkflowRun
+from models.workflow import Workflow, WorkflowRun
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,11 @@ class AllowedHTMLElements:
         }
 
 class TokenBufferMemory:
-    def __init__(self, conversation: Conversation, model_instance: ModelInstance) -> None:
+    def __init__(
+        self,
+        conversation: Conversation,
+        model_instance: ModelInstance,
+    ) -> None:
         self.conversation = conversation
         self.model_instance = model_instance
         self.html_cleaner = self._create_html_cleaner()
@@ -93,8 +98,6 @@ class TokenBufferMemory:
         
         # 第二步：使用bleach进行XSS清理
         safe_text = self.html_cleaner.clean(cleaned_html)
-        logger.info(f"过滤前长度：{len(text)}")
-        logger.info(f"过滤后长度：{len(safe_text)}")
         return safe_text
 
     def _process_message_content(self, content: str) -> str:
@@ -116,20 +119,8 @@ class TokenBufferMemory:
         app_record = self.conversation.app
 
         # fetch limited messages, and return reversed
-        query = (
-            db.session.query(
-                Message.id,
-                Message.query,
-                Message.answer,
-                Message.created_at,
-                Message.workflow_run_id,
-                Message.parent_message_id,
-                Message.answer_tokens,
-            )
-            .filter(
-                Message.conversation_id == self.conversation.id,
-            )
-            .order_by(Message.created_at.desc())
+        stmt = (
+            select(Message).where(Message.conversation_id == self.conversation.id).order_by(Message.created_at.desc())
         )
 
         if message_limit and message_limit > 0:
@@ -137,7 +128,9 @@ class TokenBufferMemory:
         else:
             message_limit = 500
 
-        messages = query.limit(message_limit).all()
+        stmt = stmt.limit(message_limit)
+
+        messages = db.session.scalars(stmt).all()
 
         # instead of all messages from the conversation, we only need to extract messages
         # that belong to the thread of last message
@@ -152,21 +145,23 @@ class TokenBufferMemory:
         prompt_messages: list[PromptMessage] = []
         for message in messages:
             processed_answer = self._process_message_content(message.answer)
-            files = db.session.query(MessageFile).filter(MessageFile.message_id == message.id).all()
+            files = db.session.query(MessageFile).where(MessageFile.message_id == message.id).all()
             if files:
                 file_extra_config = None
-                if self.conversation.mode not in {AppMode.ADVANCED_CHAT, AppMode.WORKFLOW}:
+                if self.conversation.mode in {AppMode.AGENT_CHAT, AppMode.COMPLETION, AppMode.CHAT}:
                     file_extra_config = FileUploadConfigManager.convert(self.conversation.model_config)
+                elif self.conversation.mode in {AppMode.ADVANCED_CHAT, AppMode.WORKFLOW}:
+                    workflow_run = db.session.scalar(
+                        select(WorkflowRun).where(WorkflowRun.id == message.workflow_run_id)
+                    )
+                    if not workflow_run:
+                        raise ValueError(f"Workflow run not found: {message.workflow_run_id}")
+                    workflow = db.session.scalar(select(Workflow).where(Workflow.id == workflow_run.workflow_id))
+                    if not workflow:
+                        raise ValueError(f"Workflow not found: {workflow_run.workflow_id}")
+                    file_extra_config = FileUploadConfigManager.convert(workflow.features_dict, is_vision=False)
                 else:
-                    if message.workflow_run_id:
-                        workflow_run = (
-                            db.session.query(WorkflowRun).filter(WorkflowRun.id == message.workflow_run_id).first()
-                        )
-
-                        if workflow_run and workflow_run.workflow:
-                            file_extra_config = FileUploadConfigManager.convert(
-                                workflow_run.workflow.features_dict, is_vision=False
-                            )
+                    raise AssertionError(f"Invalid app mode: {self.conversation.mode}")
 
                 detail = ImagePromptMessageContent.DETAIL.LOW
                 if file_extra_config and app_record:

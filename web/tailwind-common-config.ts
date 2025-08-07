@@ -90,6 +90,9 @@ const config = {
       fontSize: {
         '2xs': '0.625rem',
       },
+      backgroundColor: {
+        'background-gradient-bg-fill-chat-bubble-bg-3': 'var(--color-background-gradient-bg-fill-chat-bubble-bg-3)',
+      },
       backgroundImage: {
         'chatbot-bg': 'var(--color-chatbot-bg)',
         'chatbot-ctg-bg': 'url("https://p-zlgj-aigc-bucket-1301587776.cos.ap-beijing.myqcloud.com/logo_transparent.png")',

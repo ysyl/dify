@@ -31,14 +31,16 @@ import ProductCardPlatForMarkdown from '../../widget/product_card/product_card_p
  * Further refactoring candidates (custom block components not fitting general categories)
  * are noted in their respective files if applicable.
  */
-
-export function Markdown(props: {
-  content: string;
-  className?: string;
-  customDisallowedElements?: string[];
-  // 可配置的未闭合元素检查列表
+export type MarkdownProps = {
+  content: string
+  className?: string
+  customDisallowedElements?: string[]
   unclosedElements?: string[];
-}) {
+  customComponents?: Record<string, React.ComponentType<any>>
+}
+
+export function Markdown(props: MarkdownProps) {
+  const { customComponents = {} } = props
   const latexContent = flow([
     preprocessThinkTag,
     preprocessLaTeX,
@@ -97,7 +99,8 @@ export function Markdown(props: {
           'details': ThinkBlock,
           'product-recommand': ProductRecommand,
           'pic': ProductCardPlatForMarkdown,
-        } as Partial<Components>}
+          ...customComponents,
+        } as Components}
       >
         {processedContent}
       </ReactMarkdown>

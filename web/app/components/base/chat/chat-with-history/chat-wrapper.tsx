@@ -27,6 +27,7 @@ import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 import type { FileEntity } from '../../file-uploader/types'
 import type { DigitalHuman, ShortcutBarBtn } from './agent-config'
+import Avatar from '../../avatar'
 
 type Props = {
   chatState: 'static' | 'thinking' | 'talking'
@@ -60,6 +61,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     setClearChatList,
     setIsResponding,
     allInputsHidden,
+    initUserVariables,
   } = useChatWithHistoryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -322,7 +324,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       } : {}}
     >
       <Chat
-        appData={appData}
+        appData={appData ?? undefined}
         config={appConfig}
         chatList={messageList}
         isResponding={respondingState}
@@ -353,6 +355,14 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         sidebarCollapseState={sidebarCollapseState}
         activeDigitalHuman={activeDigitalHuman}
         shortcutBarBtnList={shortcutBarBtnList}
+        questionIcon={
+          initUserVariables?.avatar_url
+            ? <Avatar
+              avatar={initUserVariables.avatar_url}
+              name={initUserVariables.name || 'user'}
+              size={40}
+            /> : undefined
+        }
       />
     </div>
   )

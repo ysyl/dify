@@ -12,6 +12,9 @@ const withMDX = require('@next/mdx')({
     // providerImportSource: "@mdx-js/react",
   },
 })
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 // the default url to prevent parse url error when running jest
 const hasSetWebPrefix = process.env.NEXT_PUBLIC_WEB_PREFIX
@@ -72,7 +75,4 @@ const nextConfig = {
   },
   output: 'standalone',
 }
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true', // 仅在指定环境启用
-})
 module.exports = withBundleAnalyzer(withMDX(nextConfig))
