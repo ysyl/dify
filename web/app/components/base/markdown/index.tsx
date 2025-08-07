@@ -117,31 +117,40 @@ function processUnclosedElements(content: string, elementsToCheck: string[]): st
     return content
 
   let processedContent = content
-  let earliestIndex = -1
+  let latestInvalidIndex = -1
   const parser = new DOMParser()
   const doc = parser.parseFromString(content, 'text/html')
 
   // 对每个需要检查的元素进行处理
   elementsToCheck.forEach((element) => {
     const elementTag = `<${element}`
-    if (content.includes(elementTag)) {
-      // 查找解析后的元素
-      const elements = doc.querySelectorAll(element)
+    // 计算元素在原始内容中出现的次数
+    const startTagCount = (content.match(new RegExp(`<${element}\\b`, 'g')) || []).length
 
-      // 如果没有找到元素，说明元素未闭合
-      if (elements.length === 0) {
-        // 找到元素第一次出现的位置
-        const index = content.indexOf(elementTag)
-        // 记录最早出现的未闭合元素位置
-        if (earliestIndex === -1 || index < earliestIndex)
-          earliestIndex = index
+    if (startTagCount > 0) {
+      // 查找解析后的元素数量（即闭合的数量）
+      const closedElementsCount = doc.querySelectorAll(element).length
+
+      // 如果开始标签数量不等于闭合元素数量，说明有未闭合的标签
+      if (startTagCount !== closedElementsCount) {
+        // 找到该元素最后出现的位置
+        let lastIndex = -1
+        let tempIndex = content.indexOf(elementTag)
+        while (tempIndex !== -1) {
+          lastIndex = tempIndex
+          tempIndex = content.indexOf(elementTag, tempIndex + elementTag.length)
+        }
+
+        // 更新最新的无效索引
+        if (lastIndex > latestInvalidIndex)
+          latestInvalidIndex = lastIndex
       }
     }
   })
 
   // 如果找到未闭合元素，截取内容
-  if (earliestIndex !== -1)
-    processedContent = content.substring(0, earliestIndex)
+  if (latestInvalidIndex !== -1)
+    processedContent = content.substring(0, latestInvalidIndex)
 
   return processedContent
 }
