@@ -97,7 +97,16 @@ const Operation: FC<OperationProps> = ({
 
   // const positionRight = useMemo(() => operationWidth < maxSize, [operationWidth, maxSize])
   const positionRight = false
-
+  // 清理并复制内容的方法
+  const handleCopyWithCleanup = () => {
+    // 删除被<think>...</think>包裹的内容
+    const cleanedContent = content.replace(/<think>([\s\S]*?)<\/think>\n\n/g, '')
+    copy(cleanedContent)
+    Toast.notify({
+      type: 'success',
+      message: t('common.actionMsg.copySuccessfully'),
+    })
+  }
   return (
     <>
       <div
@@ -123,10 +132,7 @@ const Operation: FC<OperationProps> = ({
                 voice={config?.text_to_speech?.voice}
               />
             )}
-            <ActionButton onClick={() => {
-              copy(content)
-              Toast.notify({ type: 'success', message: t('common.actionMsg.copySuccessfully') })
-            }}>
+            <ActionButton onClick={handleCopyWithCleanup}>
               <RiClipboardLine className='h-4 w-4' />
             </ActionButton>
             {!noChatInput && (
