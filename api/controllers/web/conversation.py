@@ -70,7 +70,7 @@ class ConversationApi(WebApiResource):
             raise NotFound("Conversation Not Exists.")
         WebConversationService.unpin(app_model, conversation_id, end_user)
 
-        return {"result": "success"}, 200
+        return {"result": "success"}
 
 
 class ConversationRenameApi(WebApiResource):
