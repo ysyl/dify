@@ -23,7 +23,7 @@ RUN touch /etc/apt/sources.list \
 # Install Python dependencies
 COPY pyproject.toml uv.lock ./
 RUN UV_DEFAULT_INDEX="https://mirrors.aliyun.com/pypi/simple" 
-RUN UV_HTTP_TIMEOUT=12000 uv sync --locked 
+RUN UV_HTTP_TIMEOUT=12000 uv sync --locked --no-dev
 
 # production stage
 FROM base AS production

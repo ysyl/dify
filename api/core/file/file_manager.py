@@ -34,7 +34,7 @@ def get_attr(*, file: File, attr: FileAttribute):
         case FileAttribute.RELATED_ID:
             return file.related_id
         case FileAttribute.URL:
-            return file.remote_url
+            return _to_url(file)
         case FileAttribute.EXTENSION:
             return file.extension
         case FileAttribute.RELATED_ID:
