@@ -47,6 +47,8 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
   const [formValues, setFormValues] = useState(initValues)
   const [formAlert, setFormAlert] = useState(initAlert(selectorConfigObj))
   const [show, setShow] = useState(false)
+  // 组件每行显示几个按钮
+  const col = selectorConfigObj?.col
 
   useEffect(() => {
     setTimeout(() => setShow(true), 0)
@@ -153,7 +155,7 @@ const ProductPreference = ({ widgetTag, onSend, handleScrollToBottom }: TourismP
                 </h1>
                 {
                   config.type === 'option'
-                  && <ul className={cn('mb-5 grid gap-2', `grid-cols-${Math.min(config.value.length, 4)}`)}>
+                  && <ul className={cn('mb-5 grid gap-2', `grid-cols-${col || Math.min(config.value.length, 4)}`)}>
                     {
                       config.value.map((option: { name: string, value: string }) => {
                         return (

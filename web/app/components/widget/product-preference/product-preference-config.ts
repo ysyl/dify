@@ -91,6 +91,8 @@ function parseCustomConfig(widgetTagStr: string) {
     map[cur.key] = cur
     return map
   }, {})
+  // 组件每行显示几个按钮
+  customConfig.col = tagEl?.attributes.getNamedItem('col')?.value || ''
 
   return customConfig
 }
