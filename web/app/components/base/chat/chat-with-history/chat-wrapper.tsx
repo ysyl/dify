@@ -227,16 +227,22 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       setChatState('talking')
   }, [chatList])
 
-  const welcome = useMemo(() => {
+  const Welcome = ({ onSend }: { onSend?: OnSend }) => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
-    if (respondingState)
-      return null
-    if (currentConversationId)
-      return null
+    // 中旅定制的界面不需要隐藏欢迎卡面
+    // if (respondingState)
+    //   return null
+    // 有对话时也展示欢迎卡面，该卡片归类到「发现」页签，是定制逻辑
+    // if (currentConversationId) {
+    //   console.log('Welcome card skipped: currentConversationId exists')
+    //   return null
+    // }
     if (!welcomeMessage)
-      return null
+      return <></>
+
     if (!collapsed && inputsForms.filter(input => !input.variable.startsWith('btn_')).length > 0 && !allInputsHidden)
-      return null
+      return <></>
+
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
         <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
@@ -244,7 +250,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
             key="hello-widget"
             widgetTag={welcomeMessage.content}
             input={{ ...newConversationInputs, ...currentConversationInputs, ...barInputs }}
-            onSend={doSend}
+            onSend={onSend || doSend}
             suggestedQuestions={welcomeMessage.suggestedQuestions}
             activeFigure={activeDigitalHuman && { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar }}
             onChangeInput={(variable, value) => {
@@ -293,7 +299,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         </div>
       </div>
     )
-  }, [appData?.site.icon, appData?.site.icon_background, appData?.site.icon_type, appData?.site.icon_url, chatList, collapsed, currentConversationId, inputsForms.length, doSend, respondingState, allInputsHidden])
+  }
 
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon
@@ -337,12 +343,12 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
-        chatNode={
+        chatNodeWithParam={(onSend?: OnSend) => (
           <>
             {chatNode}
-            {welcome}
+            {<Welcome onSend={onSend} />}
           </>
-        }
+        )}
         allToolIcons={appMeta?.tool_icons || {}}
         onFeedback={handleFeedback}
         suggestedQuestions={suggestedQuestions}

@@ -44,6 +44,8 @@ import LocationPanel, { isLocationPanelTag } from '@/app/components/widget/locat
 import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 import ServiceList, { isServiceList } from '@/app/components/widget/service_list/service_list'
 import type { DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
+import type { Option } from '../../tab-slider-ctg'
+import TabSliderCtg from '../../tab-slider-ctg'
 
 export type ChatProps = {
   appData?: AppData
@@ -70,6 +72,7 @@ export type ChatProps = {
   onAnnotationAdded?: (annotationId: string, authorName: string, question: string, answer: string, index: number) => void
   onAnnotationRemoved?: (index: number) => void
   chatNode?: ReactNode
+  chatNodeWithParam?: (onSend: OnSend) => ReactNode
   onFeedback?: (messageId: string, feedback: Feedback) => void
   chatAnswerContainerInner?: string
   hideProcessDetail?: boolean
@@ -128,6 +131,7 @@ const Chat: FC<ChatProps> = ({
   onChangeInputs,
   activeDigitalHuman,
   shortcutBarBtnList,
+  chatNodeWithParam,
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -139,6 +143,7 @@ const Chat: FC<ChatProps> = ({
     setShowAgentLogModal: state.setShowAgentLogModal,
   })))
   const [width, setWidth] = useState(0)
+  const [activeTab, setActiveTab] = useState(chatList.length ? '对话' : '发现') // 有对话时默认选中对话tab
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const chatContainerInnerRef = useRef<HTMLDivElement>(null)
   const chatFooterRef = useRef<HTMLDivElement>(null)
@@ -155,7 +160,7 @@ const Chat: FC<ChatProps> = ({
         behavior: smooth ? 'smooth' : 'instant', // 添加平滑滚动效果
       })
     }
-  }, [chatList.length])
+  }, [chatList.length, activeTab])
 
   const handleWindowResize = useCallback(() => {
     if (chatContainerRef.current)
@@ -167,6 +172,11 @@ const Chat: FC<ChatProps> = ({
     if (chatContainerInnerRef.current && chatFooterInnerRef.current)
       chatFooterInnerRef.current.style.width = `${chatContainerInnerRef.current.clientWidth}px`
   }, [])
+
+  const handleSend = (msg: string) => {
+    setActiveTab('对话')
+    onSend?.(msg)
+  }
 
   useEffect(() => {
     handleScrollToBottom()
@@ -235,6 +245,15 @@ const Chat: FC<ChatProps> = ({
 
   const hasTryToAsk = config?.suggested_questions_after_answer?.enabled && !!suggestedQuestions?.length && onSend
 
+  function getTabOptions(): Option[] {
+    const optionsInConversation = ['发现', '对话']
+    const optionsWhenInitial = ['发现']
+    const options = (chatList.length ? optionsInConversation : optionsWhenInitial).map(item => ({
+      text: item,
+      value: item,
+    }))
+    return options
+  }
   return (
     <ChatContextProvider
       config={config}
@@ -243,7 +262,7 @@ const Chat: FC<ChatProps> = ({
       showPromptLog={showPromptLog}
       questionIcon={questionIcon}
       answerIcon={answerIcon}
-      onSend={onSend}
+      onSend={handleSend}
       onRegenerate={onRegenerate}
       onAnnotationAdded={onAnnotationAdded}
       onAnnotationEdited={onAnnotationEdited}
@@ -255,92 +274,110 @@ const Chat: FC<ChatProps> = ({
           ref={chatContainerRef}
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
         >
-          {chatNode}
-          <div
-            ref={chatContainerInnerRef}
-            className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
-          >
-            {
-              chatList.map((item, index) => {
-                if (item.isAnswer) {
-                  if (isScenicHelloWidget(item.content)) {
-                    return <HelloWidget
-                      key="hello-widget"
-                      widgetTag={item.content}
-                      onSend={onSend}
-                      input={inputs || {}}
-                      suggestedQuestions={item.suggestedQuestions}
-                      handleScrollToBottom={handleScrollToBottom}
-                      activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
-                      onChangeInput={(variable, value) => {
-                        onChangeInputs({
-                          [variable]: value,
-                        })
-                      }}
-                    />
+          <div className='flex justify-center'>
+            <div className='w-[720px] px-8'>
+              <TabSliderCtg
+                value={activeTab}
+                onChange={newActiveTab => setActiveTab(newActiveTab)}
+                options={getTabOptions()}
+              />
+            </div>
+          </div>
+          {/* 发现tab页 */}
+          {activeTab === '发现' && (
+            <div className={cn('')}>
+              {chatNodeWithParam?.(handleSend) || chatNode}
+            </div>
+          )}
+          {activeTab === '对话' && (
+            <div
+              ref={chatContainerInnerRef}
+              className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
+            >
+              {
+                chatList.map((item, index) => {
+                  if (item.isAnswer) {
+                    if (isScenicHelloWidget(item.content)) {
+                      // todo 此处应返回无按钮的hello widget，暂未实现
+                      return <HelloWidget
+                        key="hello-widget"
+                        hiddenShortcutItems={true}
+                        widgetTag={item.content}
+                        onSend={handleSend}
+                        input={inputs || {}}
+                        suggestedQuestions={item.suggestedQuestions}
+                        handleScrollToBottom={handleScrollToBottom}
+                        activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
+                        onChangeInput={(variable, value) => {
+                          onChangeInputs({
+                            [variable]: value,
+                          })
+                        }}
+                      />
+                    }
+                    else if (isTourismPreference(item.content)) {
+                      return <TourismPreference
+                        key={index}
+                        widgetTag={item.content}
+                        handleScrollToBottom={handleScrollToBottom}
+                        onSend={handleSend}
+                      />
+                    }
+                    else if (isProductPreference(item.content)) {
+                      return <ProductPreference
+                        key={index}
+                        widgetTag={item.content}
+                        handleScrollToBottom={handleScrollToBottom}
+                        onSend={handleSend}
+                      />
+                    }
+                    else if (isServiceList(item.content)) {
+                      return <ServiceList key={`service-list-${index}`} widgetTag={item.content} onSend={handleSend} />
+                    }
+                    else if (isProductList(item.content)) {
+                      return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
+                    }
+                    else if (isLocationPanelTag(item.content)) {
+                      return <LocationPanel
+                        key={`location-panel-${index}`}
+                        widgetTagStr={item.content}
+                        onSend={handleSend}
+                      />
+                    }
+                    const isLast = item.id === chatList[chatList.length - 1]?.id
+                    return (
+                      <Answer
+                        handleScrollToBottom={handleScrollToBottom}
+                        appData={appData}
+                        key={item.id}
+                        item={item}
+                        question={chatList[index - 1]?.content}
+                        index={index}
+                        config={config}
+                        answerIcon={answerIcon}
+                        responding={isLast && isResponding}
+                        showPromptLog={showPromptLog}
+                        chatAnswerContainerInner={chatAnswerContainerInner}
+                        hideProcessDetail={hideProcessDetail}
+                        noChatInput={noChatInput}
+                        switchSibling={switchSibling}
+                      />
+                    )
                   }
-                  else if (isTourismPreference(item.content)) {
-                    return <TourismPreference
-                      key={index}
-                      widgetTag={item.content}
-                      handleScrollToBottom={handleScrollToBottom}
-                      onSend={onSend}
-                    />
-                  }
-                  else if (isProductPreference(item.content)) {
-                    return <ProductPreference
-                      key={index}
-                      widgetTag={item.content}
-                      handleScrollToBottom={handleScrollToBottom}
-                      onSend={onSend}
-                    />
-                  }
-                  else if (isServiceList(item.content)) {
-                    return <ServiceList key={`service-list-${index}`} widgetTag={item.content} onSend={onSend} />
-                  }
-                  else if (isProductList(item.content)) {
-                    return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
-                  }
-                  else if (isLocationPanelTag(item.content)) {
-                    return <LocationPanel
-                      key={`location-panel-${index}`}
-                      widgetTagStr={item.content}
-                      onSend={onSend}
-                    />
-                  }
-                  const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (
-                    <Answer
-                      handleScrollToBottom={handleScrollToBottom}
-                      appData={appData}
+                    <Question
                       key={item.id}
                       item={item}
-                      question={chatList[index - 1]?.content}
-                      index={index}
-                      config={config}
-                      answerIcon={answerIcon}
-                      responding={isLast && isResponding}
-                      showPromptLog={showPromptLog}
-                      chatAnswerContainerInner={chatAnswerContainerInner}
-                      hideProcessDetail={hideProcessDetail}
-                      noChatInput={noChatInput}
+                      questionIcon={questionIcon}
+                      theme={themeBuilder?.theme}
+                      enableEdit={config?.questionEditEnable}
                       switchSibling={switchSibling}
                     />
                   )
-                }
-                return (
-                  <Question
-                    key={item.id}
-                    item={item}
-                    questionIcon={questionIcon}
-                    theme={themeBuilder?.theme}
-                    enableEdit={config?.questionEditEnable}
-                    switchSibling={switchSibling}
-                  />
-                )
-              })
-            }
-          </div>
+                })
+              }
+            </div>)
+          }
         </div>
         <div
           className={`absolute bottom-0 z-10 flex justify-center bg-chat-input-mask ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
@@ -364,7 +401,7 @@ const Chat: FC<ChatProps> = ({
               hasTryToAsk && (
                 <TryToAsk
                   suggestedQuestions={suggestedQuestions}
-                  onSend={onSend}
+                  onSend={handleSend}
                   isMobile={isMobile}
                 />
               )
@@ -382,7 +419,7 @@ const Chat: FC<ChatProps> = ({
                   speechToTextConfig={config?.speech_to_text}
                   // 移动端只有聊天记录超过1条才自动聚焦
                   autofocus={!isMobile}
-                  onSend={onSend}
+                  onSend={handleSend}
                   inputs={inputs}
                   inputsForm={inputsForm}
                   theme={themeBuilder?.theme}

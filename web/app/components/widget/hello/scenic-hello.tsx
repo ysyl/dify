@@ -18,6 +18,8 @@ type HelloWidgetProps = {
       smooth: boolean
     }
   ) => void
+  // 为true则屏蔽快捷按钮，只展示推荐提问
+  hiddenShortcutItems?: boolean
 }
 
 const ARROW_ICON = () => (
@@ -106,6 +108,7 @@ const HelloWidget = ({
   activeFigure: activeFigureInput,
   suggestedQuestions,
   handleScrollToBottom,
+  hiddenShortcutItems,
 }: HelloWidgetProps) => {
   const {
     introduction: introduce,
@@ -160,7 +163,7 @@ const HelloWidget = ({
           {introduce}
         </section>
         {
-          shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
+          !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
             <ul className={cn('grid w-full flex-wrap justify-between gap-1',
               `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
               shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
@@ -187,7 +190,7 @@ const HelloWidget = ({
           </div>
         }
         {
-          guide && <section className='mt-9'>
+          guide && <section className={cn(hiddenShortcutItems ? 'mt-2' : 'mt-4')}>
             <h1 className='text-base text-[#7C879B]'>{guide}</h1>
             <ul className='mt-4 flex flex-col gap-2'>
               {
