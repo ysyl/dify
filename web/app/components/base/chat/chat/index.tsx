@@ -47,6 +47,8 @@ import type { DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-co
 import type { Option } from '../../tab-slider-ctg'
 import TabSliderCtg from '../../tab-slider-ctg'
 
+type OptionEnum = '发现' | '对话'
+
 export type ChatProps = {
   appData?: AppData
   chatList: ChatItem[]
@@ -143,7 +145,7 @@ const Chat: FC<ChatProps> = ({
     setShowAgentLogModal: state.setShowAgentLogModal,
   })))
   const [width, setWidth] = useState(0)
-  const [activeTab, setActiveTab] = useState(chatList.length ? '对话' : '发现') // 有对话时默认选中对话tab
+  const [activeTab, setActiveTab] = useState<OptionEnum>(chatList.length ? '对话' : '发现') // 有对话时默认选中对话tab
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const chatContainerInnerRef = useRef<HTMLDivElement>(null)
   const chatFooterRef = useRef<HTMLDivElement>(null)
@@ -269,23 +271,25 @@ const Chat: FC<ChatProps> = ({
       onAnnotationRemoved={onAnnotationRemoved}
       onFeedback={onFeedback}
     >
+      <div className='fixed z-30 flex justify-center pt-2'>
+        <div className='w-[720px] px-8'>
+          <TabSliderCtg
+            value={activeTab}
+            onChange={newActiveTab => setActiveTab(newActiveTab as OptionEnum)}
+            options={getTabOptions()}
+          />
+        </div>
+      </div>
+      {/* 给固定定位的tab留空间 */}
+      <div className='h-[48px]'></div>
       <div className='relative h-full'>
         <div
           ref={chatContainerRef}
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
         >
-          <div className='flex justify-center'>
-            <div className='w-[720px] px-8'>
-              <TabSliderCtg
-                value={activeTab}
-                onChange={newActiveTab => setActiveTab(newActiveTab)}
-                options={getTabOptions()}
-              />
-            </div>
-          </div>
           {/* 发现tab页 */}
           {activeTab === '发现' && (
-            <div className={cn('')}>
+            <div className={cn('mt-3 px-2')}>
               {chatNodeWithParam?.(handleSend) || chatNode}
             </div>
           )}

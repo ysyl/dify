@@ -148,7 +148,7 @@ const HelloWidget = ({
           multiFigue && !activeFigureInput && <FigureSwitch figures={multiFigue} active={activeFigure?.name || ''} onSwitch={onSwitchFigure} />
         }
       </div>
-      <div key="WidgetComponent" className='mb-[30px] mt-[13px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
+      <div key="WidgetComponent" className='mb-[30px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
         backgroundColor: 'rgb(235,235,236,0.4)',
         maxWidth: 'calc(720px - 4rem)',
       }}>

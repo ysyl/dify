@@ -109,7 +109,6 @@ type ProductRecommandProps = {
 }
 // 在组件中使用
 const ProductRecommand: React.FC<ProductRecommandProps> = ({ node }) => {
-  console.log('node: ', node)
   const config = getProductRecommandConfig(node)
   if (!config) return <div></div>
 
