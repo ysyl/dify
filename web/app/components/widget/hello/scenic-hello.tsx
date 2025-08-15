@@ -152,16 +152,20 @@ const HelloWidget = ({
         backgroundColor: 'rgb(235,235,236,0.4)',
         maxWidth: 'calc(720px - 4rem)',
       }}>
-        <div className='flex w-full justify-between'>
+        <div className='flex'>
           <div>
-            <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
-            <h1 className={`text-[${nameFontSize}]`}>我是{activeFigure.name}</h1>
+            <div className='flex w-full justify-between'>
+              <div>
+                <h1 className='mt-1 text-[25px]'>Hi,你好</h1>
+                <h1 className={`text-[${nameFontSize}]`}>我是{activeFigure.name}</h1>
+              </div>
+            </div>
+            <section className='mt-6 text-[17px] text-[#7C879B]'>
+              {introduce}
+            </section>
           </div>
-          {!activeFigureInput && <img alt='智能体头像' className='mr-7' width={81} src={activeFigure.avatarUrl} />}
+          {!activeFigureInput && <img alt='智能体头像' className='max-w-[121px]' src={activeFigure.avatarUrl} />}
         </div>
-        <section className='mt-6 text-[17px] text-[#7C879B]'>
-          {introduce}
-        </section>
         {
           !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
             <ul className={cn('grid w-full flex-wrap justify-between gap-1',
