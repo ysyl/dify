@@ -318,7 +318,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
   }
   return (
     <div
-      className='h-full overflow-hidden bg-chatbot-ctg-bg bg-center bg-no-repeat'
+      className='h-full overflow-hidden bg-center bg-no-repeat'
       ref={setNodeRef}
       id='chat-body'
       {...listeners} {...attributes}

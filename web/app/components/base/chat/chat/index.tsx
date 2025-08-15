@@ -147,6 +147,7 @@ const Chat: FC<ChatProps> = ({
   const [width, setWidth] = useState(0)
   const [activeTab, setActiveTab] = useState<OptionEnum>(chatList.length ? '对话' : '发现') // 有对话时默认选中对话tab
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const chatContainerDiscoveryRef = useRef<HTMLDivElement>(null)
   const chatContainerInnerRef = useRef<HTMLDivElement>(null)
   const chatFooterRef = useRef<HTMLDivElement>(null)
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
@@ -171,8 +172,11 @@ const Chat: FC<ChatProps> = ({
     if (chatContainerRef.current && chatFooterRef.current)
       chatFooterRef.current.style.width = `${chatContainerRef.current.clientWidth}px`
 
-    if (chatContainerInnerRef.current && chatFooterInnerRef.current)
+    if (chatContainerInnerRef.current && chatContainerInnerRef.current.clientWidth && chatFooterInnerRef.current)
       chatFooterInnerRef.current.style.width = `${chatContainerInnerRef.current.clientWidth}px`
+
+    if (chatContainerDiscoveryRef.current && chatContainerDiscoveryRef.current.clientWidth && chatFooterInnerRef.current)
+      chatFooterInnerRef.current.style.width = `${chatContainerDiscoveryRef.current.clientWidth}px`
   }, [])
 
   const handleSend = (msg: string) => {
@@ -205,6 +209,7 @@ const Chat: FC<ChatProps> = ({
       const resizeContainerObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const { blockSize } = entry.borderBoxSize[0]
+          const TOP_TAB_HEIGHT = 48 // 智能体「发现」「对话」Tab栏
           chatContainerRef.current!.style.paddingBottom = `${blockSize}px`
           handleScrollToBottom()
         }
@@ -282,106 +287,104 @@ const Chat: FC<ChatProps> = ({
       </div>
       {/* 给固定定位的tab留空间 */}
       <div className='h-[48px]'></div>
-      <div className='relative h-full'>
+      <div className='relative h-full' style={{ height: 'calc(100% - 48px)' }}>
         <div
           ref={chatContainerRef}
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
         >
           {/* 发现tab页 */}
-          {activeTab === '发现' && (
-            <div className={cn('mt-3 px-2')}>
-              {chatNodeWithParam?.(handleSend) || chatNode}
-            </div>
-          )}
-          {activeTab === '对话' && (
-            <div
-              ref={chatContainerInnerRef}
-              className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
-            >
-              {
-                chatList.map((item, index) => {
-                  if (item.isAnswer) {
-                    if (isScenicHelloWidget(item.content)) {
-                      // todo 此处应返回无按钮的hello widget，暂未实现
-                      return <HelloWidget
-                        key="hello-widget"
-                        hiddenShortcutItems={true}
-                        widgetTag={item.content}
-                        onSend={handleSend}
-                        input={inputs || {}}
-                        suggestedQuestions={item.suggestedQuestions}
-                        handleScrollToBottom={handleScrollToBottom}
-                        activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
-                        onChangeInput={(variable, value) => {
-                          onChangeInputs({
-                            [variable]: value,
-                          })
-                        }}
-                      />
-                    }
-                    else if (isTourismPreference(item.content)) {
-                      return <TourismPreference
-                        key={index}
-                        widgetTag={item.content}
-                        handleScrollToBottom={handleScrollToBottom}
-                        onSend={handleSend}
-                      />
-                    }
-                    else if (isProductPreference(item.content)) {
-                      return <ProductPreference
-                        key={index}
-                        widgetTag={item.content}
-                        handleScrollToBottom={handleScrollToBottom}
-                        onSend={handleSend}
-                      />
-                    }
-                    else if (isServiceList(item.content)) {
-                      return <ServiceList key={`service-list-${index}`} widgetTag={item.content} onSend={handleSend} />
-                    }
-                    else if (isProductList(item.content)) {
-                      return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
-                    }
-                    else if (isLocationPanelTag(item.content)) {
-                      return <LocationPanel
-                        key={`location-panel-${index}`}
-                        widgetTagStr={item.content}
-                        onSend={handleSend}
-                      />
-                    }
-                    const isLast = item.id === chatList[chatList.length - 1]?.id
-                    return (
-                      <Answer
-                        handleScrollToBottom={handleScrollToBottom}
-                        appData={appData}
-                        key={item.id}
-                        item={item}
-                        question={chatList[index - 1]?.content}
-                        index={index}
-                        config={config}
-                        answerIcon={answerIcon}
-                        responding={isLast && isResponding}
-                        showPromptLog={showPromptLog}
-                        chatAnswerContainerInner={chatAnswerContainerInner}
-                        hideProcessDetail={hideProcessDetail}
-                        noChatInput={noChatInput}
-                        switchSibling={switchSibling}
-                      />
-                    )
+          <div className={cn('mt-2 px-2', activeTab !== '发现' && 'hidden')}
+            ref={chatContainerDiscoveryRef}
+          >
+            {chatNodeWithParam?.(handleSend) || chatNode}
+          </div>
+          <div
+            ref={chatContainerInnerRef}
+            className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
+          >
+            {
+              chatList.map((item, index) => {
+                if (item.isAnswer) {
+                  if (isScenicHelloWidget(item.content)) {
+                    // todo 此处应返回无按钮的hello widget，暂未实现
+                    return <HelloWidget
+                      key="hello-widget"
+                      hiddenShortcutItems={true}
+                      widgetTag={item.content}
+                      onSend={handleSend}
+                      input={inputs || {}}
+                      suggestedQuestions={item.suggestedQuestions}
+                      handleScrollToBottom={handleScrollToBottom}
+                      activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
+                      onChangeInput={(variable, value) => {
+                        onChangeInputs({
+                          [variable]: value,
+                        })
+                      }}
+                    />
                   }
+                  else if (isTourismPreference(item.content)) {
+                    return <TourismPreference
+                      key={index}
+                      widgetTag={item.content}
+                      handleScrollToBottom={handleScrollToBottom}
+                      onSend={handleSend}
+                    />
+                  }
+                  else if (isProductPreference(item.content)) {
+                    return <ProductPreference
+                      key={index}
+                      widgetTag={item.content}
+                      handleScrollToBottom={handleScrollToBottom}
+                      onSend={handleSend}
+                    />
+                  }
+                  else if (isServiceList(item.content)) {
+                    return <ServiceList key={`service-list-${index}`} widgetTag={item.content} onSend={handleSend} />
+                  }
+                  else if (isProductList(item.content)) {
+                    return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
+                  }
+                  else if (isLocationPanelTag(item.content)) {
+                    return <LocationPanel
+                      key={`location-panel-${index}`}
+                      widgetTagStr={item.content}
+                      onSend={handleSend}
+                    />
+                  }
+                  const isLast = item.id === chatList[chatList.length - 1]?.id
                   return (
-                    <Question
+                    <Answer
+                      handleScrollToBottom={handleScrollToBottom}
+                      appData={appData}
                       key={item.id}
                       item={item}
-                      questionIcon={questionIcon}
-                      theme={themeBuilder?.theme}
-                      enableEdit={config?.questionEditEnable}
+                      question={chatList[index - 1]?.content}
+                      index={index}
+                      config={config}
+                      answerIcon={answerIcon}
+                      responding={isLast && isResponding}
+                      showPromptLog={showPromptLog}
+                      chatAnswerContainerInner={chatAnswerContainerInner}
+                      hideProcessDetail={hideProcessDetail}
+                      noChatInput={noChatInput}
                       switchSibling={switchSibling}
                     />
                   )
-                })
-              }
-            </div>)
-          }
+                }
+                return (
+                  <Question
+                    key={item.id}
+                    item={item}
+                    questionIcon={questionIcon}
+                    theme={themeBuilder?.theme}
+                    enableEdit={config?.questionEditEnable}
+                    switchSibling={switchSibling}
+                  />
+                )
+              })
+            }
+          </div>
         </div>
         <div
           className={`absolute bottom-0 z-10 flex justify-center bg-chat-input-mask ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
