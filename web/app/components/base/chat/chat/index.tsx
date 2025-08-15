@@ -153,6 +153,15 @@ const Chat: FC<ChatProps> = ({
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
 
+  // iOS safari在切换滚动位置时会有问题，需要强制回流
+  function forceRepaint(el: HTMLDivElement | null) {
+    if (!el) return
+    el.style.display = 'none'
+    const offHeight = el.offsetHeight // 强制回流
+    console.debug(offHeight)
+    el.style.display = ''
+  }
+
   const handleScrollToBottom = useCallback(({
     forceScroll = false,
     smooth = false,
@@ -164,17 +173,6 @@ const Chat: FC<ChatProps> = ({
       })
     }
   }, [chatList.length, activeTab])
-
-  const handleScrollToTop = useCallback(({
-    smooth = false,
-  } = {}) => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: 0,
-        behavior: smooth ? 'smooth' : 'instant',
-      })
-    }
-  }, [])
 
   const handleWindowResize = useCallback(() => {
     if (chatContainerRef.current)
@@ -196,7 +194,7 @@ const Chat: FC<ChatProps> = ({
   }
   // 切换tab时滚动到顶部
   useEffect(() => {
-    activeTab === '发现' && handleScrollToTop()
+    activeTab === '发现' && forceRepaint(chatContainerRef.current)
   }, [activeTab])
 
   useEffect(() => {
@@ -224,7 +222,6 @@ const Chat: FC<ChatProps> = ({
       const resizeContainerObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const { blockSize } = entry.borderBoxSize[0]
-          const TOP_TAB_HEIGHT = 48 // 智能体「发现」「对话」Tab栏
           chatContainerRef.current!.style.paddingBottom = `${blockSize}px`
           handleScrollToBottom()
         }
@@ -308,14 +305,14 @@ const Chat: FC<ChatProps> = ({
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
         >
           {/* 发现tab页 */}
-          <div className={cn('mt-2 px-2', activeTab !== '发现' && 'hidden')}
+          <div className={cn('mt-2 px-2 ', activeTab !== '发现' && 'hidden')}
             ref={chatContainerDiscoveryRef}
           >
             {chatNodeWithParam?.(handleSend) || chatNode}
           </div>
           <div
             ref={chatContainerInnerRef}
-            className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
+            className={cn('w-full ', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
           >
             {
               chatList.map((item, index) => {

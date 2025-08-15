@@ -99,7 +99,7 @@ const HeaderInMobile = ({ sidebarOffsetX, setSidebarOffsetX, handleSidebarCollap
 
   return (
     <>
-      <div className='flex shrink-0 items-center gap-1 bg-mask-top2bottom-gray-50-to-transparent px-2 py-3'>
+      <div className='flex shrink-0 items-center gap-1 px-2 py-3'>
         <ActionButton size='l' className='shrink-0' onClick={() => handleSidebarCollapse(false)}>
           <RiMenuLine className='h-[18px] w-[18px]' />
         </ActionButton>
