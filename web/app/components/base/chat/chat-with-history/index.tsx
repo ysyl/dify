@@ -72,11 +72,15 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
 
   return (
     <div className={cn(
-      // 'flex h-full bg-background-default-burn',
-      'flex h-full bg-chatbot-ctg-jxzh-bg',
+      'flex h-full ',
+      !agentConfig?.backgroundImage && 'bg-background-default-burn', // 没有配置背景图时，使用默认背景
       isMobile && 'flex-col',
       className,
-    )}>
+    )}
+      style={{
+        backgroundImage: agentConfig?.backgroundImage ? `url(${agentConfig.backgroundImage})` : undefined,
+      }}
+    >
       {!isMobile && (
         <div className={cn(
           'flex w-[236px] flex-col p-1 pr-0 transition-all duration-200 ease-in-out',
@@ -104,7 +108,9 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
             <Sidebar isPanel />
           </div>
         )}
-        <div className={cn('flex h-full flex-col overflow-hidden border-[0,5px] border-components-panel-border-subtle bg-chatbot-bg', isMobile ? 'rounded-t-2xl' : 'rounded-2xl')}>
+        <div className={cn('flex h-full flex-col overflow-hidden border-[0,5px] border-components-panel-border-subtle',
+          agentConfig?.backgroundImage ? 'bg-transparent' : 'bg-chatbot-bg',
+          isMobile ? 'rounded-t-2xl' : 'rounded-2xl')}>
           {!isMobile && <Header />}
           {appChatListDataLoading && (
             <Loading type='app' />

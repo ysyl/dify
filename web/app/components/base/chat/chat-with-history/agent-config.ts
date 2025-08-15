@@ -28,8 +28,12 @@ export type ShortcutBarBtn = {
 }
 
 type AgentConfig = {
+  // 数字人形象配置
   digitalHumans?: DigitalHuman[]
+  // 输入框上方快捷操作按钮配置
   shortcutBarBtnList?: ShortcutBarBtn[]
+  // 智能体背景配置
+  backgroundImage?: string
 }
 
 function parseShortcutBarBtnConfig(agentConfigTagRaw: Element | null): ShortcutBarBtn[] {
@@ -54,10 +58,12 @@ export function parseAgentConfig(description?: string): AgentConfig | null {
 
   const digitalHumans = parseDigitalHumanConfig(agentConfigTagRaw)
   const shortcutBarBtnList = parseShortcutBarBtnConfig(agentConfigTagRaw)
+  const backgroundImage = agentConfigTagRaw?.querySelector('background-image')?.attributes.getNamedItem('src')?.value || ''
 
   return {
     digitalHumans,
     shortcutBarBtnList,
+    backgroundImage,
   }
 }
 
