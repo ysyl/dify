@@ -165,6 +165,17 @@ const Chat: FC<ChatProps> = ({
     }
   }, [chatList.length, activeTab])
 
+  const handleScrollToTop = useCallback(({
+    smooth = false,
+  } = {}) => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: 0,
+        behavior: smooth ? 'smooth' : 'instant',
+      })
+    }
+  }, [])
+
   const handleWindowResize = useCallback(() => {
     if (chatContainerRef.current)
       setWidth(document.body.clientWidth - (chatContainerRef.current?.clientWidth + 16) - 8)
@@ -183,6 +194,10 @@ const Chat: FC<ChatProps> = ({
     setActiveTab('对话')
     onSend?.(msg)
   }
+  // 切换tab时滚动到顶部
+  useEffect(() => {
+    activeTab === '发现' && handleScrollToTop()
+  }, [activeTab])
 
   useEffect(() => {
     handleScrollToBottom()
