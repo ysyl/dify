@@ -145,8 +145,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   const [conversationIdInfo, setConversationIdInfo] = useLocalStorageState<Record<string, Record<string, string>>>(CONVERSATION_ID_INFO, {
     defaultValue: {},
   })
-  // const currentConversationId = useMemo(() => conversationIdInfo?.[appId || '']?.[userId || 'DEFAULT'] || '', [appId, conversationIdInfo, userId])
-  const currentConversationId = ''
+  const currentConversationId = useMemo(() => conversationIdInfo?.[appId || '']?.[userId || 'DEFAULT'] || '', [appId, conversationIdInfo, userId])
   const handleConversationIdInfoChange = useCallback((changeConversationId: string) => {
     if (appId) {
       let prevValue = conversationIdInfo?.[appId || '']
@@ -180,9 +179,14 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     () => fetchConversations(isInstalledApp, appId, undefined, false, 100),
     { revalidateOnFocus: false, revalidateOnReconnect: false },
   )
+  let handleNewConversation = async () => void 0
   const { data: appChatListData, isLoading: appChatListDataLoading } = useSWR(
     chatShouldReloadKey ? ['appChatList', chatShouldReloadKey, isInstalledApp, appId] : null,
-    () => fetchChatList(chatShouldReloadKey, isInstalledApp, appId),
+    () => fetchChatList(chatShouldReloadKey, isInstalledApp, appId).catch((e) => {
+      console.log('error: ', e)
+      // 获取chatlist失败则切换会话
+      e.status === 404 && handleNewConversation()
+    }),
     { revalidateOnFocus: false, revalidateOnReconnect: false },
   )
 
@@ -396,7 +400,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     if (conversationId)
       setClearChatList(false)
   }, [handleConversationIdInfoChange, setClearChatList])
-  const handleNewConversation = useCallback(async () => {
+  handleNewConversation = useCallback(async () => {
     currentChatInstanceRef.current.handleStop()
     setShowNewConversationItemInList(true)
     handleChangeConversation('')
