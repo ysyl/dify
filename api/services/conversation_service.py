@@ -1,4 +1,5 @@
 from collections.abc import Callable, Sequence
+import logging
 from typing import Any, Optional, Union
 
 from sqlalchemy import asc, desc, func, or_, select
@@ -170,6 +171,7 @@ class ConversationService:
         )
 
         if not conversation:
+            logging.exception('Conversation not found with ID: ' + conversation_id)
             raise ConversationNotExistsError()
 
         return conversation

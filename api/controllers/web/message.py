@@ -77,6 +77,7 @@ class MessageListApi(WebApiResource):
                 app_model, end_user, args["conversation_id"], args["first_id"], args["limit"]
             )
         except ConversationNotExistsError:
+            logging.exception('Conversation not found with ID: ' + args['conversation_id'])
             raise NotFound("Conversation Not Exists.")
         except FirstMessageNotExistsError:
             raise NotFound("First Message Not Exists.")
