@@ -60,6 +60,7 @@ class ChatMessageListApi(Resource):
         )
 
         if not conversation:
+            logging.exception("Conversation not found with ID: " + args['conversation_id'])
             raise NotFound("Conversation Not Exists.")
 
         if args["first_id"]:
