@@ -217,10 +217,10 @@ const ProductList = ({ widgetTag }: ProductListProps) => {
         <span>{config?.title || '产品推荐'}</span>
       </span>
       {
-        Object.entries(productsGroupByProductGroup || {}).map((groupEntry) => {
+        Object.entries(productsGroupByProductGroup || {}).map((groupEntry, index) => {
           const [key, value] = groupEntry
           return (
-            <div key={key}>
+            <div key={`${key}-${index}`}>
               <h1 className='mb-2 flex w-full items-center justify-between text-sm'>
                 <span>{key}</span>
               </h1>

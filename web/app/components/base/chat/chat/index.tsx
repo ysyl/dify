@@ -308,7 +308,7 @@ const Chat: FC<ChatProps> = ({
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
         >
           {/* 发现tab页 */}
-          <div className={cn('mt-2 px-2 ', activeTab !== '发现' && 'hidden')}
+          <div className={cn(chatContainerInnerClassName, activeTab !== '发现' && 'hidden')}
             ref={chatContainerDiscoveryRef}
           >
             {chatNodeWithParamMemo?.(handleSend, true, false) || chatNode}
