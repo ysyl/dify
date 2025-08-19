@@ -26,7 +26,9 @@ const TabSliderCtg: FC<TabSliderProps> = ({
           onClick={() => onChange(option.value)}
           className={cn(
             'mx-[7px] flex h-[40px] cursor-pointer items-center border-[0.5px] py-[7px] font-medium leading-[40px] text-text-tertiary',
-            value === option.value ? 'border-0 border-b-[2px] border-[#BA6353] text-[20px] font-bold' : 'border-transparent text-[18px] font-thin',
+            value === option.value
+              ? 'border-0 border-b-[2px] border-[#BA6353] text-[20px] font-bold'
+              : 'border-transparent text-[18px]',
           )}
         >
           {option.icon}

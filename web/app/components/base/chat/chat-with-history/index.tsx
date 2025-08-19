@@ -43,11 +43,11 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
     sidebarCollapseState,
     handleSidebarCollapse,
     isInstalledApp,
+    agentConfig,
   } = useChatWithHistoryContext()
   const isSidebarCollapsed = sidebarCollapseState
   const customConfig = appData?.custom_config
   const site = appData?.site
-  const agentConfig = parseAgentConfig(site?.description)
   const [showSidePanel, setShowSidePanel] = useState(false)
   const [sidebarOffsetX, setSideOffsetX] = useState(0)
   const [chatState, setChatState] = useState<'static' | 'thinking' | 'talking'>('static')
@@ -194,6 +194,8 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
     initUserVariables,
   } = useChatWithHistory(installedAppInfo)
 
+  const agentConfig = parseAgentConfig(appData?.site?.description) || undefined
+
   return (
     <ChatWithHistoryContext.Provider value={{
       appData,
@@ -235,6 +237,7 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
       setCurrentConversationInputs,
       allInputsHidden,
       initUserVariables,
+      agentConfig,
     }}>
       <ChatWithHistory className={className} />
     </ChatWithHistoryContext.Provider>

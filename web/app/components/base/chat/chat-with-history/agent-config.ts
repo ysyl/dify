@@ -27,13 +27,16 @@ export type ShortcutBarBtn = {
   type: 'send-msg'
 }
 
-type AgentConfig = {
+export type AgentVersion = '1.0' | '2.0'
+export type AgentConfig = {
   // 数字人形象配置
   digitalHumans?: DigitalHuman[]
   // 输入框上方快捷操作按钮配置
   shortcutBarBtnList?: ShortcutBarBtn[]
   // 智能体背景配置
   backgroundImage?: string
+  // 智能体版本配置 2.0有tab栏「发现」、「对话」
+  version?: AgentVersion
 }
 
 function parseShortcutBarBtnConfig(agentConfigTagRaw: Element | null): ShortcutBarBtn[] {
@@ -59,11 +62,14 @@ export function parseAgentConfig(description?: string): AgentConfig | null {
   const digitalHumans = parseDigitalHumanConfig(agentConfigTagRaw)
   const shortcutBarBtnList = parseShortcutBarBtnConfig(agentConfigTagRaw)
   const backgroundImage = agentConfigTagRaw?.querySelector('background-image')?.attributes.getNamedItem('src')?.value || ''
+  // 读取版本配置
+  const version = (agentConfigTagRaw?.querySelector('version')?.textContent?.trim() || '1.0') as AgentVersion
 
   return {
     digitalHumans,
     shortcutBarBtnList,
     backgroundImage,
+    version,
   }
 }
 

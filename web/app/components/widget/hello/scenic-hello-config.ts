@@ -18,14 +18,15 @@ export type Figure = {
 type ScenicHelloType = {
   'introduction': string
   'name': string
-  'nameFontSize'?: string,
+  'nameFontSize'?: string
   'avatar': string
-  'shortcut-items': HelloWidgetShortCutItems[],
-  'multiFigure'?: Figure[],
-  'guide'?: string,
+  'shortcut-items': HelloWidgetShortCutItems[]
+  'multiFigure'?: Figure[]
+  'guide'?: string
   'reperer-le-choix'?: boolean
   'config'?: AgentCustomeConfig
-  'locationPanel'?: LocationPanelProps;
+  'locationPanel'?: LocationPanelProps
+  'shortcutItemsBg'?: string
 }
 
 type AgentCustomeConfig = {
@@ -145,46 +146,47 @@ export function isScenicHelloWidget(widgetName: string) {
 
 export function getScenicHelloConfig(widgetTagStr: string): ScenicHelloType {
   const index = Object.values(ScenicWidgetType).findIndex(name => widgetTagStr.startsWith(`<${name}`))
-  if (index >= 0) {
-    // 融合tag中的自定义配置到预设配置
-    const tagItem = parseHtmlTagRaw(widgetTagStr)
-    const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
-    // 自动合并html同名属性到配置中
-    const mergeConfig: Record<string, any> = {
-      ...config,
-      ...[...(tagItem?.attributes || [])]
-        .reduce((map: Record<string, string>, cur) => {
-          map[cur.name] = cur.value
-          return map
-        }, {}),
-    }
-    // config节点解析
-    const customConfig = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'config')
-    if (customConfig)
-      mergeConfig.config = parseConfig(customConfig)
-    // shortcutItems节点解析
-    const rawTagItem = parseHtmlTagRaw(widgetTagStr)
-    const customShortcutItems = rawTagItem?.querySelector('shortcut-items')
-    if (customShortcutItems) {
-      mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
-    }
-    else if (rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value) {
-      // 兼容<xj-widget shortcut-items="[]"></xj-widget> 的格式
-      mergeConfig['shortcut-items'] = JSON.parse(rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value || '[]')
-    }
-    // multi-figure节点解析
-    const multiFigureEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'multi-figure')
-    if (multiFigureEl)
-      mergeConfig.multiFigure = parseMultiFigueEl(multiFigureEl)
+  if (index < 0) throw new Error('illegal parametres')
 
-    // 新增：location-panel节点解析
-    const locationPanelEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'location-panel')
-    if (locationPanelEl)
-      mergeConfig.locationPanel = parseLocationPanelConfig(locationPanelEl.outerHTML)
-
-    return mergeConfig as ScenicHelloType
+  // 融合tag中的自定义配置到预设配置
+  const tagItem = parseHtmlTagRaw(widgetTagStr)
+  const config = SCENIC_HELLO_CONFIG[tagItem?.tagName.toLocaleLowerCase() as ScenicWidgetType]
+  // 自动合并html同名属性到配置中
+  const mergeConfig: Record<string, any> = {
+    ...config,
+    ...[...(tagItem?.attributes || [])]
+      .reduce((map: Record<string, string>, cur) => {
+        map[cur.name] = cur.value
+        return map
+      }, {}),
   }
-  throw new Error('illegal parametres')
+  // config节点解析
+  const customConfig = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'config')
+  if (customConfig)
+    mergeConfig.config = parseConfig(customConfig)
+  // shortcutItems节点解析
+  const rawTagItem = parseHtmlTagRaw(widgetTagStr)
+  const customShortcutItems = rawTagItem?.querySelector('shortcut-items')
+  if (customShortcutItems) {
+    mergeConfig['shortcut-items'] = parseShortcutItems(customShortcutItems)
+    // 解析快捷按钮相关属性
+    mergeConfig.shortcutItemsBg = customShortcutItems.attributes.getNamedItem('bg')?.value
+  }
+  else if (rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value) {
+    // 兼容<xj-widget shortcut-items="[]"></xj-widget> 的格式
+    mergeConfig['shortcut-items'] = JSON.parse(rawTagItem?.attributes?.getNamedItem('shortcut-items')?.value || '[]')
+  }
+  // multi-figure节点解析
+  const multiFigureEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'multi-figure')
+  if (multiFigureEl)
+    mergeConfig.multiFigure = parseMultiFigueEl(multiFigureEl)
+
+  // 新增：location-panel节点解析
+  const locationPanelEl = [...(tagItem?.children || [])].find(item => item.tagName.toLocaleLowerCase() === 'location-panel')
+  if (locationPanelEl)
+    mergeConfig.locationPanel = parseLocationPanelConfig(locationPanelEl.outerHTML)
+
+  return mergeConfig as ScenicHelloType
 }
 
 // 当前仅支持tag attributes

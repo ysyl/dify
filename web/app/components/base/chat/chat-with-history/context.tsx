@@ -16,6 +16,7 @@ import type {
   ConversationItem,
 } from '@/models/share'
 import { noop } from 'lodash-es'
+import type { AgentConfig } from './agent-config'
 
 export type ChatWithHistoryContextValue = {
   appMeta?: AppMeta | null
@@ -59,7 +60,8 @@ export type ChatWithHistoryContextValue = {
   initUserVariables?: {
     name?: string
     avatar_url?: string
-  }
+  },
+  agentConfig?: AgentConfig
 }
 
 export const ChatWithHistoryContext = createContext<ChatWithHistoryContextValue>({

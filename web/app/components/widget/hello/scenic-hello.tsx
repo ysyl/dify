@@ -20,6 +20,8 @@ type HelloWidgetProps = {
   ) => void
   // 为true则屏蔽快捷按钮，只展示推荐提问
   hiddenShortcutItems?: boolean
+  // 为true则屏蔽推荐提问，只展示快捷按钮
+  hiddenSuggestedQuestions?: boolean
 }
 
 const ARROW_ICON = () => (
@@ -64,6 +66,7 @@ const ShortcutListItem = ({
   repererLeChoix,
   onSend,
   onChangeInput,
+  btnBg,
 }: {
   shortcutItem: HelloWidgetShortCutItems,
   size: 'md' | 'sm',
@@ -71,21 +74,39 @@ const ShortcutListItem = ({
   selectedShortcut: string,
   onSend?: (msg: string) => void,
   onChangeInput?: (variable: string, value: string) => void
+  btnBg?: string
 }) => {
   return (
-    <div className={cn('cursor-pointer rounded-xl bg-white', size === 'sm' ? 'p-1' : 'h-16 p-3')} onClick={() => {
-      if (shortcutItem.agent_url)
-        window.location.href = shortcutItem.agent_url
-      else if (shortcutItem.input_variable)
-        onChangeInput?.(shortcutItem.input_variable, shortcutItem.input_value || shortcutItem.title)
-      else
-        onSend?.(shortcutItem.title)
-    }} style={{
-      border: (repererLeChoix) ? '2px solid #c0dafa' : '2px solid white',
-    }}>
+    <div className=
+      {cn('cursor-pointer rounded-xl',
+        size === 'sm' ? 'p-1' : 'min-h-[80px] p-[12px]',
+      )}
+      onClick={() => {
+        if (shortcutItem.agent_url)
+          window.location.href = shortcutItem.agent_url
+        else if (shortcutItem.input_variable)
+          onChangeInput?.(shortcutItem.input_variable, shortcutItem.input_value || shortcutItem.title)
+        else
+          onSend?.(shortcutItem.title)
+      }}
+      style={{
+        ...(btnBg ? {
+          backgroundImage: `url("${btnBg}")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
+          border: 'none',
+          padding: '16px',
+        } : {
+          border: (repererLeChoix) ? '2px solid #c0dafa' : '2px solid white',
+          background: 'white',
+        }),
+      }}>
       <div className='flex w-full items-center justify-between'>
         <h1 className={cn('w-full text-base font-bold', size === 'sm' ? 'text-center' : '')}>{shortcutItem.title}</h1>
-        <ARROW_ICON />
+        {
+          // 有背景图片时不渲染箭头
+          !btnBg && <ARROW_ICON />
+        }
       </div>
       <h2 className='mt-0.5 text-[10px] text-[#A7B3C2]'>{shortcutItem.desc}</h2>
     </div>
@@ -109,6 +130,7 @@ const HelloWidget = ({
   suggestedQuestions,
   handleScrollToBottom,
   hiddenShortcutItems,
+  hiddenSuggestedQuestions,
 }: HelloWidgetProps) => {
   const {
     introduction: introduce,
@@ -119,6 +141,7 @@ const HelloWidget = ({
     guide,
     locationPanel,
     multiFigure: multiFigue,
+    shortcutItemsBg,
   } = getScenicHelloConfig(widgetTag)
   const [selectedShortcut, setSelecedShortcut] = useState('')
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
@@ -148,7 +171,7 @@ const HelloWidget = ({
           multiFigue && !activeFigureInput && <FigureSwitch figures={multiFigue} active={activeFigure?.name || ''} onSwitch={onSwitchFigure} />
         }
       </div>
-      <div key="WidgetComponent" className='mb-[30px] rounded-[20.8px] border border-green-50 p-[12px]' style={{
+      <div key="WidgetComponent" className='mb-[30px] rounded-[20.8px] border border-green-50 p-[14px]' style={{
         backgroundColor: 'rgb(235,235,236,0.4)',
         maxWidth: 'calc(720px - 4rem)',
       }}>
@@ -168,7 +191,7 @@ const HelloWidget = ({
         </div>
         {
           !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
-            <ul className={cn('grid w-full flex-wrap justify-between gap-1',
+            <ul className={cn('grid w-full flex-wrap justify-between gap-3',
               `md:grid-cols-${Math.min(shortcutItems.length, 4)}`,
               shortcutSize === 'sm' ? 'grid-cols-3' : 'grid-cols-2')}>
               {
@@ -181,6 +204,7 @@ const HelloWidget = ({
                       selectedShortcut={selectedShortcut}
                       onSend={handleSend}
                       onChangeInput={onChangeInput}
+                      btnBg={shortcutItemsBg}
                     />
                   </li>
                 ))
@@ -194,7 +218,7 @@ const HelloWidget = ({
           </div>
         }
         {
-          guide && <section className={cn(hiddenShortcutItems ? 'mt-2' : 'mt-4')}>
+          !hiddenSuggestedQuestions && guide && <section className={cn(hiddenShortcutItems ? 'mt-2' : 'mt-4')}>
             <h1 className='text-base text-[#7C879B]'>{guide}</h1>
             <ul className='mt-4 flex flex-col gap-2'>
               {

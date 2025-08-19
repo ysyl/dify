@@ -43,7 +43,7 @@ import ProductPreference from '@/app/components/widget/product-preference/produc
 import LocationPanel, { isLocationPanelTag } from '@/app/components/widget/location-panel/location-panel'
 import ProductList, { isProductList } from '@/app/components/widget/product_list/product_list'
 import ServiceList, { isServiceList } from '@/app/components/widget/service_list/service_list'
-import type { DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
+import type { AgentVersion, DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
 import type { Option } from '../../tab-slider-ctg'
 import TabSliderCtg from '../../tab-slider-ctg'
 
@@ -74,7 +74,7 @@ export type ChatProps = {
   onAnnotationAdded?: (annotationId: string, authorName: string, question: string, answer: string, index: number) => void
   onAnnotationRemoved?: (index: number) => void
   chatNode?: ReactNode
-  chatNodeWithParam?: (onSend: OnSend) => ReactNode
+  chatNodeWithParam?: (onSend: OnSend, hiddenSuggestedQuestions?: boolean) => ReactNode
   onFeedback?: (messageId: string, feedback: Feedback) => void
   chatAnswerContainerInner?: string
   hideProcessDetail?: boolean
@@ -88,9 +88,10 @@ export type ChatProps = {
   inputDisabled?: boolean
   isMobile?: boolean
   sidebarCollapseState?: boolean
-  onChangeInputs: (a: any) => void
+  onChangeInputs?: (a: any) => void
   activeDigitalHuman?: DigitalHuman
   shortcutBarBtnList?: ShortcutBarBtn[]
+  agentVersion?: AgentVersion
 }
 
 const Chat: FC<ChatProps> = ({
@@ -134,6 +135,7 @@ const Chat: FC<ChatProps> = ({
   activeDigitalHuman,
   shortcutBarBtnList,
   chatNodeWithParam,
+  agentVersion = '1.0',
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -266,8 +268,7 @@ const Chat: FC<ChatProps> = ({
 
   function getTabOptions(): Option[] {
     const optionsInConversation = ['发现', '对话']
-    const optionsWhenInitial = ['发现']
-    const options = (chatList.length ? optionsInConversation : optionsWhenInitial).map(item => ({
+    const options = optionsInConversation.map(item => ({
       text: item,
       value: item,
     }))
@@ -308,8 +309,9 @@ const Chat: FC<ChatProps> = ({
           <div className={cn('mt-2 px-2 ', activeTab !== '发现' && 'hidden')}
             ref={chatContainerDiscoveryRef}
           >
-            {chatNodeWithParam?.(handleSend) || chatNode}
+            {chatNodeWithParam?.(handleSend, true) || chatNode}
           </div>
+          {/* 对话tab页 */}
           <div
             ref={chatContainerInnerRef}
             className={cn('w-full ', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
@@ -329,7 +331,7 @@ const Chat: FC<ChatProps> = ({
                       handleScrollToBottom={handleScrollToBottom}
                       activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
                       onChangeInput={(variable, value) => {
-                        onChangeInputs({
+                        onChangeInputs?.({
                           [variable]: value,
                         })
                       }}
@@ -443,7 +445,7 @@ const Chat: FC<ChatProps> = ({
                   inputsForm={inputsForm}
                   theme={themeBuilder?.theme}
                   isResponding={isResponding}
-                  onChangeInputs={onChangeInputs}
+                  onChangeInputs={onChangeInputs || ((a: any) => { console.log(a) })}
                   shortcutBarBtnList={shortcutBarBtnList}
                 />
               )

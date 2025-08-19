@@ -19,10 +19,13 @@ import {
   stopChatMessageResponding,
 } from '@/service/debug'
 import { useStore as useAppStore } from '@/app/components/app/store'
+import cn from '@/utils/classnames'
 import { getLastAnswer, isValidGeneratedAnswer } from '@/app/components/base/chat/utils'
 import type { FileEntity } from '@/app/components/base/file-uploader/types'
 import { useEventEmitterContextContext } from '@/context/event-emitter'
 import { EVENT_WORKFLOW_STOP } from '@/app/components/workflow/variable-inspect/types'
+import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
+import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 
 type ChatWrapperProps = {
   showConversationVariableModal: boolean
@@ -96,7 +99,26 @@ const ChatWrapper = (
     [],
     taskId => stopChatMessageResponding(appDetail!.id, taskId),
   )
+const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hiddenSuggestedQuestions?: boolean }) => {
+    const welcomeMessage = chatList.find(item => item.isOpeningStatement)
+    if (!welcomeMessage)
+      return <></>
 
+    if (isScenicHelloWidget(welcomeMessage.content)) {
+      return (
+        <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
+          <HelloWidget
+            key="hello-widget"
+            widgetTag={welcomeMessage.content}
+            input={{}}
+            onSend={onSend}
+            suggestedQuestions={welcomeMessage.suggestedQuestions}
+            hiddenSuggestedQuestions={hiddenSuggestedQuestions}
+          />
+        </div>
+      )
+    }
+  }
   const handleRestartChat = useCallback(() => {
     handleRestart()
     setInputs(initialInputs)
@@ -174,9 +196,11 @@ const ChatWrapper = (
         inputsForm={(startVariables || []) as any}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
+        // 与chat-with-history(用户端)需要保持一致, 也展示Welcome
         chatNode={(
           <>
             {showInputsFieldsPanel && <UserInput />}
+            <Welcome onSend={doSend} hiddenSuggestedQuestions={true} />
             {
               !chatList.length && (
                 <Empty />
