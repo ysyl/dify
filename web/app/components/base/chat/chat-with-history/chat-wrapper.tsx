@@ -246,7 +246,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
 
     if (isScenicHelloWidget(welcomeMessage.content)) {
       return (
-        <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
+        <div className={cn('flex flex-col items-center justify-center gap-3 py-0')}>
           <HelloWidget
             key="hello-widget"
             widgetTag={welcomeMessage.content}
