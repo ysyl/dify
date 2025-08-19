@@ -6,6 +6,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -34,7 +35,6 @@ import AgentLogModal from '@/app/components/base/agent-log-modal'
 import PromptLogModal from '@/app/components/base/prompt-log-modal'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
-import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 import { isScenicHelloWidget } from '@/app/components/widget/hello/scenic-hello-config'
 import { isTourismPreference } from '@/app/components/widget/tourism-preference/tourism-preference-config'
 import TourismPreference from '@/app/components/widget/tourism-preference/tourism-preference'
@@ -74,7 +74,7 @@ export type ChatProps = {
   onAnnotationAdded?: (annotationId: string, authorName: string, question: string, answer: string, index: number) => void
   onAnnotationRemoved?: (index: number) => void
   chatNode?: ReactNode
-  chatNodeWithParam?: (onSend: OnSend, hiddenSuggestedQuestions?: boolean) => ReactNode
+  chatNodeWithParam?: (onSend: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => ReactNode
   onFeedback?: (messageId: string, feedback: Feedback) => void
   chatAnswerContainerInner?: string
   hideProcessDetail?: boolean
@@ -163,6 +163,8 @@ const Chat: FC<ChatProps> = ({
     console.debug(offHeight)
     el.style.display = ''
   }
+  // chatNodeWithParam需要申明一个useMemo，避免重复渲染
+  const chatNodeWithParamMemo = useMemo(() => chatNodeWithParam, [width, activeTab])
 
   const handleScrollToBottom = useCallback(({
     forceScroll = false,
@@ -309,33 +311,38 @@ const Chat: FC<ChatProps> = ({
           <div className={cn('mt-2 px-2 ', activeTab !== '发现' && 'hidden')}
             ref={chatContainerDiscoveryRef}
           >
-            {chatNodeWithParam?.(handleSend, true) || chatNode}
+            {chatNodeWithParamMemo?.(handleSend, true, false) || chatNode}
           </div>
           {/* 对话tab页 */}
           <div
             ref={chatContainerInnerRef}
             className={cn('w-full ', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
           >
+            {/* 固定展示chatNodeWithParam */}
+            <div key="chat-node-with-param-in-dialog-tab">
+              {chatNodeWithParamMemo?.(handleSend, false, true)}
+            </div>
             {
               chatList.map((item, index) => {
                 if (item.isAnswer) {
                   if (isScenicHelloWidget(item.content)) {
                     // todo 此处应返回无按钮的hello widget，暂未实现
-                    return <HelloWidget
-                      key="hello-widget"
-                      hiddenShortcutItems={true}
-                      widgetTag={item.content}
-                      onSend={handleSend}
-                      input={inputs || {}}
-                      suggestedQuestions={item.suggestedQuestions}
-                      handleScrollToBottom={handleScrollToBottom}
-                      activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
-                      onChangeInput={(variable, value) => {
-                        onChangeInputs?.({
-                          [variable]: value,
-                        })
-                      }}
-                    />
+                    return <></>
+                    // return <HelloWidget
+                    //   key="hello-widget"
+                    //   hiddenShortcutItems={true}
+                    //   widgetTag={item.content}
+                    //   onSend={handleSend}
+                    //   input={inputs || {}}
+                    //   suggestedQuestions={item.suggestedQuestions}
+                    //   handleScrollToBottom={handleScrollToBottom}
+                    //   activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
+                    //   onChangeInput={(variable, value) => {
+                    //     onChangeInputs?.({
+                    //       [variable]: value,
+                    //     })
+                    //   }}
+                    // />
                   }
                   else if (isTourismPreference(item.content)) {
                     return <TourismPreference

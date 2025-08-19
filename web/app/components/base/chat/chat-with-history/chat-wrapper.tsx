@@ -227,7 +227,8 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       setChatState('talking')
   }, [chatList])
 
-  const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hiddenSuggestedQuestions?: boolean }) => {
+  const Welcome = ({ onSend, hiddenSuggestedQuestions, hiddenShortcutItems }:
+    { onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean }) => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
     // 中旅定制的界面不需要隐藏欢迎卡面
     // if (respondingState)
@@ -254,6 +255,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
             suggestedQuestions={welcomeMessage.suggestedQuestions}
             activeFigure={activeDigitalHuman && { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar }}
             hiddenSuggestedQuestions={hiddenSuggestedQuestions}
+            hiddenShortcutItems={hiddenShortcutItems}
             onChangeInput={(variable, value) => {
               setBarInputs(pre => ({
                 ...pre,
@@ -344,10 +346,12 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
-        chatNodeWithParam={(onSend?: OnSend, hiddenSuggestedQuestions?: boolean) => (
+        chatNodeWithParam={(onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => (
           <>
             {chatNode}
-            {<Welcome onSend={onSend} hiddenSuggestedQuestions={hiddenSuggestedQuestions} />}
+            {<Welcome onSend={onSend}
+              hiddenSuggestedQuestions={hiddenSuggestedQuestions}
+              hiddenShortcutItems={hiddenShortcutItems} />}
           </>
         )}
         allToolIcons={appMeta?.tool_icons || {}}
