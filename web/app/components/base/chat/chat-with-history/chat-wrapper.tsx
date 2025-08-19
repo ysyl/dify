@@ -62,6 +62,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     setIsResponding,
     allInputsHidden,
     initUserVariables,
+    agentConfig,
   } = useChatWithHistoryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -245,6 +246,12 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       return <></>
 
     if (isScenicHelloWidget(welcomeMessage.content)) {
+      // 旧版本智能体不区分发现、对话两种标签，因此不隐藏快捷按钮和推荐对话
+      const version = agentConfig?.version || '2.0'
+      if (version === '1.0') {
+        hiddenShortcutItems = false
+        hiddenSuggestedQuestions = false
+      }
       return (
         <div className={cn('flex flex-col items-center justify-center gap-3 py-0')}>
           <HelloWidget

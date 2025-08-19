@@ -135,7 +135,7 @@ const Chat: FC<ChatProps> = ({
   activeDigitalHuman,
   shortcutBarBtnList,
   chatNodeWithParam,
-  agentVersion = '1.0',
+  agentVersion = '2.0',
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -147,7 +147,8 @@ const Chat: FC<ChatProps> = ({
     setShowAgentLogModal: state.setShowAgentLogModal,
   })))
   const [width, setWidth] = useState(0)
-  const [activeTab, setActiveTab] = useState<OptionEnum>(chatList.length ? '对话' : '发现') // 有对话时默认选中对话tab
+  // 旧版本或者有对话时默认选中对话tab
+  const [activeTab, setActiveTab] = useState<OptionEnum>((agentVersion === '1.0' || chatList.length) ? '对话' : '发现')
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const chatContainerDiscoveryRef = useRef<HTMLDivElement>(null)
   const chatContainerInnerRef = useRef<HTMLDivElement>(null)
@@ -270,7 +271,8 @@ const Chat: FC<ChatProps> = ({
 
   function getTabOptions(): Option[] {
     const optionsInConversation = ['发现', '对话']
-    const options = optionsInConversation.map(item => ({
+    const optionsOldVersion = ['对话']
+    const options = (agentVersion === '1.0' ? optionsOldVersion : optionsInConversation).map(item => ({
       text: item,
       value: item,
     }))

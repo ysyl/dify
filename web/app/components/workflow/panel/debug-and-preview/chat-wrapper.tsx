@@ -45,6 +45,7 @@ const ChatWrapper = (
     ref: React.RefObject<ChatWrapperRefType>;
   },
 ) => {
+  console.log('重新渲染')
   const nodes = useNodes<StartNodeType>()
   const startNode = nodes.find(node => node.data.type === BlockEnum.Start)
   const startVariables = startNode?.data.variables
@@ -99,7 +100,7 @@ const ChatWrapper = (
     [],
     taskId => stopChatMessageResponding(appDetail!.id, taskId),
   )
-const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hiddenSuggestedQuestions?: boolean }) => {
+  const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hiddenSuggestedQuestions?: boolean }) => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
     if (!welcomeMessage)
       return <></>
@@ -200,7 +201,7 @@ const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hidden
         chatNode={(
           <>
             {showInputsFieldsPanel && <UserInput />}
-            <Welcome onSend={doSend} hiddenSuggestedQuestions={true} />
+            {/* <Welcome onSend={doSend} hiddenSuggestedQuestions={true} /> */}
             {
               !chatList.length && (
                 <Empty />
