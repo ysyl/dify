@@ -295,7 +295,7 @@ const Chat: FC<ChatProps> = ({
       onAnnotationRemoved={onAnnotationRemoved}
       onFeedback={onFeedback}
     >
-      <div className='fixed z-30 flex justify-center pt-2'>
+      <div className='flex justify-center pt-2'>
         <div className='w-[720px] px-8'>
           <TabSliderCtg
             value={activeTab}
@@ -304,8 +304,6 @@ const Chat: FC<ChatProps> = ({
           />
         </div>
       </div>
-      {/* 给固定定位的tab留空间 */}
-      <div className='h-[48px]'></div>
       <div className='relative h-full' style={{ height: 'calc(100% - 48px)' }}>
         <div
           ref={chatContainerRef}
