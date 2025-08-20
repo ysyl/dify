@@ -147,7 +147,6 @@ const HelloWidget = ({
   const shortcutSize = shortcutItems?.find((item: any) => item.size === 'sm') ? 'sm' : 'md'
   const [activeFigure, setActiveFigure] = useState<Figure>(activeFigureInput || (multiFigue ? multiFigue[0] : { name, avatarUrl: avatar }))
 
-  console.log('重新渲染')
   function handleSend(msg: string) {
     setSelecedShortcut(msg)
     onSend?.(msg)

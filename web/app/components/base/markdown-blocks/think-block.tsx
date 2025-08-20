@@ -35,34 +35,18 @@ const removeEndThink = (children: any): any => {
 }
 
 const useThinkTimer = (children: any) => {
-  const [startTime] = useState(Date.now())
-  const [elapsedTime, setElapsedTime] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout>()
-
-  useEffect(() => {
-    if (isComplete) return
-
-    timerRef.current = setInterval(() => {
-      setElapsedTime(Math.floor((Date.now() - startTime) / 100) / 10)
-    }, 100)
-
-    return () => {
-      if (timerRef.current)
-        clearInterval(timerRef.current)
-    }
-  }, [startTime, isComplete])
 
   useEffect(() => {
     if (hasEndThink(children))
       setIsComplete(true)
   }, [children])
 
-  return { elapsedTime, isComplete }
+  return { isComplete }
 }
 
 export const ThinkBlock = ({ children, ...props }: any) => {
-  const { elapsedTime, isComplete } = useThinkTimer(children)
+  const { isComplete } = useThinkTimer(children)
   const displayContent = removeEndThink(children)
   const { t } = useTranslation()
   const openStatusInLocalStorage = localStorage.getItem('thinking_detail_open_status')
@@ -120,7 +104,7 @@ export const ThinkBlock = ({ children, ...props }: any) => {
               d="M9 5l7 7-7 7"
             />
           </svg>
-          {isComplete ? `${t('common.chat.thought')}(${elapsedTime.toFixed(1)}s)` : `${t('common.chat.thinking')}(${elapsedTime.toFixed(1)}s)`}
+          {isComplete ? `${t('common.chat.thought')}` : `${t('common.chat.thinking')}`}
         </div>
       </summary>
       <div ref={contentRef} className={`ml-2 border-l border-components-panel-border bg-components-panel-bg-alt p-3 text-text-secondary ${!isExpandedFull ? 'max-h-[200px] overflow-auto' : ''}`}
