@@ -187,7 +187,8 @@ const HelloWidget = ({
               {introduce}
             </section>
           </div>
-          {!activeFigureInput && <img alt='智能体头像' className='max-h-fit max-w-[121px]' src={activeFigure.avatarUrl} />}
+          {!activeFigureInput && <img alt='智能体头像'
+            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl} />}
         </div>
         {
           !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
