@@ -63,7 +63,7 @@ export function parseAgentConfig(description?: string): AgentConfig | null {
   const shortcutBarBtnList = parseShortcutBarBtnConfig(agentConfigTagRaw)
   const backgroundImage = agentConfigTagRaw?.querySelector('background-image')?.attributes.getNamedItem('src')?.value || ''
   // 读取版本配置
-  const version = (agentConfigTagRaw?.querySelector('version')?.textContent?.trim() || '2.0') as AgentVersion
+  const version = (agentConfigTagRaw?.attributes.getNamedItem('version')?.value || '1.0') as AgentVersion
 
   return {
     digitalHumans,

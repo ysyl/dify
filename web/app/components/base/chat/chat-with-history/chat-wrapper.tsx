@@ -373,6 +373,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
               size={40}
             /> : undefined
         }
+        agentVersion={agentConfig?.version}
       />
     </div>
   )

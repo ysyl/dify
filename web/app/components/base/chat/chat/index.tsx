@@ -135,7 +135,7 @@ const Chat: FC<ChatProps> = ({
   activeDigitalHuman,
   shortcutBarBtnList,
   chatNodeWithParam,
-  agentVersion = '2.0',
+  agentVersion = '1.0',
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -295,7 +295,7 @@ const Chat: FC<ChatProps> = ({
       onAnnotationRemoved={onAnnotationRemoved}
       onFeedback={onFeedback}
     >
-      <div className='flex justify-center pt-2'>
+      <div className={cn('flex justify-center pt-2', agentVersion === '1.0' && 'hidden')}>
         <div className='w-[720px] px-8'>
           <TabSliderCtg
             value={activeTab}
