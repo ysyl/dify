@@ -304,7 +304,7 @@ const Chat: FC<ChatProps> = ({
           />
         </div>
       </div>
-      <div className='relative h-full' style={{ height: 'calc(100% - 48px)' }}>
+      <div className='relative h-full'>
         <div
           ref={chatContainerRef}
           className={cn('relative h-full overflow-y-auto overflow-x-hidden', chatContainerClassName)}
