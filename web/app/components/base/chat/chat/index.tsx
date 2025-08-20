@@ -165,7 +165,9 @@ const Chat: FC<ChatProps> = ({
     el.style.display = ''
   }
   // chatNodeWithParam需要申明一个useMemo，避免重复渲染
-  const chatNodeWithParamMemo = useMemo(() => chatNodeWithParam, [width, activeTab])
+  const chatNodeWithParamMemo = useMemo(() => {
+    return chatNodeWithParam
+  }, [width, activeTab])
 
   const handleScrollToBottom = useCallback(({
     forceScroll = false,
@@ -193,10 +195,10 @@ const Chat: FC<ChatProps> = ({
       chatFooterInnerRef.current.style.width = `${chatContainerDiscoveryRef.current.clientWidth}px`
   }, [])
 
-  const handleSend = (msg: string) => {
-    setActiveTab('对话')
-    onSend?.(msg)
-  }
+const handleSend = useMemo(() => (msg: string) => {
+  setActiveTab('对话')
+  onSend?.(msg)
+}, [])
   // 切换tab时滚动到顶部
   useEffect(() => {
     activeTab === '发现' && forceRepaint(chatContainerRef.current)

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import Chat from '../chat'
 import type {
   ChatConfig,
@@ -216,7 +216,6 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
     }
   }, [inputsForms.length, isMobile, currentConversationId, collapsed, allInputsHidden])
-
   useEffect(() => {
     const markdownBodyList = document.querySelectorAll('.answer .markdown-body')
     if (markdownBodyList.length === 0) return
@@ -228,17 +227,9 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
       setChatState('talking')
   }, [chatList])
 
-  const Welcome = ({ onSend, hiddenSuggestedQuestions, hiddenShortcutItems }:
+  const Welcome = memo(({ onSend, hiddenSuggestedQuestions, hiddenShortcutItems }:
     { onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean }) => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
-    // 中旅定制的界面不需要隐藏欢迎卡面
-    // if (respondingState)
-    //   return null
-    // 有对话时也展示欢迎卡面，该卡片归类到「发现」页签，是定制逻辑
-    // if (currentConversationId) {
-    //   console.log('Welcome card skipped: currentConversationId exists')
-    //   return null
-    // }
     if (!welcomeMessage)
       return <></>
 
@@ -309,8 +300,16 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         </div>
       </div>
     )
-  }
+  })
 
+  const chatNodeWithParam = useMemo(() => (onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => (
+    <>
+      {chatNode}
+      <Welcome onSend={onSend}
+        hiddenSuggestedQuestions={hiddenSuggestedQuestions}
+        hiddenShortcutItems={hiddenShortcutItems} />
+    </>
+  ), [])
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon
       iconType={appData.site.icon_type}
@@ -353,14 +352,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         inputsForm={inputsForms}
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
-        chatNodeWithParam={(onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => (
-          <>
-            {chatNode}
-            {<Welcome onSend={onSend}
-              hiddenSuggestedQuestions={hiddenSuggestedQuestions}
-              hiddenShortcutItems={hiddenShortcutItems} />}
-          </>
-        )}
+        chatNodeWithParam={chatNodeWithParam}
         allToolIcons={appMeta?.tool_icons || {}}
         onFeedback={handleFeedback}
         suggestedQuestions={suggestedQuestions}
