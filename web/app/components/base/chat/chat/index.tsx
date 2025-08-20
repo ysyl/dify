@@ -328,23 +328,8 @@ const Chat: FC<ChatProps> = ({
               chatList.map((item, index) => {
                 if (item.isAnswer) {
                   if (isScenicHelloWidget(item.content)) {
-                    // todo 此处应返回无按钮的hello widget，暂未实现
-                    return <></>
-                    // return <HelloWidget
-                    //   key="hello-widget"
-                    //   hiddenShortcutItems={true}
-                    //   widgetTag={item.content}
-                    //   onSend={handleSend}
-                    //   input={inputs || {}}
-                    //   suggestedQuestions={item.suggestedQuestions}
-                    //   handleScrollToBottom={handleScrollToBottom}
-                    //   activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
-                    //   onChangeInput={(variable, value) => {
-                    //     onChangeInputs?.({
-                    //       [variable]: value,
-                    //     })
-                    //   }}
-                    // />
+                    // 不再根据对话内容展示开场白，而是固定在头部
+                    return <div key={index}></div>
                   }
                   else if (isTourismPreference(item.content)) {
                     return <TourismPreference

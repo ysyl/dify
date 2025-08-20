@@ -45,17 +45,14 @@ const ChatWrapper = (
     ref: React.RefObject<ChatWrapperRefType>;
   },
 ) => {
-  console.log('重新渲染')
   const nodes = useNodes<StartNodeType>()
   const startNode = nodes.find(node => node.data.type === BlockEnum.Start)
   const startVariables = startNode?.data.variables
   const appDetail = useAppStore(s => s.appDetail)
   const workflowStore = useWorkflowStore()
-  const { inputs, setInputs } = useStore(s => ({
-    inputs: s.inputs,
-    setInputs: s.setInputs,
-  }))
-
+  // 直接选择需要的状态，避免创建新对象
+  const inputs = useStore(s => s.inputs)
+  const setInputs = useStore(s => s.setInputs)
   const initialInputs = useMemo(() => {
     const initInputs: Record<string, any> = {}
     if (startVariables) {
@@ -100,26 +97,48 @@ const ChatWrapper = (
     [],
     taskId => stopChatMessageResponding(appDetail!.id, taskId),
   )
-  const Welcome = ({ onSend, hiddenSuggestedQuestions }: { onSend?: OnSend, hiddenSuggestedQuestions?: boolean }) => {
-    const welcomeMessage = chatList.find(item => item.isOpeningStatement)
-    if (!welcomeMessage)
-      return <></>
+  // 使用 React.memo 包装组件，避免不必要的重渲染
+  const Welcome = memo(({
+  onSend,
+  hiddenSuggestedQuestions,
+  hiddenShortcutItems,
+}: {
+  onSend?: OnSend,
+  hiddenSuggestedQuestions?: boolean,
+  hiddenShortcutItems?: boolean
+}) => {
+  // 使用 useMemo 缓存查找结果
+  const welcomeMessage = useMemo(() => {
+    return chatList.find(item => item.isOpeningStatement)
+  }, [chatList]) // 仅在 chatList 变化时重新计算
 
-    if (isScenicHelloWidget(welcomeMessage.content)) {
-      return (
-        <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
-          <HelloWidget
-            key="hello-widget"
-            widgetTag={welcomeMessage.content}
-            input={{}}
-            onSend={onSend}
-            suggestedQuestions={welcomeMessage.suggestedQuestions}
-            hiddenSuggestedQuestions={hiddenSuggestedQuestions}
-          />
-        </div>
-      )
-    }
+  // 缓存 isScenicHelloWidget 的结果
+  const isWidget = useMemo(() => {
+    return isScenicHelloWidget(welcomeMessage?.content || '')
+  }, [welcomeMessage?.content])
+
+  if (!welcomeMessage || !isWidget)
+    return <></>
+
+  if (isWidget) {
+    return (
+      <div className={cn('mx-2 flex flex-col items-center justify-center gap-3 py-0')}>
+        <HelloWidget
+          key="hello-widget"
+          widgetTag={welcomeMessage.content}
+          input={{}} // 这个空对象每次都会创建新引用，可以考虑定义为常量
+          onSend={onSend}
+          suggestedQuestions={welcomeMessage.suggestedQuestions}
+          hiddenSuggestedQuestions={hiddenSuggestedQuestions}
+          hiddenShortcutItems={hiddenShortcutItems}
+        />
+      </div>
+    )
   }
+
+  // 如果不是 widget，确保返回有效的 JSX
+  return <></>
+})
   const handleRestartChat = useCallback(() => {
     handleRestart()
     setInputs(initialInputs)
@@ -198,10 +217,10 @@ const ChatWrapper = (
         onRegenerate={doRegenerate}
         onStopResponding={handleStop}
         // 与chat-with-history(用户端)需要保持一致, 也展示Welcome
-        chatNode={(
+        chatNodeWithParam={(onSend, hiddenSuggestedQuestions, hiddenShortcutItems) => (
           <>
             {showInputsFieldsPanel && <UserInput />}
-            {/* <Welcome onSend={doSend} hiddenSuggestedQuestions={true} /> */}
+            <Welcome onSend={doSend} hiddenSuggestedQuestions={hiddenSuggestedQuestions} hiddenShortcutItems={hiddenShortcutItems} />
             {
               !chatList.length && (
                 <Empty />
