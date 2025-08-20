@@ -195,10 +195,10 @@ const Chat: FC<ChatProps> = ({
       chatFooterInnerRef.current.style.width = `${chatContainerDiscoveryRef.current.clientWidth}px`
   }, [])
 
-const handleSend = useMemo(() => (msg: string) => {
-  setActiveTab('对话')
-  onSend?.(msg)
-}, [])
+  const handleSend = (msg: string) => {
+    setActiveTab('对话')
+    onSend?.(msg)
+  }
   // 切换tab时滚动到顶部
   useEffect(() => {
     activeTab === '发现' && forceRepaint(chatContainerRef.current)
