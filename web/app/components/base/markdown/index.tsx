@@ -54,6 +54,8 @@ export function Markdown(props: MarkdownProps) {
 
   // 调用独立函数处理未闭合元素
   const processedContent = processUnclosedElements(latexContent, elementsToCheck)
+  console.log(latexContent)
+  console.log('processedContent', processedContent)
 
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
@@ -116,6 +118,13 @@ export function Markdown(props: MarkdownProps) {
  * @returns 处理后的内容
  */
 function processUnclosedElements(content: string, elementsToCheck: string[]): string {
+  // 先替换非正常空格
+  function replaceSpecialSpacesPreserveNewline(str: string) {
+    // 匹配所有Unicode空白字符，但排除换行符(\n)
+    // [^\S\n] 表示：不是非空白字符，也不是换行符（即匹配除了普通空格和换行符之外的所有空白字符）
+    return str.replace(/[^\S\n]/g, ' ')
+  }
+  content = replaceSpecialSpacesPreserveNewline(content)
   // 只在浏览器环境中处理
   if (typeof window === 'undefined')
     return content
