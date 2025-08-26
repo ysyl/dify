@@ -46,6 +46,7 @@ import ServiceList, { isServiceList } from '@/app/components/widget/service_list
 import type { AgentVersion, DigitalHuman, ShortcutBarBtn } from '../chat-with-history/agent-config'
 import type { Option } from '../../tab-slider-ctg'
 import TabSliderCtg from '../../tab-slider-ctg'
+import ShowList, { isShowList } from '@/app/components/widget/show_list/show_list'
 
 type OptionEnum = '发现' | '对话'
 
@@ -352,6 +353,9 @@ const Chat: FC<ChatProps> = ({
                   }
                   else if (isProductList(item.content)) {
                     return <ProductList key={`product_list_${index}`} widgetTag={item.content} />
+                  }
+                  else if (isShowList(item.content)) {
+                    return <ShowList key={`show_list_${index}`} widgetTag={item.content} />
                   }
                   else if (isLocationPanelTag(item.content)) {
                     return <LocationPanel
