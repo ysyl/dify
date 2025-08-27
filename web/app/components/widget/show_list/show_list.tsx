@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { parseHtmlTagRaw } from '../../tools/widget-tool'
 
 // 演出信息类型定义
@@ -30,7 +29,7 @@ export type ShowListProps = {
 const ShowCard = ({ show, key }: { show: ShowInfo; key: string | number }) => {
     return (
         <div className="flex w-full items-center overflow-hidden rounded-xl bg-white">
-            <span className="h-[60px] w-[100px] overflow-hidden">
+            <span className="max-h-full overflow-hidden">
                 {show.coverImg && (
                     <img
                         className="h-full w-full object-cover"
@@ -39,16 +38,16 @@ const ShowCard = ({ show, key }: { show: ShowInfo; key: string | number }) => {
                     />
                 )}
             </span>
-            <div className="flex-1 p-2">
-                <h3 className="font-medium text-black">{show.showName}</h3>
-                <p className="text-sm text-gray-600">演出时间：{show.showTime}</p>
-                <p className="text-sm text-gray-600">地点：{show.location}</p>
+            <div className="flex-1 p-1.5">
+                <h3 className="font-medium text-[#1F3B63]">{show.showName}</h3>
+                <p className="text-[10.4px] text-[#A7B3C2]">演出时间：{show.showTime}</p>
+                <p className="text-[10.4px] text-[#A7B3C2]">地点：{show.location}</p>
             </div>
             <div className="mr-3 shrink-0">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-                    <span className="text-center">
-                        <span className="block text-sm font-bold text-red-500">{show.showTime}</span>
-                        <span className="text-xs text-red-500">下一场</span>
+                <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-[#DC7A65]">
+                    <span className="block text-center">
+                        <span className="block text-sm font-bold leading-[17px] text-[#FFD9AC]">{show.showTime}</span>
+                        <span className="block text-[9px] leading-[12px] text-[#FFD9AC]">下一场</span>
                     </span>
                 </div>
             </div>
@@ -139,7 +138,7 @@ function getShowListConfig(widgetTag: string): ShowListConfig | null {
                 }
             }
         }
- catch (ex) {
+        catch (ex) {
             console.error(ex)
             return null
         }
@@ -199,21 +198,13 @@ function getShowListConfig(widgetTag: string): ShowListConfig | null {
 // 演出列表组件
 const ShowList = ({ widgetTag }: ShowListProps) => {
     const config = getShowListConfig(widgetTag)
-    const [showsGroupByShowGroup, setShowsGroupByShowGroup] = useState<Record<string, ShowInfo[]>>()
 
-    // 根据选中的演出进行分组
-    useEffect(() => {
-        if (!config) return
-
-        setShowsGroupByShowGroup((pre) => {
-            const shows = config.shows.reduce((map: Record<string, ShowInfo[]>, cur) => {
-                map[cur.group] = [...(map[cur.group] || []), cur]
-                return map
-            }, {})
-
-            return shows || {}
-        })
-    }, [config])
+    // 直接在渲染时计算分组数据，不需要useEffect和useState
+    const showsGroupByShowGroup = config?.shows
+        ? config.shows.reduce((map: Record<string, ShowInfo[]>, cur) => {
+            map[cur.group] = [...(map[cur.group] || []), cur]
+            return map
+        }, {}) : {}
 
     return (
         <div no-memory="true" className="my-[13px] rounded-[20.8px] border border-green-50 bg-[rgba(235,235,235,0.4)] px-[16px] pb-[16px] pt-[28px]">
