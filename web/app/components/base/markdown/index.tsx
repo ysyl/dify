@@ -54,8 +54,6 @@ export function Markdown(props: MarkdownProps) {
 
   // 调用独立函数处理未闭合元素
   const processedContent = processUnclosedElements(latexContent, elementsToCheck)
-  console.log(latexContent)
-  console.log('processedContent', processedContent)
 
   return (
     <div className={cn('markdown-body', '!text-text-primary', props.className)}>
