@@ -1,7 +1,7 @@
 import logging
 
-from flask_restful import fields, marshal_with, reqparse
-from flask_restful.inputs import int_range
+from flask_restx import fields, marshal_with, reqparse
+from flask_restx.inputs import int_range
 from werkzeug.exceptions import InternalServerError, NotFound
 
 from controllers.web import api
@@ -34,6 +34,8 @@ from services.errors.message import (
     SuggestedQuestionsAfterAnswerDisabledError,
 )
 from services.message_service import MessageService
+
+logger = logging.getLogger(__name__)
 
 
 class MessageListApi(WebApiResource):
@@ -146,7 +148,7 @@ class MessageMoreLikeThisApi(WebApiResource):
         except ValueError as e:
             raise e
         except Exception:
-            logging.exception("internal server error.")
+            logger.exception("internal server error.")
             raise InternalServerError()
 
 
@@ -177,7 +179,7 @@ class MessageSuggestedQuestionApi(WebApiResource):
         except InvokeError as e:
             raise CompletionRequestError(e.description)
         except Exception:
-            logging.exception("internal server error.")
+            logger.exception("internal server error.")
             raise InternalServerError()
 
         return {"data": questions}

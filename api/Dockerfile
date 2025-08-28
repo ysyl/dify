@@ -4,7 +4,7 @@ FROM lglxdbua1l3h1d.xuanyuan.run/library/python:3.12-slim-bookworm AS base
 WORKDIR /app/api
 
 # Install uv
-ENV UV_VERSION=0.7.11
+ENV UV_VERSION=0.8.9
 
 RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple uv==${UV_VERSION}
 

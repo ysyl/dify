@@ -27,6 +27,7 @@ import SuggestedQuestions from '../chat/answer/suggested-questions'
 import { useDraggable } from '@dnd-kit/core'
 import type { FileEntity } from '../../file-uploader/types'
 import type { DigitalHuman, ShortcutBarBtn } from './agent-config'
+import { formatBooleanInputs } from '@/utils/model-config'
 import Avatar from '../../avatar'
 
 type Props = {
@@ -104,7 +105,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     let fileIsUploading = false
     // 过滤掉特殊变量（btn_开头的以输入框上方按钮组
     const requiredVars = inputsForms.filter(input => !input.variable.startsWith('btn_'))
-      .filter(({ required }) => required)
+      .filter(({ required, type }) => required && type !== InputVarType.checkbox)
     if (requiredVars.length) {
       requiredVars.forEach(({ variable, label, type }) => {
         if (hasEmptyInput)
@@ -167,7 +168,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     const data: any = {
       query: message,
       files,
-      inputs: { ...(currentConversationId ? currentConversationInputs : newConversationInputs), ...barInputs }, // 混合原始dify inputs和新增的自定义底栏inputs
+      inputs: formatBooleanInputs(inputsForms, { ...(currentConversationId ? currentConversationInputs : newConversationInputs), ...barInputs }), // 混合原始dify inputs和新增的自定义底栏inputs
       conversation_id: currentConversationId,
       parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }

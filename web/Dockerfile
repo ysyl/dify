@@ -8,6 +8,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache tzdata
 RUN npm config set registry https://registry.npmmirror.com
 RUN npm install -g pnpm@10.13.1
+RUN corepack enable
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -19,6 +20,9 @@ WORKDIR /app/web
 
 COPY package.json .
 COPY pnpm-lock.yaml .
+
+# Use packageManager from package.json
+RUN corepack install
 
 # if you located in China, you can use taobao registry to speed up
 # RUN pnpm install --frozen-lockfile --registry https://registry.npmmirror.com/
@@ -32,7 +36,7 @@ COPY --from=packages /app/web/ .
 COPY . .
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN pnpm build
+RUN pnpm build:docker
 
 
 # production stage
