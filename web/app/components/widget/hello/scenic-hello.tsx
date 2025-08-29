@@ -198,7 +198,10 @@ const HelloWidget = ({
             className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl} />}
           {/* 智能体头像视频 */}
           {!activeFigureInput && !isImage(activeFigure.avatarUrl) && <video
-            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl} autoPlay loop muted />}
+            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl}
+            playsInline
+            webkit-playsInline
+            autoPlay loop muted />}
         </div>
         {
           !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
