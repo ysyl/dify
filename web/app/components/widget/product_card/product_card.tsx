@@ -52,7 +52,6 @@ const ProductCardPlat = ({ product, shadow = false }: { product: ProductInfo; ke
       className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white no-underline shadow-md'
       style={{
         textDecoration: 'none',
-        ...(shadow ? { boxShadow: '0 0px 6px rgba(0, 0, 0, 0.03)' } : {}),
       }}
     >
       <span className='max-w-[130px]'>
