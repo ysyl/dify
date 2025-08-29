@@ -1,13 +1,14 @@
 
 from flask import Response
-from flask_restx import Resource, reqparse
+from flask_restx import Resource
 
 import services
-from controllers.files import api
-from controllers.files.error import UnsupportedFileTypeError
+from controllers.common.errors import UnsupportedFileTypeError
+from controllers.files import files_ns
 from services.file_service import FileService
 
 
+@files_ns.route("/<uuid:file_id>/file-preview-anonymous")
 class FilePreviewAnonymousApi(Resource):
     def get(self, file_id):
         file_id = str(file_id)
@@ -29,5 +30,3 @@ class FilePreviewAnonymousApi(Resource):
             response.headers["Content-Length"] = str(upload_file.size)
 
         return response
-
-api.add_resource(FilePreviewAnonymousApi, "/files/<uuid:file_id>/file-preview-anonymous")
