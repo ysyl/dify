@@ -1,6 +1,6 @@
 
 from flask import Response
-from flask_restful import Resource  # type: ignore
+from flask_restx import Resource, reqparse
 
 import services
 from controllers.files import api
