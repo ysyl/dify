@@ -47,6 +47,7 @@ import type { Option } from '../../tab-slider-ctg'
 import TabSliderCtg from '../../tab-slider-ctg'
 import ShowList, { isShowList } from '@/app/components/widget/show_list/show_list'
 import type { FileEntity } from '../../file-uploader/types'
+import HelloWidget from '@/app/components/widget/hello/scenic-hello'
 
 type OptionEnum = '发现' | '对话'
 
@@ -326,7 +327,25 @@ const Chat: FC<ChatProps> = ({
                 if (item.isAnswer) {
                   if (isScenicHelloWidget(item.content)) {
                     // 不再根据对话内容展示开场白，而是固定在头部
-                    return <div key={index}></div>
+                    if (!chatNodeWithParam) {
+                      return <HelloWidget
+                        key="hello-widget"
+                        widgetTag={item.content}
+                        onSend={onSend}
+                        input={inputs || {}}
+                        suggestedQuestions={item.suggestedQuestions}
+                        handleScrollToBottom={handleScrollToBottom}
+                        activeFigure={activeDigitalHuman ? { name: activeDigitalHuman.name, avatarUrl: activeDigitalHuman.avatar } : undefined}
+                        onChangeInput={(variable, value) => {
+                          onChangeInputs?.({
+                            [variable]: value,
+                          })
+                        }}
+                      />
+                    }
+ else {
+                      return <div className='has-not-chat-node-with-param' key={index}></div>
+                    }
                   }
                   else if (isTourismPreference(item.content)) {
                     return <TourismPreference
