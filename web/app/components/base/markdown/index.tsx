@@ -48,7 +48,7 @@ export function Markdown(props: MarkdownProps) {
 
   // 以下逻辑保证未闭合元素不展示原文如<pic ...
   // 定义默认的未闭合元素检查列表
-  const defaultUnclosedElements = ['pic', 'product-recommand']
+  const defaultUnclosedElements = ['a', 'pic', 'product-recommand']
   // 使用用户提供的列表或默认列表
   const elementsToCheck = props.unclosedElements || defaultUnclosedElements
 
