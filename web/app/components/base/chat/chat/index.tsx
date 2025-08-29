@@ -47,6 +47,7 @@ import type { AgentVersion, DigitalHuman, ShortcutBarBtn } from '../chat-with-hi
 import type { Option } from '../../tab-slider-ctg'
 import TabSliderCtg from '../../tab-slider-ctg'
 import ShowList, { isShowList } from '@/app/components/widget/show_list/show_list'
+import type { FileEntity } from '../../file-uploader/types'
 
 type OptionEnum = '发现' | '对话'
 
@@ -196,9 +197,9 @@ const Chat: FC<ChatProps> = ({
       chatFooterInnerRef.current.style.width = `${chatContainerDiscoveryRef.current.clientWidth}px`
   }, [])
 
-  const handleSend = (msg: string) => {
+  const handleSend = (msg: string, files?: FileEntity[]) => {
     setActiveTab('对话')
-    onSend?.(msg)
+    onSend?.(msg, files)
   }
   // 切换tab时滚动到顶部
   useEffect(() => {
