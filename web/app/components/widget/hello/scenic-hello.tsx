@@ -4,6 +4,11 @@ import getScenicHelloConfig from './scenic-hello-config'
 import cn from '@/utils/classnames'
 import LocationPanel from '../location-panel/location-panel'
 
+// 写个方法，输入url，判断url是图片还是视频
+const isImage = (url: string) => {
+  return url.match(/\.(jpeg|jpg|gif|png)$/)
+}
+
 type HelloWidgetProps = {
   widgetTag: string
   onSend?: (msg: string) => void
@@ -36,6 +41,7 @@ type FigureSwitchProps = {
   active: string,
   onSwitch: (figure: Figure) => void
 }
+
 export const FigureSwitch = ({ figures, active, onSwitch }: FigureSwitchProps) => {
   const activeStyle = {
     backgroundImage: 'linear-gradient(to bottom, #F7CEA2, #FBC384, #FDB76E)',
@@ -187,8 +193,12 @@ const HelloWidget = ({
               {introduce}
             </section>
           </div>
-          {!activeFigureInput && <img alt='智能体头像'
-            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl}/>}
+          {/* 智能体头像图片 */}
+          {!activeFigureInput && isImage(activeFigure.avatarUrl) && <img alt='智能体头像'
+            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl} />}
+          {/* 智能体头像视频 */}
+          {!activeFigureInput && !isImage(activeFigure.avatarUrl) && <video
+            className='max-h-fit max-w-[121px] object-contain' src={activeFigure.avatarUrl} autoPlay loop muted />}
         </div>
         {
           !hiddenShortcutItems && shortcutItems && shortcutItems.length > 0 && <section className='mt-4'>
