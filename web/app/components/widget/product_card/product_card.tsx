@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from '@/utils/classnames'
 
 export type ProductInfo = {
   id?: string;
@@ -49,7 +50,9 @@ const ProductCardPlat = ({ product, shadow = false }: { product: ProductInfo; ke
       href={product.productPageUrl}
       target='_blank'
       rel='noopener noreferrer'
-      className='flex h-[70px] w-full overflow-hidden rounded-xl bg-white no-underline shadow-md'
+      className={cn('flex h-[70px] w-full overflow-hidden rounded-xl bg-white no-underline shadow-md', {
+        'shadow-md': shadow,
+      })}
       style={{
         textDecoration: 'none',
       }}
