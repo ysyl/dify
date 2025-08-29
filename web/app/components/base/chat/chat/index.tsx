@@ -6,7 +6,6 @@ import {
   memo,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -166,10 +165,6 @@ const Chat: FC<ChatProps> = ({
     console.debug(offHeight)
     el.style.display = ''
   }
-  // chatNodeWithParam需要申明一个useMemo，避免重复渲染
-  const chatNodeWithParamMemo = useMemo(() => {
-    return chatNodeWithParam
-  }, [width, activeTab])
 
   const handleScrollToBottom = useCallback(({
     forceScroll = false,
@@ -315,7 +310,7 @@ const Chat: FC<ChatProps> = ({
           <div className={cn(chatContainerInnerClassName, activeTab !== '发现' && 'hidden')}
             ref={chatContainerDiscoveryRef}
           >
-            {chatNodeWithParamMemo?.(handleSend, true, false) || chatNode}
+            {chatNodeWithParam?.(handleSend, true, false) || chatNode}
           </div>
           {/* 对话tab页 */}
           <div
@@ -324,7 +319,7 @@ const Chat: FC<ChatProps> = ({
           >
             {/* 固定展示chatNodeWithParam */}
             <div key="chat-node-with-param-in-dialog-tab">
-              {chatNodeWithParamMemo?.(handleSend, false, true)}
+              {chatNodeWithParam?.(handleSend, false, true)}
             </div>
             {
               chatList.map((item, index) => {
