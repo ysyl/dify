@@ -29,6 +29,10 @@ server {
     location /S1TkB30VeX.txt{
       return 200 '71f547b5d49c2fcb20a31657cfdfe4d9';
     }
+    location /YWBnS6c66Z.txt{
+      return 200 '1199fc7456cbb2e521a67701b4ccc445';
+    }
+
     # 配置静态文件访问
     location /upload_pics/ {
         alias /var/www/images_store/23d42193-e769-4628-9f5d-bf5428994d3d/;  # 指定实际文件路径
