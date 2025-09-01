@@ -310,7 +310,7 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
         hiddenSuggestedQuestions={hiddenSuggestedQuestions}
         hiddenShortcutItems={hiddenShortcutItems} />
     </>
-  ), [currentConversationId])
+  ), [currentConversationId, chatList.find(item => item.isOpeningStatement)?.content])
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon
       iconType={appData.site.icon_type}
