@@ -303,14 +303,14 @@ const ChatWrapper = ({ chatState, setChatState, activeDigitalHuman, shortcutBarB
     )
   })
 
-  const chatNodeWithParam = useMemo(() => (onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => (
+  const chatNodeWithParam = (onSend?: OnSend, hiddenSuggestedQuestions?: boolean, hiddenShortcutItems?: boolean) => (
     <>
       {chatNode}
       <Welcome onSend={onSend}
         hiddenSuggestedQuestions={hiddenSuggestedQuestions}
         hiddenShortcutItems={hiddenShortcutItems} />
     </>
-  ), [])
+  )
   const answerIcon = (appData?.site && appData.site.use_icon_as_answer_icon)
     ? <AnswerIcon
       iconType={appData.site.icon_type}

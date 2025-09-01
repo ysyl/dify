@@ -319,7 +319,7 @@ const Chat: FC<ChatProps> = ({
             className={cn('w-full ', !noSpacing && 'px-8', chatContainerInnerClassName, activeTab !== '对话' && 'hidden')}
           >
             {/* 固定展示chatNodeWithParam */}
-            <div key="chat-node-with-param-in-dialog-tab">
+            <div key="chat-node-with-param-in-dialog-tab" className='chat-node-with-param-in-dialog-tab'>
               {chatNodeWithParam?.(handleSend, false, true)}
             </div>
             {
@@ -343,8 +343,8 @@ const Chat: FC<ChatProps> = ({
                         }}
                       />
                     }
- else {
-                      return <div className='has-not-chat-node-with-param' key={index}></div>
+                    else {
+                      return <div className='has-chat-node-with-param' key={index}></div>
                     }
                   }
                   else if (isTourismPreference(item.content)) {
