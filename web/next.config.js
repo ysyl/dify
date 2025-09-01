@@ -30,6 +30,8 @@ const nextConfig = {
     if (dev) {
       config.plugins.push(codeInspectorPlugin({ bundler: 'webpack' }))
     }
+    config.resolve.alias['mdast-util-gfm-autolink-literal']
+      = require.resolve('./patches/mdast-util-gfm-autolink-literal')
 
     return config
   },
