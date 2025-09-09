@@ -635,7 +635,9 @@ services:
   # worker_beat service
   # Celery beat for scheduling periodic tasks.
   worker_beat:
-    image: lglxdbua1l3h1d.xuanyuan.run/langgenius/dify-api:1.8.0
+    build:
+      context: ../api
+      dockerfile: Dockerfile
     restart: always
     environment:
       # Use the shared environment variables.
