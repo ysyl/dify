@@ -681,7 +681,7 @@ services:
       ENABLE_WEBSITE_WATERCRAWL: ${ENABLE_WEBSITE_WATERCRAWL:-true}
   # The postgres database.
   db:
-    image: lglxdbua1l3h1d.xuanyuan.run/postgres:15-alpine
+    image: lglxdbua1l3h1d.xuanyuan.run/library/postgres:15-alpine
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
