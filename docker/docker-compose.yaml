@@ -681,7 +681,7 @@ services:
       ENABLE_WEBSITE_WATERCRAWL: ${ENABLE_WEBSITE_WATERCRAWL:-true}
   # The postgres database.
   db:
-    image: postgres:15-alpine
+    image: lglxdbua1l3h1d.xuanyuan.run/postgres:15-alpine
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -706,7 +706,7 @@ services:
 
   # The redis cache.
   redis:
-    image: redis:6-alpine
+    image: lglxdbua1l3h1d.xuanyuan.run/redis:6-alpine
     restart: always
     environment:
       REDISCLI_AUTH: ${REDIS_PASSWORD:-difyai123456}
@@ -720,7 +720,7 @@ services:
 
   # The DifySandbox
   sandbox:
-    image: langgenius/dify-sandbox:0.2.12
+    image: lglxdbua1l3h1d.xuanyuan.run/langgenius/dify-sandbox:0.2.12
     restart: always
     environment:
       # The DifySandbox configurations
@@ -743,7 +743,7 @@ services:
 
   # plugin daemon
   plugin_daemon:
-    image: langgenius/dify-plugin-daemon:0.2.0-local
+    image: lglxdbua1l3h1d.xuanyuan.run/langgenius/dify-plugin-daemon:0.2.0-local
     restart: always
     environment:
       # Use the shared environment variables.
@@ -803,7 +803,7 @@ services:
   # for more information, please refer to
   # https://docs.dify.ai/learn-more/faq/install-faq#18-why-is-ssrf-proxy-needed%3F
   ssrf_proxy:
-    image: ubuntu/squid:latest
+    image: lglxdbua1l3h1d.xuanyuan.run/ubuntu/squid:latest
     restart: always
     volumes:
       - ./ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
@@ -843,7 +843,7 @@ services:
   # The nginx reverse proxy.
   # used for reverse proxying the API service and Web service.
   nginx:
-    image: nginx:latest
+    image: lglxdbua1l3h1d.xuanyuan.run/nginx:latest
     restart: always
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
@@ -883,7 +883,7 @@ services:
 
   # The Weaviate vector store.
   weaviate:
-    image: semitechnologies/weaviate:1.19.0
+    image: lglxdbua1l3h1d.xuanyuan.run/semitechnologies/weaviate:1.19.0
     profiles:
       - ''
       - weaviate
@@ -908,7 +908,7 @@ services:
   # Qdrant vector store.
   # (if used, you need to set VECTOR_STORE to qdrant in the api & worker service.)
   qdrant:
-    image: langgenius/qdrant:v1.7.3
+    image: lglxdbua1l3h1d.xuanyuan.run/langgenius/qdrant:v1.7.3
     profiles:
       - qdrant
     restart: always
@@ -1081,7 +1081,7 @@ services:
   # Milvus vector database services
   etcd:
     container_name: milvus-etcd
-    image: quay.io/coreos/etcd:v3.5.5
+    image: lglxdbua1l3h1d.xuanyuan.run/quay.io/coreos/etcd:v3.5.5
     profiles:
       - milvus
     environment:
