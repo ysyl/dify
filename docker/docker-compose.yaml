@@ -635,7 +635,7 @@ services:
   # worker_beat service
   # Celery beat for scheduling periodic tasks.
   worker_beat:
-    image: langgenius/dify-api:1.8.0
+    image: lglxdbua1l3h1d.xuanyuan.run/langgenius/dify-api:1.8.0
     restart: always
     environment:
       # Use the shared environment variables.
