@@ -23,14 +23,17 @@ server {
     location /m6DxqUlG8i.txt {
       return 200 'ce7a1226d35fd26e134cc17662eca01e';
     }
-    location /mN7WRyiu3G.txt{
+    location /mN7WRyiu3G.txt {
       return 200 '4737b11df0cdbb8bc74bc7aa51932ad2';
     }
-    location /S1TkB30VeX.txt{
+    location /S1TkB30VeX.txt {
       return 200 '71f547b5d49c2fcb20a31657cfdfe4d9';
     }
-    location /YWBnS6c66Z.txt{
+    location /YWBnS6c66Z.txt {
       return 200 '1199fc7456cbb2e521a67701b4ccc445';
+    }
+    location /DycWdmKZ9Q.txt {
+      return 200 'babd3f9771fbce16ed97e00b198b8fbb';
     }
 
     # 配置静态文件访问
