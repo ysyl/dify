@@ -178,7 +178,7 @@ const HelloWidget = ({
         }
       </div>
       <div key="WidgetComponent" className='mb-[30px] rounded-[20.8px] border border-green-50 p-[14px]' style={{
-        backgroundColor: '#f5f5f5',
+        backgroundColor: 'rgb(235,235,236,0.4)',
         maxWidth: 'calc(720px - 4rem)',
       }}>
         <div className='flex'>
