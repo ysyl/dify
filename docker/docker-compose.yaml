@@ -698,13 +698,21 @@ services:
                -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     healthcheck:
-      test: [ 'CMD', 'pg_isready' ]
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-h",
+          "db",
+          "-U",
+          "${PGUSER:-postgres}",
+          "-d",
+          "${POSTGRES_DB:-dify}",
+        ]
       interval: 1s
       timeout: 3s
-      retries: 30
+      retries: 60
 
   # The redis cache.
   redis:
